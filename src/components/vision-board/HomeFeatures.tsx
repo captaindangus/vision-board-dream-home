@@ -27,7 +27,7 @@ export function HomeFeatures() {
     },
     { 
       id: 5, 
-      imageUrl: "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", 
+      imageUrl: "/lovable-uploads/edc4f5ac-e0ea-4e33-8927-76659277b28e.png", 
       type: "Kitchen"
     },
     { 
