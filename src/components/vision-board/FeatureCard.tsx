@@ -23,7 +23,7 @@ export function FeatureCard({
   const handleDragStart = (e: React.DragEvent) => {
     if (!draggable) return;
     
-    // Set the drag data with full-width size for neighborhood features
+    // Set the drag data
     e.dataTransfer.setData("application/json", JSON.stringify({
       type: 'neighborhoodFeature',
       content: {
@@ -31,8 +31,7 @@ export function FeatureCard({
         title,
         description
       },
-      size: { width: '100%', height: 'auto' },
-      aspectRatio: 16/9
+      size: { width: 250, height: 'auto' }
     }));
     e.dataTransfer.effectAllowed = "copy";
     
