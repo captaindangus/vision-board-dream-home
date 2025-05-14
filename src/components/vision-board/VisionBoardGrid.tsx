@@ -13,6 +13,7 @@ interface VisionBoardGridProps {
   onItemDragStart: (e: React.DragEvent<HTMLDivElement>, id: string) => void;
   onDragOver: (e: React.DragEvent<HTMLDivElement>) => void;
   onDrop: (e: React.DragEvent<HTMLDivElement>) => void;
+  onDragEnd?: () => void; // Added drag end handler
   gridRef: React.RefObject<HTMLDivElement>;
   isDragging: boolean;
 }
@@ -26,6 +27,7 @@ export function VisionBoardGrid({
   onItemDragStart,
   onDragOver,
   onDrop,
+  onDragEnd, // Handle drag end
   gridRef,
   isDragging
 }: VisionBoardGridProps) {
@@ -35,6 +37,11 @@ export function VisionBoardGrid({
   };
 
   const handleGridDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    // Always clear drag state immediately
+    if (onDragEnd) {
+      onDragEnd();
+    }
+    
     // Check if the drop is directly on the grid (not on an item)
     const target = e.target as HTMLElement;
     const closestItem = target.closest('[data-item-id]');
@@ -65,6 +72,7 @@ export function VisionBoardGrid({
           onItemRemove={onItemRemove}
           onItemReorder={onItemReorder}
           onItemDragStart={onItemDragStart}
+          onDragEnd={onDragEnd} // Pass drag end handler to items
         />
         
         {/* Empty state that shows when no items */}

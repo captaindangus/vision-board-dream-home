@@ -49,6 +49,11 @@ export function VisionBoardItems({
     e.preventDefault();
     e.stopPropagation();
     
+    // Always clear drag effects immediately
+    if (onDragEnd) {
+      onDragEnd();
+    }
+    
     // Remove any visual indicators
     const target = e.currentTarget;
     target.classList.remove('bg-blue-100', 'border-blue-300', 'border');
@@ -67,11 +72,6 @@ export function VisionBoardItems({
           console.log(`Reordering: Moving ${parsedData.id} to ${targetItemId}`);
           onItemReorder(parsedData.id, targetItemId);
           toast.success('Item reordered');
-        }
-        
-        // Call onDragEnd to remove scrim regardless of reordering
-        if (onDragEnd) {
-          onDragEnd();
         }
         
         return;
@@ -99,11 +99,6 @@ export function VisionBoardItems({
       }
     } catch (error) {
       console.error('Error handling drop:', error);
-      
-      // Call onDragEnd even if there's an error to ensure scrim is removed
-      if (onDragEnd) {
-        onDragEnd();
-      }
     }
   };
 

@@ -66,7 +66,7 @@ export function VisionBoardItemComponent({
     }, 0);
   };
 
-  const handleDragEnd = () => {
+  const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
     if (onDragEnd) {
       onDragEnd();
     }

@@ -43,6 +43,7 @@ export function VisionBoardContent() {
             onItemDragStart={handleItemDragStart}
             onDragOver={handleDragOver}
             onDrop={handleGridDrop}
+            onDragEnd={handleDragEnd}
             gridRef={React.useRef<HTMLDivElement>(null)}
             isDragging={isDragging}
           />
