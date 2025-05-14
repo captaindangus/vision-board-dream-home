@@ -22,8 +22,8 @@ export function HomeFeatures() {
     },
     { 
       id: 4, 
-      imageUrl: "https://images.unsplash.com/photo-1604014237800-1c9102c219da?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", 
-      type: "House Front"
+      imageUrl: "/lovable-uploads/3cc34a99-58d4-4b5e-8e69-d6a2e85aa6c9.png", 
+      type: "Bathroom"
     },
     { 
       id: 5, 
