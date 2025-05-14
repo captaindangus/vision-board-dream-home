@@ -9,6 +9,7 @@ interface VisionBoardItemComponentProps {
   onMouseDown: (e: React.MouseEvent<HTMLDivElement>) => void;
   onRemove: () => void;
   isDragging: boolean;
+  dragMode?: 'reorder' | 'reposition';
   onDragOver?: (e: React.DragEvent<HTMLDivElement>) => void;
   onDrop?: (e: React.DragEvent<HTMLDivElement>) => void;
 }
@@ -18,11 +19,17 @@ export function VisionBoardItemComponent({
   onMouseDown, 
   onRemove,
   isDragging,
+  dragMode = 'reorder',
   onDragOver,
   onDrop
 }: VisionBoardItemComponentProps) {
+  // Only make items draggable for reordering if we're not in reposition mode
+  const isDraggable = dragMode !== 'reposition';
+  
   // Draggable items for reordering
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    if (!isDraggable) return;
+    
     e.dataTransfer.setData('application/json', JSON.stringify({
       id: item.id,
       action: 'reorder'
@@ -30,16 +37,19 @@ export function VisionBoardItemComponent({
     e.dataTransfer.effectAllowed = 'move';
   };
 
+  const cursorClass = isDraggable ? 'cursor-grab active:cursor-grabbing' : 'cursor-move';
+  const positioningClass = dragMode === 'reposition' && isDragging ? 'z-50 opacity-90' : '';
+
   return (
     <div
-      className={`rounded-xl overflow-hidden shadow-md bg-white cursor-move w-full ${
+      className={`rounded-xl overflow-hidden shadow-md bg-white ${cursorClass} ${
         isDragging ? 'z-50 opacity-90' : 'z-10'
-      }`}
+      } ${positioningClass}`}
       onMouseDown={onMouseDown}
-      draggable="true"
+      draggable={isDraggable ? "true" : "false"}
       onDragStart={handleDragStart}
-      onDragOver={onDragOver}
-      onDrop={onDrop}
+      onDragOver={isDraggable ? onDragOver : undefined}
+      onDrop={isDraggable ? onDrop : undefined}
       data-item-id={item.id}
     >
       <div className="relative">

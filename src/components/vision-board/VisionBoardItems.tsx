@@ -11,6 +11,7 @@ interface VisionBoardItemsProps {
   onItemMouseDown: (e: React.MouseEvent<HTMLDivElement>, id: string) => void;
   onItemRemove: (id: string) => void;
   onItemReorder: (sourceId: string, destinationId: string) => void;
+  dragMode?: 'reorder' | 'reposition';
 }
 
 export function VisionBoardItems({ 
@@ -18,7 +19,8 @@ export function VisionBoardItems({
   draggedItemId, 
   onItemMouseDown, 
   onItemRemove,
-  onItemReorder
+  onItemReorder,
+  dragMode = 'reorder'
 }: VisionBoardItemsProps) {
   if (items.length === 0) {
     return <EmptyBoardState />;
@@ -52,18 +54,43 @@ export function VisionBoardItems({
 
   return (
     <>
-      {sortedItems.map((item) => (
-        <div key={item.id} className="h-fit w-full">
-          <VisionBoardItemComponent
-            item={item}
-            onMouseDown={(e) => onItemMouseDown(e, item.id)}
-            onRemove={() => onItemRemove(item.id)}
-            isDragging={draggedItemId === item.id}
-            onDragOver={handleDragOver}
-            onDrop={(e) => handleDrop(e, item.id)}
-          />
-        </div>
-      ))}
+      {sortedItems.map((item) => {
+        // Determine if this item has absolute positioning
+        const hasAbsolutePosition = item.position && (item.position.x !== 0 || item.position.y !== 0);
+        
+        const itemStyle = hasAbsolutePosition 
+          ? {
+              position: 'absolute' as const,
+              left: `${item.position.x}px`,
+              top: `${item.position.y}px`,
+              width: item.size?.width ? `${item.size.width}px` : 'auto',
+              zIndex: draggedItemId === item.id ? 50 : 10,
+            }
+          : {};
+          
+        const itemClassName = hasAbsolutePosition 
+          ? 'absolute' 
+          : 'relative w-full md:w-[calc(50%-16px)] lg:w-[calc(33.333%-16px)] mb-4 md:mb-0 mx-2';
+      
+        return (
+          <div 
+            key={item.id}
+            className={itemClassName}
+            style={itemStyle}
+            data-item-id={item.id}
+          >
+            <VisionBoardItemComponent
+              item={item}
+              onMouseDown={(e) => onItemMouseDown(e, item.id)}
+              onRemove={() => onItemRemove(item.id)}
+              isDragging={draggedItemId === item.id}
+              onDragOver={handleDragOver}
+              onDrop={(e) => handleDrop(e, item.id)}
+              dragMode={dragMode}
+            />
+          </div>
+        );
+      })}
     </>
   );
 }
