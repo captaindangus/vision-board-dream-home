@@ -1,8 +1,10 @@
 
 import React from 'react';
-import { Bed, Bath, Sofa, Home, LampFloor } from 'lucide-react';
+import { useVisionBoard } from '@/context/VisionBoardContext';
 
 export function HomeFeatures() {
+  const { addItem } = useVisionBoard();
+  
   // More diverse set of home features with different types
   const features = [
     { 
@@ -37,10 +39,27 @@ export function HomeFeatures() {
     }
   ];
 
+  const handleDragStart = (e: React.DragEvent, feature: any) => {
+    e.dataTransfer.setData("application/json", JSON.stringify({
+      type: 'homeFeature',
+      content: {
+        imageUrl: feature.imageUrl,
+        title: feature.type
+      },
+      size: { width: 200, height: 150 }
+    }));
+    e.dataTransfer.effectAllowed = "copy";
+  };
+
   return (
     <div className="flex flex-wrap items-center gap-2 w-full">
       {features.map((feature) => (
-        <div key={feature.id} className="relative group">
+        <div 
+          key={feature.id} 
+          className="relative group cursor-grab"
+          draggable
+          onDragStart={(e) => handleDragStart(e, feature)}
+        >
           <img
             src={feature.imageUrl}
             alt={feature.type}
