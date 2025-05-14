@@ -28,7 +28,7 @@ export function VisionBoardContent() {
       onMouseLeave={handleMouseUp}
     >
       <div className="flex justify-between items-center w-full mb-4">
-        <VisionBoardTitle initialTitle="MyVisionBoard 1 🌟" />
+        <VisionBoardTitle />
         <UploadButton />
       </div>
       <ScrollArea className="flex-1 relative" ref={containerRef}>

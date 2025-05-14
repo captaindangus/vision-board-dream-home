@@ -4,10 +4,10 @@ import { Input } from '@/components/ui/input';
 import { Check, Pencil } from 'lucide-react';
 
 interface VisionBoardTitleProps {
-  initialTitle: string;
+  initialTitle?: string;
 }
 
-export function VisionBoardTitle({ initialTitle }: VisionBoardTitleProps) {
+export function VisionBoardTitle({ initialTitle = "Untitled Vision Board 🌟" }: VisionBoardTitleProps) {
   const [title, setTitle] = useState(initialTitle);
   const [isEditing, setIsEditing] = useState(false);
 
