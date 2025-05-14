@@ -24,7 +24,7 @@ export function FeatureCard({
     
     // Create a clone of the card for the drag image
     const cardElement = e.currentTarget.cloneNode(true) as HTMLElement;
-    cardElement.style.width = `${e.currentTarget.offsetWidth}px`;
+    cardElement.style.width = `${(e.currentTarget as HTMLElement).offsetWidth}px`;
     cardElement.style.opacity = '0.8';
     cardElement.style.position = 'absolute';
     cardElement.style.top = '-1000px'; // Position off-screen

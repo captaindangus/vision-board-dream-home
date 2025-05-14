@@ -41,7 +41,7 @@ export function HomeFeatures() {
     
     // Create a clone of the feature card for the drag image
     const featureElement = e.currentTarget.cloneNode(true) as HTMLElement;
-    featureElement.style.width = `${e.currentTarget.offsetWidth}px`;
+    featureElement.style.width = `${(e.currentTarget as HTMLElement).offsetWidth}px`;
     featureElement.style.opacity = '0.8';
     featureElement.style.position = 'absolute';
     featureElement.style.top = '-1000px'; // Position off-screen
