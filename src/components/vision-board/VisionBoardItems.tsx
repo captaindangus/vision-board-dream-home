@@ -85,8 +85,9 @@ export function VisionBoardItems({
             data: {
               ...parsedData,
               position: { x: 0, y: 0 },
-              // Give it an order that places it before the current target
-              order: items.find(item => item.id === targetItemId)?.order - 0.5
+              // Give it an order that places it after the current target
+              // instead of before, to maintain the current layout better
+              order: items.find(item => item.id === targetItemId)?.order + 0.5
             }
           }
         });
@@ -141,7 +142,7 @@ export function VisionBoardItems({
             onDragOver={(e) => handleDragOver(e, item.id)}
             onDragLeave={handleDragLeave}
             onDrop={(e) => handleDrop(e, item.id)}
-            onDragStart={onItemDragStart}
+            onDragStart={onDragStart}
             onDragEnd={onDragEnd}
           />
         </div>

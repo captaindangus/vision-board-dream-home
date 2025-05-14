@@ -140,7 +140,60 @@ export function useVisionBoardDragDrop() {
       
       // For external items being added to the vision board
       if (parsedData.type && !parsedData.action) {
-        // Add to the end of the board
+        // Find which column the drop occurred in to place it at the bottom of that column
+        const grid = document.querySelector('.masonry-grid');
+        const target = e.target as HTMLElement;
+        
+        if (grid) {
+          // Find the column directly under the drop point
+          const dropX = e.clientX;
+          const gridRect = grid.getBoundingClientRect();
+          const relativeX = dropX - gridRect.left;
+          
+          // Get all items in the grid to determine column structure
+          const items = Array.from(document.querySelectorAll('.masonry-item')) as HTMLElement[];
+          
+          if (items.length > 0) {
+            // Find the last item in the column where the drop occurred
+            let lastItemInColumn: HTMLElement | null = null;
+            let lastOrder = -1;
+            
+            items.forEach(item => {
+              const itemRect = item.getBoundingClientRect();
+              const itemX = itemRect.left + itemRect.width / 2;
+              
+              // Check if this item is in the same column as the drop point
+              if (Math.abs(itemX - dropX) < 100) { // 100px threshold to catch the column
+                const itemId = item.getAttribute('data-item-id');
+                const itemData = this.items.find(i => i.id === itemId);
+                
+                if (itemData && (itemData.order || 0) > lastOrder) {
+                  lastItemInColumn = item;
+                  lastOrder = itemData.order || 0;
+                }
+              }
+            });
+            
+            if (lastItemInColumn) {
+              // If we found the last item in this column, add after it
+              const lastItemId = lastItemInColumn.getAttribute('data-item-id');
+              if (lastItemId) {
+                const lastItem = this.items.find(i => i.id === lastItemId);
+                if (lastItem) {
+                  addItem({
+                    ...parsedData,
+                    position: { x: 0, y: 0 },
+                    order: (lastItem.order || 0) + 1
+                  });
+                  toast.success('Item added to vision board');
+                  return;
+                }
+              }
+            }
+          }
+        }
+        
+        // Fallback to adding at the end of all items if we couldn't determine column
         const maxOrder = items.length > 0 
           ? Math.max(...items.map(item => item.order || 0)) 
           : -1;
