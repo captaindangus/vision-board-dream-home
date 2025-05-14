@@ -9,9 +9,10 @@ import { toast } from 'sonner';
 
 export function VisionBoardContent() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { items, addItem, removeItem, reorderItems, updateItemPosition } = useVisionBoard();
-  const [draggedItem, setDraggedItem] = useState<{id: string, offsetX: number, offsetY: number} | null>(null);
+  const { items, addItem, removeItem, reorderItems } = useVisionBoard();
+  const [draggedItem, setDraggedItem] = useState<{id: string} | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const gridContainerRef = useRef<HTMLDivElement>(null);
 
   // Add event listener for custom drop events
   useEffect(() => {
@@ -42,24 +43,15 @@ export function VisionBoardContent() {
     e: React.MouseEvent<HTMLDivElement>,
     id: string
   ) => {
-    if (!containerRef.current) return;
-    
-    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-    
-    // Calculate offset within the item where the mouse was clicked
-    const offsetX = e.clientX - rect.left;
-    const offsetY = e.clientY - rect.top;
-    
-    setDraggedItem({ id, offsetX, offsetY });
+    setDraggedItem({ id });
   };
 
-  // Handler for drag start, supporting both reordering and positioning
+  // Handler for drag start, supporting reordering
   const handleItemDragStart = (e: React.DragEvent<HTMLDivElement>, id: string) => {
-    // Set data for either free positioning or reordering
-    // We'll determine which one in the drop handler
+    // Set data for reordering
     e.dataTransfer.setData('application/json', JSON.stringify({
       id,
-      action: 'position' // Default to position action
+      action: 'reorder'
     }));
     
     setIsDragging(true);
@@ -86,10 +78,6 @@ export function VisionBoardContent() {
     }, 0);
   };
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    // Only used for tracking dragged item if needed
-  };
-
   const handleMouseUp = () => {
     setDraggedItem(null);
     setIsDragging(false);
@@ -97,28 +85,14 @@ export function VisionBoardContent() {
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    
-    // Set the dropEffect based on the type of dragged content
-    try {
-      const dataTransfer = e.dataTransfer;
-      const data = JSON.parse(dataTransfer.getData('application/json') || '{}');
-      
-      if (data.action === 'reorder' || data.action === 'position') {
-        dataTransfer.dropEffect = "move"; // We're moving items within the board
-      } else {
-        dataTransfer.dropEffect = "copy"; // We're copying in new items
-      }
-    } catch {
-      // Default to copy if we can't determine
-      e.dataTransfer.dropEffect = "copy";
-    }
+    e.dataTransfer.dropEffect = "move";
   };
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleGridDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragging(false);
     
-    if (!containerRef.current) return;
+    if (!gridContainerRef.current) return;
     
     const data = e.dataTransfer.getData('application/json');
     if (!data) return;
@@ -127,35 +101,28 @@ export function VisionBoardContent() {
       const parsedData = JSON.parse(data);
       console.log("Drop event detected with data:", parsedData);
       
-      // Handle positioning if the drop is directly on the board (not on an item)
-      if (parsedData.action === 'position' && parsedData.id) {
-        // Only apply free positioning if dropped directly on the board area
-        // and not on another item
-        const dropTarget = e.target as HTMLElement;
-        const isOnBoard = !dropTarget.closest('[data-item-id]');
-        
-        if (isOnBoard) {
-          const boardRect = containerRef.current.getBoundingClientRect();
-          const dropX = e.clientX - boardRect.left;
-          const dropY = e.clientY - boardRect.top + containerRef.current.scrollTop;
-          
-          updateItemPosition(parsedData.id, { x: dropX, y: dropY });
-          toast.success('Item repositioned');
-          return;
-        }
-      }
-      
-      // Handle reordering if that's what this drop is for
-      if (parsedData.action === 'reorder' && parsedData.id) {
-        // This case is handled by VisionBoardItemComponent's onDrop
-        return;
-      }
-      
       // For external items being added to the vision board
-      // Directly call addItem instead of dispatching an event
       if (!parsedData.action && parsedData.type) {
         addItem(parsedData);
         toast.success('Item added to vision board');
+      }
+      
+      // For reordering - but only if dropped directly on the grid, not on an item
+      if (parsedData.action === 'reorder' && parsedData.id) {
+        // Check if we're dropping directly on the grid, not on an item
+        const dropTarget = e.target as HTMLElement;
+        const closestItem = dropTarget.closest('[data-item-id]');
+        
+        if (!closestItem) {
+          // If dropped on empty grid space, move to the end
+          const lastItem = [...items].sort((a, b) => (b.order || 0) - (a.order || 0))[0];
+          if (lastItem && lastItem.id !== parsedData.id) {
+            // Move to the end with an order value higher than the current highest
+            const newOrder = (lastItem.order || 0) + 1;
+            reorderItems(parsedData.id, lastItem.id);
+            toast.success('Item moved to the end');
+          }
+        }
       }
     } catch (err) {
       console.error('Error parsing dragged data:', err);
@@ -165,27 +132,26 @@ export function VisionBoardContent() {
   return (
     <main 
       className="flex flex-col w-full h-full bg-white px-6 py-8 rounded-[20px]"
-      onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
-      onDragOver={handleDragOver}
-      onDrop={handleDrop}
     >
       <div className="flex justify-between items-center w-full mb-4">
         <VisionBoardTitle initialTitle="MyVisionBoard 1 🌟" />
         <UploadButton />
       </div>
       <ScrollArea className="flex-1 relative" ref={containerRef}>
-        <div className="min-h-[500px] relative p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-min">
+        <div 
+          className="min-h-[500px] relative p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-min"
+          ref={gridContainerRef}
+          onDragOver={handleDragOver}
+          onDrop={handleGridDrop}
+        >
           <VisionBoardItems 
             items={items}
             draggedItemId={draggedItem?.id || null}
             onItemMouseDown={handleItemMouseDown}
             onItemRemove={removeItem}
-            onItemReorder={(sourceId, destinationId) => {
-              reorderItems(sourceId, destinationId);
-              toast.success('Item reordered');
-            }}
+            onItemReorder={reorderItems}
             onItemDragStart={handleItemDragStart}
           />
         </div>
@@ -193,7 +159,7 @@ export function VisionBoardContent() {
         {isDragging && (
           <div className="fixed inset-0 bg-gray-900 bg-opacity-10 pointer-events-none z-40 flex items-center justify-center">
             <div className="bg-white px-4 py-2 rounded-md shadow-lg text-sm">
-              Release to position item
+              Drag to reposition
             </div>
           </div>
         )}

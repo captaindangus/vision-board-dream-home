@@ -26,13 +26,27 @@ export function VisionBoardItems({
     return <EmptyBoardState />;
   }
 
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>, itemId: string) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
+    
+    // Add a visual indicator for the current drop target
+    const target = e.currentTarget;
+    target.classList.add('bg-blue-100', 'border-blue-300', 'border');
+  };
+  
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    // Remove the visual indicator when leaving the drop target
+    const target = e.currentTarget;
+    target.classList.remove('bg-blue-100', 'border-blue-300', 'border');
   };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>, targetItemId: string) => {
     e.preventDefault();
+    
+    // Remove any visual indicators
+    const target = e.currentTarget;
+    target.classList.remove('bg-blue-100', 'border-blue-300', 'border');
     
     try {
       const data = JSON.parse(e.dataTransfer.getData('application/json'));
@@ -55,13 +69,18 @@ export function VisionBoardItems({
   return (
     <>
       {sortedItems.map((item) => (
-        <div key={item.id} className="h-fit w-full">
+        <div 
+          key={item.id} 
+          className="h-fit w-full transition-all duration-200"
+          data-item-id={item.id}
+        >
           <VisionBoardItemComponent
             item={item}
             onMouseDown={(e) => onItemMouseDown(e, item.id)}
             onRemove={() => onItemRemove(item.id)}
             isDragging={draggedItemId === item.id}
-            onDragOver={handleDragOver}
+            onDragOver={(e) => handleDragOver(e, item.id)}
+            onDragLeave={handleDragLeave}
             onDrop={(e) => handleDrop(e, item.id)}
             onDragStart={onItemDragStart}
           />

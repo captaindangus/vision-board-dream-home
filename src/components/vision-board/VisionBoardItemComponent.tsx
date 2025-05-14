@@ -10,6 +10,7 @@ interface VisionBoardItemComponentProps {
   onRemove: () => void;
   isDragging: boolean;
   onDragOver?: (e: React.DragEvent<HTMLDivElement>) => void;
+  onDragLeave?: (e: React.DragEvent<HTMLDivElement>) => void;
   onDrop?: (e: React.DragEvent<HTMLDivElement>) => void;
   onDragStart?: (e: React.DragEvent<HTMLDivElement>, id: string) => void;
 }
@@ -20,6 +21,7 @@ export function VisionBoardItemComponent({
   onRemove,
   isDragging,
   onDragOver,
+  onDragLeave,
   onDrop,
   onDragStart
 }: VisionBoardItemComponentProps) {
@@ -65,6 +67,7 @@ export function VisionBoardItemComponent({
       draggable="true"
       onDragStart={handleDragStart}
       onDragOver={onDragOver}
+      onDragLeave={onDragLeave}
       onDrop={onDrop}
       data-item-id={item.id}
     >
