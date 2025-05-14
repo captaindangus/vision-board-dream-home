@@ -47,12 +47,20 @@ export function VisionBoardItemComponent({
     e.dataTransfer.setData('application/json', JSON.stringify(dragData));
     e.dataTransfer.effectAllowed = "move";
     
-    // Create a copy of the element as the drag image
+    // Create a custom drag image that's just the card itself
     const dragImage = e.currentTarget.cloneNode(true) as HTMLElement;
+    
+    // Preserve the original dimensions but remove any grid-related classes
     dragImage.style.width = e.currentTarget.offsetWidth + 'px';
+    dragImage.style.height = e.currentTarget.offsetHeight + 'px';
     dragImage.style.opacity = '0.8';
     dragImage.style.position = 'absolute';
     dragImage.style.top = '-1000px';
+    dragImage.style.left = '0';
+    dragImage.style.margin = '0';
+    dragImage.style.transform = 'none';
+    dragImage.className = 'rounded-xl overflow-hidden shadow-md bg-white';
+    
     document.body.appendChild(dragImage);
     
     e.dataTransfer.setDragImage(
