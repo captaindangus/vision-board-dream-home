@@ -31,6 +31,11 @@ const VisionBoardContext = createContext<VisionBoardContextType | undefined>(und
 
 const STORAGE_KEY = 'visionBoardItems';
 
+// Generate a truly unique ID
+function generateUniqueId(): string {
+  return `item-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+}
+
 export const useVisionBoard = () => {
   const context = useContext(VisionBoardContext);
   if (!context) {
@@ -44,13 +49,27 @@ export const VisionBoardProvider = ({ children }: { children: ReactNode }) => {
     // Try to load items from localStorage on initial render
     try {
       const savedItems = localStorage.getItem(STORAGE_KEY);
-      const parsedItems = savedItems ? JSON.parse(savedItems) : [];
+      let parsedItems = savedItems ? JSON.parse(savedItems) : [];
       
-      // Ensure all items have an order property
-      return parsedItems.map((item: VisionBoardItem, index: number) => ({
-        ...item,
-        order: item.order !== undefined ? item.order : index
-      })).sort((a: VisionBoardItem, b: VisionBoardItem) => 
+      // Ensure all items have an order property and a unique ID
+      parsedItems = parsedItems.map((item: VisionBoardItem, index: number) => {
+        // If the item doesn't have a properly formatted ID (with random component),
+        // generate a new one to prevent duplicate keys
+        if (!item.id || !item.id.includes('-')) {
+          return {
+            ...item,
+            id: generateUniqueId(),
+            order: item.order !== undefined ? item.order : index
+          };
+        }
+        return {
+          ...item,
+          order: item.order !== undefined ? item.order : index
+        };
+      });
+      
+      // Sort by order
+      return parsedItems.sort((a: VisionBoardItem, b: VisionBoardItem) => 
         (a.order || 0) - (b.order || 0)
       );
     } catch (error) {
@@ -70,7 +89,7 @@ export const VisionBoardProvider = ({ children }: { children: ReactNode }) => {
 
   const addItem = useCallback((newItem: Omit<VisionBoardItem, 'id'>) => {
     // Generate a truly unique ID with a random component
-    const id = `item-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const id = generateUniqueId();
     
     // We no longer need random positioning, but keep the position property for compatibility
     const position = { x: 0, y: 0 };
@@ -84,7 +103,7 @@ export const VisionBoardProvider = ({ children }: { children: ReactNode }) => {
       ...newItem, 
       id, 
       position,
-      order: maxOrder + 1
+      order: newItem.order !== undefined ? newItem.order : maxOrder + 1
     };
     
     console.log('Adding new item to vision board:', item);
@@ -105,19 +124,26 @@ export const VisionBoardProvider = ({ children }: { children: ReactNode }) => {
   const reorderItems = useCallback((sourceId: string, destinationId: string) => {
     if (sourceId === destinationId) return;
     
+    console.log(`Reordering items: Moving ${sourceId} to position of ${destinationId}`);
+    
     setItems(prevItems => {
       // Find the source and destination items
       const sourceItem = prevItems.find(item => item.id === sourceId);
       const destinationItem = prevItems.find(item => item.id === destinationId);
       
-      if (!sourceItem || !destinationItem) return prevItems;
+      if (!sourceItem || !destinationItem) {
+        console.warn("Source or destination item not found for reordering");
+        return prevItems;
+      }
       
       // Get the current orders
       const sourceOrder = sourceItem.order || 0;
       const destinationOrder = destinationItem.order || 0;
       
+      console.log(`Source order: ${sourceOrder}, Destination order: ${destinationOrder}`);
+      
       // Create a new array with updated orders
-      return prevItems.map(item => {
+      const reorderedItems = prevItems.map(item => {
         // If this is the item we're moving
         if (item.id === sourceId) {
           return { ...item, order: destinationOrder };
@@ -141,7 +167,10 @@ export const VisionBoardProvider = ({ children }: { children: ReactNode }) => {
         
         // Otherwise, keep the item as is
         return item;
-      }).sort((a, b) => (a.order || 0) - (b.order || 0));
+      });
+      
+      // Sort the items by order for consistency
+      return reorderedItems.sort((a, b) => (a.order || 0) - (b.order || 0));
     });
   }, []);
 

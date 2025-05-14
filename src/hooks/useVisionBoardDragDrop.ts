@@ -8,8 +8,6 @@ export function useVisionBoardDragDrop() {
   const [isDragging, setIsDragging] = useState(false);
   const { items, addItem, removeItem, reorderItems } = useVisionBoard();
   const containerRef = useRef<HTMLDivElement>(null);
-
-  // Store the drag type to differentiate between reordering and adding new items
   const [dragOperation, setDragOperation] = useState<'reorder' | 'add' | null>(null);
 
   // Add event listener for custom drop events
@@ -46,6 +44,8 @@ export function useVisionBoardDragDrop() {
 
   // Handler for drag start, supporting reordering
   const handleItemDragStart = (e: React.DragEvent<HTMLDivElement>, id: string) => {
+    console.log('Drag start for item:', id);
+    
     // Set data for reordering - this is crucial for the drag operation
     const dragData = {
       id,
@@ -108,76 +108,47 @@ export function useVisionBoardDragDrop() {
 
   const handleGridDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+    console.log('Grid drop detected');
+    
     setIsDragging(false);
     
     if (!containerRef.current) return;
     
     try {
       const data = e.dataTransfer.getData('application/json');
-      if (!data) return;
+      if (!data) {
+        console.log('No data found in drop');
+        return;
+      }
       
       const parsedData = JSON.parse(data);
-      console.log("Drop event detected with data:", parsedData);
+      console.log("Grid drop event detected with data:", parsedData);
       
       // For external items being added to the vision board
       if (parsedData.type && !parsedData.action) {
-        // Determine insertion position
-        const dropTarget = e.target as HTMLElement;
-        const closestItemElement = dropTarget.closest('[data-item-id]');
+        // Add to the end of the board
+        const maxOrder = items.length > 0 
+          ? Math.max(...items.map(item => item.order || 0)) 
+          : -1;
         
-        if (closestItemElement) {
-          // Dropped near an existing item - insert before or after it
-          const targetItemId = closestItemElement.getAttribute('data-item-id');
-          if (targetItemId) {
-            const targetItem = items.find(item => item.id === targetItemId);
-            if (targetItem) {
-              // Add item with an order value that puts it right after the target
-              addItem({
-                ...parsedData,
-                position: { x: 0, y: 0 },
-                order: (targetItem.order || 0) + 0.5 // Position between items
-              });
-              
-              // Now normalize all order values
-              setTimeout(() => {
-                const tempItems = [...items].sort((a, b) => (a.order || 0) - (b.order || 0));
-                tempItems.forEach((item, index) => {
-                  if (item.order !== index) {
-                    // Use a direct reorder to normalize
-                    const sourceId = item.id;
-                    const destinationId = tempItems.find(i => (i.order || 0) === index)?.id;
-                    if (destinationId && sourceId !== destinationId) {
-                      reorderItems(sourceId, destinationId);
-                    }
-                  }
-                });
-              }, 10);
-              
-              toast.success('Item added to vision board');
-              return;
-            }
-          }
-        }
-        
-        // If not dropped on an item or we couldn't determine position, add to the end
         addItem({
           ...parsedData,
-          position: { x: 0, y: 0 }
+          position: { x: 0, y: 0 },
+          order: maxOrder + 1
         });
         toast.success('Item added to vision board');
       }
       
-      // For reordering - check if we're moving an existing item
+      // For reordering - check if we're moving an existing item to the end
       if (parsedData.action === 'reorder' && parsedData.id) {
-        // Check if we're dropping directly on the grid, not on an item
-        const dropTarget = e.target as HTMLElement;
-        const closestItem = dropTarget.closest('[data-item-id]');
-        
-        if (!closestItem) {
-          // If dropped on empty grid space, move to the end
-          const lastItem = [...items].sort((a, b) => (b.order || 0) - (a.order || 0))[0];
+        // If we have items, move to the end
+        if (items.length > 0) {
+          // Find the last item by order
+          const sortedItems = [...items].sort((a, b) => (a.order || 0) - (b.order || 0));
+          const lastItem = sortedItems[sortedItems.length - 1];
+          
           if (lastItem && lastItem.id !== parsedData.id) {
-            // Move to the end with an order value higher than the current highest
+            console.log(`Moving item ${parsedData.id} to the end after ${lastItem.id}`);
             reorderItems(parsedData.id, lastItem.id);
             toast.success('Item moved to the end');
           }

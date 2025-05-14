@@ -28,6 +28,7 @@ export function VisionBoardItems({
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>, itemId: string) => {
     e.preventDefault();
+    e.stopPropagation();
     e.dataTransfer.dropEffect = 'move';
     
     // Add a visual indicator for the current drop target
@@ -36,6 +37,7 @@ export function VisionBoardItems({
   };
   
   const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.stopPropagation();
     // Remove the visual indicator when leaving the drop target
     const target = e.currentTarget;
     target.classList.remove('bg-blue-100', 'border-blue-300', 'border');
@@ -43,6 +45,7 @@ export function VisionBoardItems({
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>, targetItemId: string) => {
     e.preventDefault();
+    e.stopPropagation();
     
     // Remove any visual indicators
     const target = e.currentTarget;
@@ -98,7 +101,7 @@ export function VisionBoardItems({
     <>
       {sortedItems.map((item) => (
         <div 
-          key={item.id} 
+          key={`vision-item-${item.id}`} 
           className="h-fit w-full transition-all duration-200"
           data-item-id={item.id}
         >

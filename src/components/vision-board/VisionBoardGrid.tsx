@@ -28,13 +28,30 @@ export function VisionBoardGrid({
   gridRef,
   isDragging
 }: VisionBoardGridProps) {
+  const handleGridDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    // We'll let the provided onDragOver handle the logic
+    onDragOver(e);
+  };
+
+  const handleGridDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    // Check if the drop is directly on the grid (not on an item)
+    const target = e.target as HTMLElement;
+    const closestItem = target.closest('[data-item-id]');
+    
+    if (!closestItem) {
+      // Only handle drop if it's directly on the grid
+      onDrop(e);
+    }
+  };
+  
   return (
     <>
       <div 
         className="min-h-[500px] relative p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-min"
         ref={gridRef}
-        onDragOver={onDragOver}
-        onDrop={onDrop}
+        onDragOver={handleGridDragOver}
+        onDrop={handleGridDrop}
         data-vision-board-container="true"
       >
         <VisionBoardItems 
@@ -44,13 +61,6 @@ export function VisionBoardGrid({
           onItemRemove={onItemRemove}
           onItemReorder={onItemReorder}
           onItemDragStart={onItemDragStart}
-        />
-        
-        {/* Invisible drop area that spans the entire grid to catch drops in empty areas */}
-        <div 
-          className="absolute inset-0 pointer-events-auto z-0"
-          onDragOver={onDragOver}
-          onDrop={onDrop}
         />
       </div>
       
