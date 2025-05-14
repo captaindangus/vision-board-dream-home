@@ -1,3 +1,4 @@
+
 import React, { ReactNode } from 'react';
 
 interface FeatureSectionProps {
@@ -26,7 +27,9 @@ export function FeatureSection({ title, children }: FeatureSectionProps) {
           </div>
         </div>
       </div>
-      {children}
+      <div className="w-full">
+        {children}
+      </div>
     </section>
   );
 }
