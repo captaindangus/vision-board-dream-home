@@ -1,11 +1,5 @@
-
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import { useVisionBoard, VisionBoardItem } from '@/context/VisionBoardContext';
-
-interface DragDropHandlerProps {
-  containerRef: React.RefObject<HTMLDivElement>;
-  children: React.ReactNode;
-}
 
 export function useDragDrop(containerRef: React.RefObject<HTMLDivElement>) {
   const [draggedItem, setDraggedItem] = useState<{id: string, offsetX: number, offsetY: number} | null>(null);
@@ -81,28 +75,6 @@ export function useDragDrop(containerRef: React.RefObject<HTMLDivElement>) {
     }
   };
 
-  // Add event listener for custom drop events
-  useEffect(() => {
-    const handleCustomDrop = (e: Event) => {
-      const customEvent = e as CustomEvent;
-      const { data } = customEvent.detail;
-      
-      addItem({
-        ...data,
-        position: { x: 0, y: 0 } // Position doesn't matter for grid layout
-      });
-    };
-
-    const element = containerRef.current;
-    if (element) {
-      element.addEventListener('visionboard:drop', handleCustomDrop);
-      
-      return () => {
-        element.removeEventListener('visionboard:drop', handleCustomDrop);
-      };
-    }
-  }, [addItem]);
-
   return {
     draggedItem,
     items,
@@ -116,7 +88,8 @@ export function useDragDrop(containerRef: React.RefObject<HTMLDivElement>) {
   };
 }
 
-export function DragDropHandler({ containerRef, children }: DragDropHandlerProps) {
+// Keep this component for backwards compatibility, but our solution doesn't use it
+export function DragDropHandler({ containerRef, children }: { containerRef: React.RefObject<HTMLDivElement>, children: React.ReactNode }) {
   const {
     handleMouseMove,
     handleMouseUp,
