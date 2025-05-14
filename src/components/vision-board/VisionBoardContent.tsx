@@ -5,15 +5,9 @@ import { VisionBoardTitle } from './VisionBoardTitle';
 import { VisionBoardItems } from './VisionBoardItems';
 import { UploadButton } from './UploadButton';
 import { useDragDrop } from './DragDropHandler';
-import { GridSystem } from './GridSystem';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 export function VisionBoardContent() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const isMobile = useIsMobile();
-  // Use responsive column count based on screen size
-  const columnCount = isMobile ? 6 : 12;
-  
   const {
     draggedItem,
     items,
@@ -23,7 +17,7 @@ export function VisionBoardContent() {
     handleMouseUp,
     handleDrop,
     handleDragOver
-  } = useDragDrop(containerRef, columnCount);
+  } = useDragDrop(containerRef);
 
   return (
     <main 
@@ -39,15 +33,13 @@ export function VisionBoardContent() {
         <UploadButton />
       </div>
       <ScrollArea className="flex-1 relative" ref={containerRef}>
-        <div className="min-h-[800px]">
-          <GridSystem columns={columnCount}>
-            <VisionBoardItems 
-              items={items}
-              draggedItemId={draggedItem?.id || null}
-              onItemMouseDown={handleItemMouseDown}
-              onItemRemove={removeItem}
-            />
-          </GridSystem>
+        <div className="min-h-[500px] relative p-4">
+          <VisionBoardItems 
+            items={items}
+            draggedItemId={draggedItem?.id || null}
+            onItemMouseDown={handleItemMouseDown}
+            onItemRemove={removeItem}
+          />
         </div>
       </ScrollArea>
     </main>

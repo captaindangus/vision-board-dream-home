@@ -38,18 +38,6 @@ export function HomeFeatures() {
 
   const handleDragStart = (e: React.DragEvent, feature: any) => {
     console.log('Drag started for feature:', feature);
-    
-    // Create a clone of the feature card for the drag image
-    const featureElement = e.currentTarget.cloneNode(true) as HTMLElement;
-    featureElement.style.width = `${(e.currentTarget as HTMLElement).offsetWidth}px`;
-    featureElement.style.opacity = '0.8';
-    featureElement.style.position = 'absolute';
-    featureElement.style.top = '-1000px'; // Position off-screen
-    document.body.appendChild(featureElement);
-    
-    // Use the feature card as drag image
-    e.dataTransfer.setDragImage(featureElement, e.nativeEvent.offsetX, e.nativeEvent.offsetY);
-    
     e.dataTransfer.setData("application/json", JSON.stringify({
       type: 'homeFeature',
       content: {
@@ -59,11 +47,6 @@ export function HomeFeatures() {
       size: { width: 200, height: 150 }
     }));
     e.dataTransfer.effectAllowed = "copy";
-    
-    // Remove the clone after a short delay
-    setTimeout(() => {
-      document.body.removeChild(featureElement);
-    }, 0);
   };
 
   return (
@@ -71,7 +54,7 @@ export function HomeFeatures() {
       {features.map((feature) => (
         <div 
           key={feature.id} 
-          className="relative group cursor-grab active:cursor-grabbing"
+          className="relative group cursor-grab"
           draggable
           onDragStart={(e) => handleDragStart(e, feature)}
         >
