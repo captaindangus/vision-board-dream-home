@@ -11,6 +11,7 @@ interface VisionBoardItemComponentProps {
   isDragging: boolean;
   onDragOver?: (e: React.DragEvent<HTMLDivElement>) => void;
   onDrop?: (e: React.DragEvent<HTMLDivElement>) => void;
+  onDragStart?: (e: React.DragEvent<HTMLDivElement>, id: string) => void;
 }
 
 export function VisionBoardItemComponent({ 
@@ -19,17 +20,24 @@ export function VisionBoardItemComponent({
   onRemove,
   isDragging,
   onDragOver,
-  onDrop
+  onDrop,
+  onDragStart
 }: VisionBoardItemComponentProps) {
   const [isHovering, setIsHovering] = useState(false);
   
   // Draggable items for reordering
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    // Call external drag start handler if provided
+    if (onDragStart) {
+      onDragStart(e, item.id);
+      return;
+    }
+    
     e.dataTransfer.setData('application/json', JSON.stringify({
       id: item.id,
       action: 'reorder'
     }));
-    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.effectAllowed = "move";
   };
 
   return (

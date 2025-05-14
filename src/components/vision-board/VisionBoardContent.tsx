@@ -1,5 +1,5 @@
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { VisionBoardTitle } from './VisionBoardTitle';
 import { VisionBoardItems } from './VisionBoardItems';
@@ -9,8 +9,9 @@ import { toast } from 'sonner';
 
 export function VisionBoardContent() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { items, addItem, removeItem, reorderItems } = useVisionBoard();
-  const [draggedItem, setDraggedItem] = React.useState<{id: string, offsetX: number, offsetY: number} | null>(null);
+  const { items, addItem, removeItem, reorderItems, updateItemPosition } = useVisionBoard();
+  const [draggedItem, setDraggedItem] = useState<{id: string, offsetX: number, offsetY: number} | null>(null);
+  const [isDraggingForPosition, setIsDraggingForPosition] = useState(false);
 
   // Add event listener for custom drop events
   useEffect(() => {
@@ -52,12 +53,39 @@ export function VisionBoardContent() {
     setDraggedItem({ id, offsetX, offsetY });
   };
 
+  // Handler for drag start when repositioning
+  const handleItemDragStart = (e: React.DragEvent<HTMLDivElement>, id: string) => {
+    // Check if Alt/Option key is pressed to enable positioning mode
+    if (e.altKey) {
+      e.dataTransfer.setData('application/json', JSON.stringify({
+        id,
+        action: 'position'
+      }));
+      setIsDraggingForPosition(true);
+      
+      // Create a semi-transparent drag image
+      const target = e.currentTarget;
+      const clone = target.cloneNode(true) as HTMLElement;
+      clone.style.opacity = '0.6';
+      clone.style.position = 'absolute';
+      clone.style.top = '-1000px';
+      document.body.appendChild(clone);
+      
+      e.dataTransfer.setDragImage(clone, e.clientX - target.getBoundingClientRect().left, e.clientY - target.getBoundingClientRect().top);
+      
+      setTimeout(() => {
+        document.body.removeChild(clone);
+      }, 0);
+    }
+  };
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     // Just indicate which item is being dragged
   };
 
   const handleMouseUp = () => {
     setDraggedItem(null);
+    setIsDraggingForPosition(false);
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -70,6 +98,8 @@ export function VisionBoardContent() {
       
       if (data.action === 'reorder') {
         dataTransfer.dropEffect = "move"; // We're moving items within the board
+      } else if (data.action === 'position') {
+        dataTransfer.dropEffect = "move"; // We're repositioning
       } else {
         dataTransfer.dropEffect = "copy"; // We're copying in new items
       }
@@ -81,13 +111,27 @@ export function VisionBoardContent() {
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+    setIsDraggingForPosition(false);
+    
+    if (!containerRef.current) return;
     
     const data = e.dataTransfer.getData('application/json');
-    if (!data || !containerRef.current) return;
+    if (!data) return;
     
     try {
       const parsedData = JSON.parse(data);
       console.log("Drop event detected with data:", parsedData);
+      
+      // Handle positioning if that's what this drop is for
+      if (parsedData.action === 'position' && parsedData.id) {
+        const boardRect = containerRef.current.getBoundingClientRect();
+        const dropX = e.clientX - boardRect.left;
+        const dropY = e.clientY - boardRect.top + containerRef.current.scrollTop;
+        
+        updateItemPosition(parsedData.id, { x: dropX, y: dropY });
+        toast.success('Item repositioned');
+        return;
+      }
       
       // Handle reordering if that's what this drop is for
       if (parsedData.action === 'reorder' && parsedData.id) {
@@ -130,9 +174,22 @@ export function VisionBoardContent() {
               reorderItems(sourceId, destinationId);
               toast.success('Item reordered');
             }}
+            onItemDragStart={handleItemDragStart}
           />
         </div>
+        
+        {isDraggingForPosition && (
+          <div className="fixed inset-0 bg-gray-900 bg-opacity-10 pointer-events-none z-40 flex items-center justify-center">
+            <div className="bg-white px-4 py-2 rounded-md shadow-lg text-sm">
+              Release to position item
+            </div>
+          </div>
+        )}
       </ScrollArea>
+      
+      <div className="mt-4 text-xs text-gray-500 text-center">
+        <p>Hold Alt/Option key while dragging to reposition items</p>
+      </div>
     </main>
   );
 }

@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, ReactNode, useCallback, useEffect } from 'react';
 
 export interface VisionBoardItem {
@@ -92,8 +93,13 @@ export const VisionBoardProvider = ({ children }: { children: ReactNode }) => {
   }, [items]);
 
   const updateItemPosition = useCallback((id: string, position: { x: number; y: number }) => {
-    // We still keep this method for compatibility
-    console.log('Position updates via coordinates are ignored in grid layout');
+    setItems(prevItems => 
+      prevItems.map(item => 
+        item.id === id 
+          ? { ...item, position } 
+          : item
+      )
+    );
   }, []);
   
   const reorderItems = useCallback((sourceId: string, destinationId: string) => {

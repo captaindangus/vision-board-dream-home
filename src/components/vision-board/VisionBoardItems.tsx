@@ -11,6 +11,7 @@ interface VisionBoardItemsProps {
   onItemMouseDown: (e: React.MouseEvent<HTMLDivElement>, id: string) => void;
   onItemRemove: (id: string) => void;
   onItemReorder: (sourceId: string, destinationId: string) => void;
+  onItemDragStart?: (e: React.DragEvent<HTMLDivElement>, id: string) => void;
 }
 
 export function VisionBoardItems({ 
@@ -18,7 +19,8 @@ export function VisionBoardItems({
   draggedItemId, 
   onItemMouseDown, 
   onItemRemove,
-  onItemReorder
+  onItemReorder,
+  onItemDragStart
 }: VisionBoardItemsProps) {
   if (items.length === 0) {
     return <EmptyBoardState />;
@@ -61,6 +63,7 @@ export function VisionBoardItems({
             isDragging={draggedItemId === item.id}
             onDragOver={handleDragOver}
             onDrop={(e) => handleDrop(e, item.id)}
+            onDragStart={onItemDragStart}
           />
         </div>
       ))}
