@@ -1,5 +1,5 @@
 
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { VisionBoardTitle } from './VisionBoardTitle';
 import { VisionBoardItems } from './VisionBoardItems';
@@ -9,8 +9,33 @@ import { toast } from 'sonner';
 
 export function VisionBoardContent() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { items, removeItem, reorderItems } = useVisionBoard();
+  const { items, addItem, removeItem, reorderItems } = useVisionBoard();
   const [draggedItem, setDraggedItem] = React.useState<{id: string, offsetX: number, offsetY: number} | null>(null);
+
+  // Add event listener for custom drop events
+  useEffect(() => {
+    if (!containerRef.current) return;
+    
+    const handleVisionBoardDrop = (e: CustomEvent) => {
+      const { data } = e.detail;
+      console.log('Custom drop event handled with data:', data);
+      
+      if (data) {
+        addItem(data);
+        toast.success('Item added to vision board');
+      }
+    };
+    
+    // Add event listener for the custom event
+    containerRef.current.addEventListener('visionboard:drop', handleVisionBoardDrop as EventListener);
+    
+    // Clean up the event listener when component unmounts
+    return () => {
+      if (containerRef.current) {
+        containerRef.current.removeEventListener('visionboard:drop', handleVisionBoardDrop as EventListener);
+      }
+    };
+  }, [addItem]);
 
   const handleItemMouseDown = (
     e: React.MouseEvent<HTMLDivElement>,
@@ -71,13 +96,10 @@ export function VisionBoardContent() {
       }
       
       // For external items being added to the vision board
-      // Access the addItem function from the context directly
+      // Directly call addItem instead of dispatching an event
       if (parsedData) {
-        // Trigger a custom event that will be handled by the event listener in context
-        const customEvent = new CustomEvent('visionboard:drop', {
-          detail: { data: parsedData }
-        });
-        containerRef.current.dispatchEvent(customEvent);
+        addItem(parsedData);
+        toast.success('Item added to vision board');
       }
     } catch (err) {
       console.error('Error parsing dragged data:', err);
