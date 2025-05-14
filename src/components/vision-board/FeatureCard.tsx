@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useRef } from 'react';
 
 interface FeatureCardProps {
   imageUrl: string;
@@ -18,10 +18,12 @@ export function FeatureCard({
   draggable = false,
   featureData
 }: FeatureCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
   
   const handleDragStart = (e: React.DragEvent) => {
     if (!draggable) return;
     
+    // Set the drag data
     e.dataTransfer.setData("application/json", JSON.stringify({
       type: 'neighborhoodFeature',
       content: {
@@ -32,10 +34,30 @@ export function FeatureCard({
       size: { width: 250, height: 'auto' }
     }));
     e.dataTransfer.effectAllowed = "copy";
+    
+    // Create a drag image that represents the card
+    if (cardRef.current) {
+      // Create a clone of the card to use as the drag image
+      const dragImage = cardRef.current.cloneNode(true) as HTMLElement;
+      dragImage.style.width = '250px';
+      dragImage.style.opacity = '0.8';
+      dragImage.style.position = 'absolute';
+      dragImage.style.top = '-1000px';
+      document.body.appendChild(dragImage);
+      
+      // Set the drag image
+      e.dataTransfer.setDragImage(dragImage, 40, 40);
+      
+      // Remove the drag image after the drag operation
+      setTimeout(() => {
+        document.body.removeChild(dragImage);
+      }, 0);
+    }
   };
   
   return (
     <div 
+      ref={cardRef}
       className={`flex w-full h-[80px] items-center gap-2 bg-[#F3F3F4] p-3 rounded-xl hover:bg-gray-100 transition-colors ${draggable ? 'cursor-grab' : 'cursor-pointer'}`}
       onClick={onClick}
       draggable={draggable}
