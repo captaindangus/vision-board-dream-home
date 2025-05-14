@@ -32,7 +32,7 @@ export function HomeFeatures() {
     },
     { 
       id: 6, 
-      imageUrl: "https://images.unsplash.com/photo-1581467825644-16917330e7af?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+      imageUrl: "/lovable-uploads/f9797142-2f9e-442c-ba71-a1f02e9ecfd2.png",
       type: "Office"
     }
   ];
