@@ -35,10 +35,13 @@ export function VisionBoardItemComponent({
       return;
     }
     
-    e.dataTransfer.setData('application/json', JSON.stringify({
+    // Set drag data for this item
+    const dragData = {
       id: item.id,
       action: 'reorder'
-    }));
+    };
+    
+    e.dataTransfer.setData('application/json', JSON.stringify(dragData));
     e.dataTransfer.effectAllowed = "move";
     
     // Create a copy of the element as the drag image
@@ -49,7 +52,11 @@ export function VisionBoardItemComponent({
     dragImage.style.top = '-1000px';
     document.body.appendChild(dragImage);
     
-    e.dataTransfer.setDragImage(dragImage, e.clientX - e.currentTarget.getBoundingClientRect().left, e.clientY - e.currentTarget.getBoundingClientRect().top);
+    e.dataTransfer.setDragImage(
+      dragImage, 
+      e.clientX - e.currentTarget.getBoundingClientRect().left, 
+      e.clientY - e.currentTarget.getBoundingClientRect().top
+    );
     
     setTimeout(() => {
       document.body.removeChild(dragImage);

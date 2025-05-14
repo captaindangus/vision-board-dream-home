@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode, useCallback, useEffect } from 'react';
 
 export interface VisionBoardItem {
@@ -70,7 +69,8 @@ export const VisionBoardProvider = ({ children }: { children: ReactNode }) => {
   }, [items]);
 
   const addItem = useCallback((newItem: Omit<VisionBoardItem, 'id'>) => {
-    const id = `item-${Date.now()}`;
+    // Generate a truly unique ID with a random component
+    const id = `item-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     
     // We no longer need random positioning, but keep the position property for compatibility
     const position = { x: 0, y: 0 };

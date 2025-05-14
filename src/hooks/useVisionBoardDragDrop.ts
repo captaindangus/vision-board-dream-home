@@ -43,13 +43,18 @@ export function useVisionBoardDragDrop() {
 
   // Handler for drag start, supporting reordering
   const handleItemDragStart = (e: React.DragEvent<HTMLDivElement>, id: string) => {
-    // Set data for reordering
-    e.dataTransfer.setData('application/json', JSON.stringify({
+    // Set data for reordering - this is crucial for the drag operation
+    const dragData = {
       id,
       action: 'reorder'
-    }));
+    };
+    
+    // Important: Set the data in the dragstart event
+    e.dataTransfer.setData('application/json', JSON.stringify(dragData));
+    e.dataTransfer.effectAllowed = "move";
     
     setIsDragging(true);
+    setDraggedItem({ id });
     
     // Create a clone of the entire dragged element as the drag image
     const element = e.currentTarget;
@@ -81,20 +86,33 @@ export function useVisionBoardDragDrop() {
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     
-    // Check what kind of item is being dragged
+    // Set appropriate drop effect based on the drag operation
     try {
-      const jsonData = e.dataTransfer.getData('application/json');
-      if (jsonData) {
-        const data = JSON.parse(jsonData);
-        // Set appropriate drop effect based on the drag operation
-        if (data.action === 'reorder') {
-          e.dataTransfer.dropEffect = "move";
-        } else {
-          e.dataTransfer.dropEffect = "copy";
+      const dataTransfer = e.dataTransfer;
+      
+      // Try to access the data - this might fail due to browser security restrictions
+      // So we use a try-catch block
+      let data = {};
+      try {
+        const jsonData = e.dataTransfer.getData('application/json');
+        if (jsonData) {
+          data = JSON.parse(jsonData);
         }
+      } catch (err) {
+        // Fallback to type detection based on the available types
+        const hasReorderType = Array.from(dataTransfer.types).includes('application/json');
+        if (hasReorderType) {
+          dataTransfer.dropEffect = "move";
+          return;
+        }
+      }
+      
+      // If we have json data with an action of reorder, set move effect
+      if ('action' in data && data.action === 'reorder') {
+        dataTransfer.dropEffect = "move";
       } else {
-        // Default for other types of drags
-        e.dataTransfer.dropEffect = "copy";
+        // Default for other types of drags (like from sidebar)
+        dataTransfer.dropEffect = "copy";
       }
     } catch (err) {
       // If we can't parse the data or there's no data yet, default to copy
@@ -127,11 +145,6 @@ export function useVisionBoardDragDrop() {
           if (targetItemId) {
             const targetItem = items.find(item => item.id === targetItemId);
             if (targetItem) {
-              // Calculate the max order to correctly position
-              const maxOrder = items.length > 0 
-                ? Math.max(...items.map(item => item.order || 0)) 
-                : -1;
-              
               // Add item with an order value that puts it right after the target
               addItem({
                 ...parsedData,
