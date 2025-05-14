@@ -32,19 +32,21 @@ export function VisionBoardContent() {
         <VisionBoardTitle />
         <UploadButton />
       </div>
-      <ScrollArea className="flex-1 relative" ref={containerRef}>
-        <VisionBoardGrid
-          items={items}
-          draggedItemId={draggedItem}
-          onItemMouseDown={handleItemMouseDown}
-          onItemRemove={removeItem}
-          onItemReorder={reorderItems}
-          onItemDragStart={handleItemDragStart}
-          onDragOver={handleDragOver}
-          onDrop={handleGridDrop}
-          gridRef={React.useRef<HTMLDivElement>(null)}
-          isDragging={isDragging}
-        />
+      <ScrollArea className="flex-1 h-full relative" ref={containerRef}>
+        <div className="min-h-[calc(100vh-200px)] flex flex-col">
+          <VisionBoardGrid
+            items={items}
+            draggedItemId={draggedItem}
+            onItemMouseDown={handleItemMouseDown}
+            onItemRemove={removeItem}
+            onItemReorder={reorderItems}
+            onItemDragStart={handleItemDragStart}
+            onDragOver={handleDragOver}
+            onDrop={handleGridDrop}
+            gridRef={React.useRef<HTMLDivElement>(null)}
+            isDragging={isDragging}
+          />
+        </div>
       </ScrollArea>
     </main>
   );

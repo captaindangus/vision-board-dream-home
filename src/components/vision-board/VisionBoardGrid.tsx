@@ -2,6 +2,7 @@
 import React from 'react';
 import { VisionBoardItems } from './VisionBoardItems';
 import { VisionBoardItem } from '@/context/VisionBoardContext';
+import { EmptyBoardState } from './EmptyBoardState';
 
 interface VisionBoardGridProps {
   items: VisionBoardItem[];
@@ -30,7 +31,6 @@ export function VisionBoardGrid({
 }: VisionBoardGridProps) {
   const handleGridDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    // We'll let the provided onDragOver handle the logic
     onDragOver(e);
   };
 
@@ -48,7 +48,7 @@ export function VisionBoardGrid({
   return (
     <>
       <div 
-        className="min-h-[500px] relative p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-min"
+        className="min-h-[600px] relative p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-min"
         ref={gridRef}
         onDragOver={handleGridDragOver}
         onDrop={handleGridDrop}
@@ -61,6 +61,14 @@ export function VisionBoardGrid({
           onItemRemove={onItemRemove}
           onItemReorder={onItemReorder}
           onItemDragStart={onItemDragStart}
+        />
+        
+        {/* Add a hidden drop zone that always covers the bottom area */}
+        <div 
+          className="absolute left-0 right-0 bottom-0 min-h-[300px] pointer-events-auto" 
+          onDragOver={handleGridDragOver}
+          onDrop={handleGridDrop}
+          style={{ zIndex: items.length > 0 ? -1 : 'auto' }}
         />
       </div>
       
