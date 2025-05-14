@@ -1,4 +1,5 @@
 import React from 'react';
+import { TabsNavigation } from './TabsNavigation';
 
 export function VisionBoardHeader() {
   return (
@@ -7,7 +8,7 @@ export function VisionBoardHeader() {
         <BackButton />
         <AutoSaveIndicator />
       </div>
-      <TabNavigation />
+      <TabsNavigation />
       <div className="flex w-[193px] justify-end items-center gap-2.5">
         <button className="text-[rgba(12,15,36,1)] text-base font-medium gap-2.5 px-6 py-2.5 rounded-[100px] border-[1px_solid_rgba(12,15,36,1)]">
           Share
@@ -44,19 +45,6 @@ function AutoSaveIndicator() {
       <div className="text-[rgba(61,63,80,1)] text-base font-medium">
         Auto-Saved
       </div>
-    </div>
-  );
-}
-
-function TabNavigation() {
-  return (
-    <div className="flex items-center bg-[#F0F0F0] p-2 rounded-2xl">
-      <button className="text-[rgba(12,15,36,1)] text-base font-bold gap-2.5 bg-white shadow-[0px_2px_10px_0px_rgba(0,0,0,0.08)] px-6 py-2.5 rounded-xl">
-        Vision Board
-      </button>
-      <button className="text-[rgba(12,15,36,1)] text-base font-medium gap-2.5 px-6 py-2.5 rounded-xl">
-        Listings
-      </button>
     </div>
   );
 }
