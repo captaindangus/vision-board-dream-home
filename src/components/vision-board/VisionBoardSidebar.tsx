@@ -9,9 +9,9 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 
 export function VisionBoardSidebar() {
   return (
-    <aside className="flex flex-col w-full bg-white p-5 rounded-[20px] max-md:w-full overflow-hidden">
+    <aside className="flex flex-col w-full h-full bg-white p-5 rounded-[20px] max-md:w-full overflow-hidden">
       <SearchBar />
-      <ScrollArea className="flex-1 mt-5 pr-2 max-h-[calc(100vh-220px)]">
+      <ScrollArea className="flex-1 mt-5 pr-2 max-h-[calc(100vh-195px)]">
         <div className="flex flex-col gap-10 pb-4">
           <FeatureSection title="Home Features" defaultOpen={true}>
             <HomeFeatures />
