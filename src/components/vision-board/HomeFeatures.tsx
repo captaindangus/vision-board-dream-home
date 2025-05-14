@@ -1,7 +1,10 @@
 
 import React, { useRef } from 'react';
+import { useSearch } from './SearchBar';
 
 export function HomeFeatures() {
+  const { searchQuery } = useSearch();
+  
   // More diverse set of home features with different types
   const features = [
     { 
@@ -35,6 +38,13 @@ export function HomeFeatures() {
       type: "Office"
     }
   ];
+
+  // Filter features based on search query
+  const filteredFeatures = searchQuery.trim() 
+    ? features.filter(feature => 
+        feature.type.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : features;
 
   const handleDragStart = (e: React.DragEvent, feature: any) => {
     console.log('Drag started for feature:', feature);
@@ -80,23 +90,29 @@ export function HomeFeatures() {
 
   return (
     <div className="flex flex-wrap items-center gap-2 w-full">
-      {features.map((feature) => (
-        <div 
-          key={feature.id} 
-          className="relative group cursor-grab"
-          draggable
-          onDragStart={(e) => handleDragStart(e, feature)}
-        >
-          <img
-            src={feature.imageUrl}
-            alt={feature.type}
-            className="w-[144px] h-[109px] object-cover rounded-[8px] transition-all duration-200 group-hover:brightness-90"
-          />
-          <div className="absolute bottom-2 left-2 bg-black bg-opacity-60 px-2 py-1 rounded text-white text-xs">
-            {feature.type}
+      {filteredFeatures.length > 0 ? (
+        filteredFeatures.map((feature) => (
+          <div 
+            key={feature.id} 
+            className="relative group cursor-grab"
+            draggable
+            onDragStart={(e) => handleDragStart(e, feature)}
+          >
+            <img
+              src={feature.imageUrl}
+              alt={feature.type}
+              className="w-[144px] h-[109px] object-cover rounded-[8px] transition-all duration-200 group-hover:brightness-90"
+            />
+            <div className="absolute bottom-2 left-2 bg-black bg-opacity-60 px-2 py-1 rounded text-white text-xs">
+              {feature.type}
+            </div>
           </div>
+        ))
+      ) : (
+        <div className="w-full text-center py-4 text-gray-500">
+          No matching home features found
         </div>
-      ))}
+      )}
     </div>
   );
 }
