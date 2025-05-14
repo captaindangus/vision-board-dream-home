@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 
 export function HomeSizeInput() {
@@ -5,7 +6,7 @@ export function HomeSizeInput() {
   const [maxSize, setMaxSize] = useState<string>("2,000");
 
   return (
-    <div className="flex w-[234px] flex-col items-start gap-3 bg-[#F3F3F4] px-3.5 py-[18px] rounded-xl">
+    <div className="flex w-full flex-col items-start gap-3 bg-[#F3F3F4] px-3.5 py-[18px] rounded-xl">
       <div className="text-black text-sm font-bold">
         📏 Home Size (sqft)
       </div>
