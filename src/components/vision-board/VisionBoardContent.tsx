@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Check, Pencil, Image, X } from 'lucide-react';
@@ -33,7 +32,6 @@ export function VisionBoardContent() {
     if (!containerRef.current) return;
     
     const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-    const containerRect = containerRef.current.getBoundingClientRect();
     
     // Calculate offset within the item where the mouse was clicked
     const offsetX = e.clientX - rect.left;
@@ -61,6 +59,37 @@ export function VisionBoardContent() {
 
   const handleMouseUp = () => {
     setDraggedItem(null);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    
+    const data = e.dataTransfer.getData('application/json');
+    if (!data || !containerRef.current) return;
+    
+    try {
+      const parsedData = JSON.parse(data);
+      console.log("Drop event detected with data:", parsedData);
+      
+      // Calculate position relative to the container
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const position = { 
+        x: e.clientX - containerRect.left, 
+        y: e.clientY - containerRect.top + (containerRef.current.scrollTop || 0)
+      };
+      
+      addItem({
+        ...parsedData,
+        position
+      });
+    } catch (err) {
+      console.error('Error parsing dragged data:', err);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "copy";
   };
 
   // Add event listener for custom drop events
@@ -91,6 +120,8 @@ export function VisionBoardContent() {
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
     >
       <div className="flex justify-between items-center w-full mb-4">
         <div className="flex items-center gap-2">

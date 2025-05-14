@@ -55,6 +55,7 @@ export const VisionBoardProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const updateItemPosition = useCallback((id: string, position: { x: number; y: number }) => {
+    console.log('Updating item position:', id, position);
     setItems((prev) =>
       prev.map((item) => (item.id === id ? { ...item, position } : item))
     );

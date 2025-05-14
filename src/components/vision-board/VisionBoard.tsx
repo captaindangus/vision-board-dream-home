@@ -14,38 +14,6 @@ export function VisionBoard() {
     setSidebarCollapsed(!sidebarCollapsed);
   };
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    
-    const data = e.dataTransfer.getData('application/json');
-    if (!data) return;
-    
-    try {
-      const parsedData = JSON.parse(data);
-      
-      if (contentRef.current) {
-        // We're forwarding this drop event to VisionBoardContent
-        const customEvent = new CustomEvent('visionboard:drop', {
-          detail: {
-            data: parsedData,
-            position: { 
-              x: e.clientX - contentRef.current.getBoundingClientRect().left, 
-              y: e.clientY - contentRef.current.getBoundingClientRect().top + contentRef.current.scrollTop
-            }
-          }
-        });
-        contentRef.current.dispatchEvent(customEvent);
-      }
-    } catch (err) {
-      console.error('Error parsing dragged data:', err);
-    }
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = "copy";
-  };
-
   return (
     <div className="flex flex-col w-full h-screen bg-[#F7F7F8]">
       <VisionBoardHeader />
@@ -54,12 +22,7 @@ export function VisionBoard() {
           <div className={`transition-all duration-300 ${sidebarCollapsed ? 'w-0 overflow-hidden' : 'w-[351px] max-md:w-full'}`}>
             <VisionBoardSidebar />
           </div>
-          <div 
-            className="flex-1 overflow-auto" 
-            onDrop={handleDrop}
-            onDragOver={handleDragOver}
-            ref={contentRef}
-          >
+          <div className="flex-1 overflow-auto">
             <VisionBoardContent />
           </div>
           <SidebarToggle isCollapsed={sidebarCollapsed} onClick={toggleSidebar} />

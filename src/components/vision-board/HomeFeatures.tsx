@@ -37,6 +37,7 @@ export function HomeFeatures() {
   ];
 
   const handleDragStart = (e: React.DragEvent, feature: any) => {
+    console.log('Drag started for feature:', feature);
     e.dataTransfer.setData("application/json", JSON.stringify({
       type: 'homeFeature',
       content: {
