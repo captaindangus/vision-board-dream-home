@@ -151,21 +151,21 @@ export function useVisionBoardDragDrop() {
           const relativeX = dropX - gridRect.left;
           
           // Get all items in the grid to determine column structure
-          const items = Array.from(document.querySelectorAll('.masonry-item')) as HTMLElement[];
+          const allItems = Array.from(document.querySelectorAll('.masonry-item')) as HTMLElement[];
           
-          if (items.length > 0) {
+          if (allItems.length > 0) {
             // Find the last item in the column where the drop occurred
             let lastItemInColumn: HTMLElement | null = null;
             let lastOrder = -1;
             
-            items.forEach(item => {
+            allItems.forEach(item => {
               const itemRect = item.getBoundingClientRect();
               const itemX = itemRect.left + itemRect.width / 2;
               
               // Check if this item is in the same column as the drop point
               if (Math.abs(itemX - dropX) < 100) { // 100px threshold to catch the column
                 const itemId = item.getAttribute('data-item-id');
-                const itemData = this.items.find(i => i.id === itemId);
+                const itemData = items.find(i => i.id === itemId);
                 
                 if (itemData && (itemData.order || 0) > lastOrder) {
                   lastItemInColumn = item;
@@ -178,7 +178,7 @@ export function useVisionBoardDragDrop() {
               // If we found the last item in this column, add after it
               const lastItemId = lastItemInColumn.getAttribute('data-item-id');
               if (lastItemId) {
-                const lastItem = this.items.find(i => i.id === lastItemId);
+                const lastItem = items.find(i => i.id === lastItemId);
                 if (lastItem) {
                   addItem({
                     ...parsedData,
