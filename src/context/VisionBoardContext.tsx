@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useState, ReactNode, useCallback } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useCallback, useEffect } from 'react';
 
 export interface VisionBoardItem {
   id: string;
@@ -28,6 +28,8 @@ interface VisionBoardContextType {
 
 const VisionBoardContext = createContext<VisionBoardContextType | undefined>(undefined);
 
+const STORAGE_KEY = 'visionBoardItems';
+
 export const useVisionBoard = () => {
   const context = useContext(VisionBoardContext);
   if (!context) {
@@ -37,7 +39,25 @@ export const useVisionBoard = () => {
 };
 
 export const VisionBoardProvider = ({ children }: { children: ReactNode }) => {
-  const [items, setItems] = useState<VisionBoardItem[]>([]);
+  const [items, setItems] = useState<VisionBoardItem[]>(() => {
+    // Try to load items from localStorage on initial render
+    try {
+      const savedItems = localStorage.getItem(STORAGE_KEY);
+      return savedItems ? JSON.parse(savedItems) : [];
+    } catch (error) {
+      console.error('Error loading vision board items from localStorage:', error);
+      return [];
+    }
+  });
+
+  // Save items to localStorage whenever they change
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    } catch (error) {
+      console.error('Error saving vision board items to localStorage:', error);
+    }
+  }, [items]);
 
   const addItem = useCallback((newItem: Omit<VisionBoardItem, 'id'>) => {
     const id = `item-${Date.now()}`;

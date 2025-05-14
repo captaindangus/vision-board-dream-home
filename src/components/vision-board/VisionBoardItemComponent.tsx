@@ -2,6 +2,7 @@
 import React from 'react';
 import { X } from 'lucide-react';
 import { VisionBoardItem } from '@/context/VisionBoardContext';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
 
 interface VisionBoardItemComponentProps {
   item: VisionBoardItem;
@@ -35,7 +36,7 @@ export function VisionBoardItemComponent({
             e.stopPropagation();
             onRemove();
           }}
-          className="absolute top-1 right-1 bg-white rounded-full p-1 z-20 opacity-80 hover:opacity-100"
+          className="absolute top-1 right-1 bg-white rounded-full p-1 z-20 opacity-80 hover:opacity-100 shadow-sm"
           aria-label="Remove item"
         >
           <X className="w-4 h-4" />
@@ -43,12 +44,17 @@ export function VisionBoardItemComponent({
         
         {item.type === 'image' || item.type === 'homeFeature' ? (
           <div className="relative">
-            <img
-              src={item.content.imageUrl}
-              alt={item.content.title || "Vision board image"}
-              className="w-full h-full object-cover"
-              style={{ minHeight: '120px', minWidth: '150px' }}
-            />
+            <AspectRatio ratio={4/3} className="min-w-[200px] max-w-[350px]">
+              <img
+                src={item.content.imageUrl}
+                alt={item.content.title || "Vision board image"}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  // Fallback for broken images
+                  (e.target as HTMLImageElement).src = 'https://placehold.co/600x400/png';
+                }}
+              />
+            </AspectRatio>
             {item.content.title && (
               <div className="absolute bottom-2 left-2 bg-black bg-opacity-60 px-2 py-1 rounded text-white text-xs">
                 {item.content.title}
