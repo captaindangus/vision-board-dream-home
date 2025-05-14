@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Bed, Pool, Sofa, House, LampDesk } from 'lucide-react';
+import { Bed, Bath, Sofa, Home, LampFloor } from 'lucide-react';
 
 export function HomeFeatures() {
   // More diverse set of home features with different types
@@ -18,7 +18,7 @@ export function HomeFeatures() {
     { 
       id: 3, 
       imageUrl: "https://images.unsplash.com/photo-1575429198097-0414ec08e8cd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", 
-      type: "Pool" 
+      type: "Swimming" 
     },
     { 
       id: 4, 
