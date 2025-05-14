@@ -13,7 +13,7 @@ export function VisionBoardSidebar() {
       <SearchBar />
       <ScrollArea className="flex-1 mt-5 pr-2">
         <div className="flex flex-col gap-8 pb-4">
-          <FeatureSection title="Home Features">
+          <FeatureSection title="Home Features" defaultOpen={true}>
             <HomeFeatures />
           </FeatureSection>
           <FeatureSection title="Neighbourhood Features">
