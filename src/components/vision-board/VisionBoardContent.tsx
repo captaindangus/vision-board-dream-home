@@ -18,7 +18,8 @@ export function VisionBoardContent() {
     handleItemDragStart,
     handleMouseUp,
     handleDragOver,
-    handleGridDrop
+    handleGridDrop,
+    handleDragEnd
   } = useVisionBoardDragDrop();
 
   return (

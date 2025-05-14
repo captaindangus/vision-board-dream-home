@@ -13,6 +13,7 @@ interface VisionBoardItemComponentProps {
   onDragLeave?: (e: React.DragEvent<HTMLDivElement>) => void;
   onDrop?: (e: React.DragEvent<HTMLDivElement>) => void;
   onDragStart?: (e: React.DragEvent<HTMLDivElement>, id: string) => void;
+  onDragEnd?: () => void;
 }
 
 export function VisionBoardItemComponent({ 
@@ -23,7 +24,8 @@ export function VisionBoardItemComponent({
   onDragOver,
   onDragLeave,
   onDrop,
-  onDragStart
+  onDragStart,
+  onDragEnd
 }: VisionBoardItemComponentProps) {
   const [isHovering, setIsHovering] = useState(false);
   
@@ -64,6 +66,12 @@ export function VisionBoardItemComponent({
     }, 0);
   };
 
+  const handleDragEnd = () => {
+    if (onDragEnd) {
+      onDragEnd();
+    }
+  };
+
   return (
     <div
       className={`rounded-xl overflow-hidden shadow-md bg-white cursor-move w-full ${
@@ -74,6 +82,7 @@ export function VisionBoardItemComponent({
       onMouseLeave={() => setIsHovering(false)}
       draggable="true"
       onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
       onDrop={onDrop}

@@ -12,6 +12,7 @@ interface VisionBoardItemsProps {
   onItemRemove: (id: string) => void;
   onItemReorder: (sourceId: string, destinationId: string) => void;
   onItemDragStart?: (e: React.DragEvent<HTMLDivElement>, id: string) => void;
+  onDragEnd?: () => void;
 }
 
 export function VisionBoardItems({ 
@@ -20,7 +21,8 @@ export function VisionBoardItems({
   onItemMouseDown, 
   onItemRemove,
   onItemReorder,
-  onItemDragStart
+  onItemDragStart,
+  onDragEnd
 }: VisionBoardItemsProps) {
   if (items.length === 0) {
     return <EmptyBoardState />;
@@ -66,6 +68,12 @@ export function VisionBoardItems({
           onItemReorder(parsedData.id, targetItemId);
           toast.success('Item reordered');
         }
+        
+        // Call onDragEnd to remove scrim regardless of reordering
+        if (onDragEnd) {
+          onDragEnd();
+        }
+        
         return;
       }
       
@@ -91,6 +99,11 @@ export function VisionBoardItems({
       }
     } catch (error) {
       console.error('Error handling drop:', error);
+      
+      // Call onDragEnd even if there's an error to ensure scrim is removed
+      if (onDragEnd) {
+        onDragEnd();
+      }
     }
   };
 
@@ -114,6 +127,7 @@ export function VisionBoardItems({
             onDragLeave={handleDragLeave}
             onDrop={(e) => handleDrop(e, item.id)}
             onDragStart={onItemDragStart}
+            onDragEnd={onDragEnd}
           />
         </div>
       ))}

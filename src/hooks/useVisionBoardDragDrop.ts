@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { useVisionBoard } from '@/context/VisionBoardContext';
 import { toast } from 'sonner';
@@ -88,6 +87,13 @@ export function useVisionBoardDragDrop() {
     setDragOperation(null);
   };
 
+  // Add a handler for drag end to ensure scrim is removed
+  const handleDragEnd = () => {
+    setIsDragging(false);
+    setDraggedItem(null);
+    setDragOperation(null);
+  };
+
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     
@@ -110,7 +116,10 @@ export function useVisionBoardDragDrop() {
     e.preventDefault();
     console.log('Grid drop detected');
     
+    // Ensure we immediately reset the dragging state
     setIsDragging(false);
+    setDraggedItem(null);
+    setDragOperation(null);
     
     if (!containerRef.current) return;
     
@@ -170,6 +179,7 @@ export function useVisionBoardDragDrop() {
     handleItemDragStart,
     handleMouseUp,
     handleDragOver,
-    handleGridDrop
+    handleGridDrop,
+    handleDragEnd
   };
 }
