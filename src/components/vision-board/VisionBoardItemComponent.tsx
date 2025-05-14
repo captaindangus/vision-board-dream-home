@@ -9,20 +9,38 @@ interface VisionBoardItemComponentProps {
   onMouseDown: (e: React.MouseEvent<HTMLDivElement>) => void;
   onRemove: () => void;
   isDragging: boolean;
+  onDragOver?: (e: React.DragEvent<HTMLDivElement>) => void;
+  onDrop?: (e: React.DragEvent<HTMLDivElement>) => void;
 }
 
 export function VisionBoardItemComponent({ 
   item, 
   onMouseDown, 
   onRemove,
-  isDragging
+  isDragging,
+  onDragOver,
+  onDrop
 }: VisionBoardItemComponentProps) {
+  // Draggable items for reordering
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    e.dataTransfer.setData('application/json', JSON.stringify({
+      id: item.id,
+      action: 'reorder'
+    }));
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
   return (
     <div
       className={`rounded-xl overflow-hidden shadow-md bg-white cursor-move w-full ${
         isDragging ? 'z-50 opacity-90' : 'z-10'
       }`}
       onMouseDown={onMouseDown}
+      draggable="true"
+      onDragStart={handleDragStart}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+      data-item-id={item.id}
     >
       <div className="relative">
         <button 

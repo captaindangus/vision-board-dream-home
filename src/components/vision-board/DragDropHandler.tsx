@@ -9,7 +9,7 @@ interface DragDropHandlerProps {
 
 export function useDragDrop(containerRef: React.RefObject<HTMLDivElement>) {
   const [draggedItem, setDraggedItem] = useState<{id: string, offsetX: number, offsetY: number} | null>(null);
-  const { items, updateItemPosition, removeItem, addItem } = useVisionBoard();
+  const { items, updateItemPosition, removeItem, addItem, reorderItems } = useVisionBoard();
 
   const handleItemMouseDown = (
     e: React.MouseEvent<HTMLDivElement>,
@@ -45,8 +45,14 @@ export function useDragDrop(containerRef: React.RefObject<HTMLDivElement>) {
       const parsedData = JSON.parse(data);
       console.log("Drop event detected with data:", parsedData);
       
-      // For grid layout, we don't need exact positioning
-      // We're adding the item to the end of the list now
+      // Handle reordering if that's what this drop is for
+      if (parsedData.action === 'reorder' && parsedData.id) {
+        // This case is handled by VisionBoardItemComponent's onDrop
+        return;
+      }
+      
+      // For external items being added to the vision board
+      // Add the item to the end of the list
       addItem({
         ...parsedData,
         position: { x: 0, y: 0 } // Position doesn't matter for grid layout
@@ -58,7 +64,21 @@ export function useDragDrop(containerRef: React.RefObject<HTMLDivElement>) {
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    e.dataTransfer.dropEffect = "copy";
+    
+    // Set the dropEffect based on the type of dragged content
+    try {
+      const dataTransfer = e.dataTransfer;
+      const data = JSON.parse(dataTransfer.getData('application/json') || '{}');
+      
+      if (data.action === 'reorder') {
+        dataTransfer.dropEffect = "move"; // We're moving items within the board
+      } else {
+        dataTransfer.dropEffect = "copy"; // We're copying in new items
+      }
+    } catch {
+      // Default to copy if we can't determine
+      e.dataTransfer.dropEffect = "copy";
+    }
   };
 
   // Add event listener for custom drop events
@@ -87,6 +107,7 @@ export function useDragDrop(containerRef: React.RefObject<HTMLDivElement>) {
     draggedItem,
     items,
     removeItem,
+    reorderItems,
     handleItemMouseDown,
     handleMouseMove,
     handleMouseUp,

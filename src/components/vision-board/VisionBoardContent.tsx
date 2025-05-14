@@ -5,6 +5,7 @@ import { VisionBoardTitle } from './VisionBoardTitle';
 import { VisionBoardItems } from './VisionBoardItems';
 import { UploadButton } from './UploadButton';
 import { useDragDrop } from './DragDropHandler';
+import { toast } from 'sonner';
 
 export function VisionBoardContent() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -12,6 +13,7 @@ export function VisionBoardContent() {
     draggedItem,
     items,
     removeItem,
+    reorderItems,
     handleItemMouseDown,
     handleMouseMove,
     handleMouseUp,
@@ -39,6 +41,9 @@ export function VisionBoardContent() {
             draggedItemId={draggedItem?.id || null}
             onItemMouseDown={handleItemMouseDown}
             onItemRemove={removeItem}
+            onItemReorder={(sourceId, destinationId) => {
+              reorderItems(sourceId, destinationId);
+            }}
           />
         </div>
       </ScrollArea>

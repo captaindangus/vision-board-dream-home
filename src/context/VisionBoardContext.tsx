@@ -16,12 +16,14 @@ export interface VisionBoardItem {
     width: number;
     height: number;
   };
+  order?: number; // Added order property for sorting
 }
 
 interface VisionBoardContextType {
   items: VisionBoardItem[];
   addItem: (item: Omit<VisionBoardItem, 'id'>) => void;
   updateItemPosition: (id: string, position: { x: number; y: number }) => void;
+  reorderItems: (sourceId: string, destinationId: string) => void; // New reorder function
   removeItem: (id: string) => void;
 }
 
@@ -42,7 +44,15 @@ export const VisionBoardProvider = ({ children }: { children: ReactNode }) => {
     // Try to load items from localStorage on initial render
     try {
       const savedItems = localStorage.getItem(STORAGE_KEY);
-      return savedItems ? JSON.parse(savedItems) : [];
+      const parsedItems = savedItems ? JSON.parse(savedItems) : [];
+      
+      // Ensure all items have an order property
+      return parsedItems.map((item: VisionBoardItem, index: number) => ({
+        ...item,
+        order: item.order !== undefined ? item.order : index
+      })).sort((a: VisionBoardItem, b: VisionBoardItem) => 
+        (a.order || 0) - (b.order || 0)
+      );
     } catch (error) {
       console.error('Error loading vision board items from localStorage:', error);
       return [];
@@ -63,26 +73,95 @@ export const VisionBoardProvider = ({ children }: { children: ReactNode }) => {
     
     // We no longer need random positioning, but keep the position property for compatibility
     const position = { x: 0, y: 0 };
-
-    const item = { ...newItem, id, position };
+    
+    // Assign an order value to the new item (put at the end)
+    const maxOrder = items.length > 0 
+      ? Math.max(...items.map(item => item.order || 0)) 
+      : -1;
+    
+    const item = { 
+      ...newItem, 
+      id, 
+      position,
+      order: maxOrder + 1
+    };
+    
     console.log('Adding new item to vision board:', item);
     
     setItems((prev) => [...prev, item]);
-  }, []);
+  }, [items]);
 
   const updateItemPosition = useCallback((id: string, position: { x: number; y: number }) => {
-    // We no longer need this for grid layout, but keep the method for compatibility
-    console.log('Position updates are ignored in grid layout');
+    // We still keep this method for compatibility
+    console.log('Position updates via coordinates are ignored in grid layout');
+  }, []);
+  
+  const reorderItems = useCallback((sourceId: string, destinationId: string) => {
+    if (sourceId === destinationId) return;
+    
+    setItems(prevItems => {
+      // Find the source and destination items
+      const sourceItem = prevItems.find(item => item.id === sourceId);
+      const destinationItem = prevItems.find(item => item.id === destinationId);
+      
+      if (!sourceItem || !destinationItem) return prevItems;
+      
+      // Get the current orders
+      const sourceOrder = sourceItem.order || 0;
+      const destinationOrder = destinationItem.order || 0;
+      
+      // Create a new array with updated orders
+      return prevItems.map(item => {
+        // If this is the item we're moving
+        if (item.id === sourceId) {
+          return { ...item, order: destinationOrder };
+        }
+        
+        // If we're moving an item forward (e.g., from index 0 to index 2)
+        // Decrement the order of items between the source and destination
+        if (sourceOrder < destinationOrder && 
+            (item.order || 0) > sourceOrder && 
+            (item.order || 0) <= destinationOrder) {
+          return { ...item, order: (item.order || 0) - 1 };
+        }
+        
+        // If we're moving an item backward (e.g., from index 2 to index 0)
+        // Increment the order of items between the destination and source
+        if (sourceOrder > destinationOrder && 
+            (item.order || 0) >= destinationOrder && 
+            (item.order || 0) < sourceOrder) {
+          return { ...item, order: (item.order || 0) + 1 };
+        }
+        
+        // Otherwise, keep the item as is
+        return item;
+      }).sort((a, b) => (a.order || 0) - (b.order || 0));
+    });
   }, []);
 
   const removeItem = useCallback((id: string) => {
     console.log('Removing item from vision board:', id);
-    setItems((prev) => prev.filter((item) => item.id !== id));
+    setItems(prevItems => {
+      const itemToRemove = prevItems.find(item => item.id === id);
+      if (!itemToRemove) return prevItems;
+      
+      const removedOrder = itemToRemove.order || 0;
+      
+      return prevItems
+        .filter(item => item.id !== id)
+        .map(item => {
+          // Decrement the order of all items that come after the removed item
+          if ((item.order || 0) > removedOrder) {
+            return { ...item, order: (item.order || 0) - 1 };
+          }
+          return item;
+        });
+    });
   }, []);
 
   const contextValue = React.useMemo(
-    () => ({ items, addItem, updateItemPosition, removeItem }),
-    [items, addItem, updateItemPosition, removeItem]
+    () => ({ items, addItem, updateItemPosition, reorderItems, removeItem }),
+    [items, addItem, updateItemPosition, reorderItems, removeItem]
   );
 
   return (
