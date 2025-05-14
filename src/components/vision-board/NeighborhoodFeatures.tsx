@@ -27,7 +27,7 @@ export function NeighborhoodFeatures() {
     },
     { 
       id: 4, 
-      imageUrl: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", 
+      imageUrl: "https://images.unsplash.com/photo-1487958449943-2429e8be8625?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", 
       type: "School District",
       description: "Neighborhoods with quality educational options" 
     },
