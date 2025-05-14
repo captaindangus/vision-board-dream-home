@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { FeatureCard } from './FeatureCard';
 
@@ -19,7 +20,7 @@ export function NeighborhoodFeatures() {
   ];
 
   return (
-    <div className="flex items-center gap-2 w-full overflow-x-auto">
+    <div className="flex flex-col items-start gap-3 w-full">
       {features.map((feature) => (
         <FeatureCard
           key={feature.id}
