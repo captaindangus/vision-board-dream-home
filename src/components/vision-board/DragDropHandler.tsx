@@ -1,6 +1,7 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import { useVisionBoard, VisionBoardItem } from '@/context/VisionBoardContext';
+import { getGridSizeFromElement, snapToGrid } from './GridSystem';
 
 interface DragDropHandlerProps {
   containerRef: React.RefObject<HTMLDivElement>;
@@ -36,9 +37,15 @@ export function useDragDrop(containerRef: React.RefObject<HTMLDivElement>) {
     const x = e.clientX - containerRect.left - draggedItem.offsetX;
     const y = e.clientY - containerRect.top - draggedItem.offsetY + scrollTop;
     
+    // Get grid size from container
+    const gridSize = getGridSizeFromElement(containerRef.current);
+    
+    // Snap to grid
+    const [snappedX, snappedY] = snapToGrid(x, y, gridSize);
+    
     // Ensure item stays within container bounds
-    const boundedX = Math.max(0, Math.min(x, containerRect.width - 150));
-    const boundedY = Math.max(0, y);
+    const boundedX = Math.max(0, Math.min(snappedX, containerRect.width - 150));
+    const boundedY = Math.max(0, snappedY);
     
     updateItemPosition(draggedItem.id, { x: boundedX, y: boundedY });
   };
@@ -59,14 +66,16 @@ export function useDragDrop(containerRef: React.RefObject<HTMLDivElement>) {
       
       // Calculate position relative to the container
       const containerRect = containerRef.current.getBoundingClientRect();
-      const position = { 
-        x: e.clientX - containerRect.left, 
-        y: e.clientY - containerRect.top + (containerRef.current.scrollTop || 0)
-      };
+      let x = e.clientX - containerRect.left;
+      let y = e.clientY - containerRect.top + (containerRef.current.scrollTop || 0);
+      
+      // Snap to grid
+      const gridSize = getGridSizeFromElement(containerRef.current);
+      const [snappedX, snappedY] = snapToGrid(x, y, gridSize);
       
       addItem({
         ...parsedData,
-        position
+        position: { x: snappedX, y: snappedY }
       });
     } catch (err) {
       console.error('Error parsing dragged data:', err);
@@ -84,10 +93,15 @@ export function useDragDrop(containerRef: React.RefObject<HTMLDivElement>) {
       const customEvent = e as CustomEvent;
       const { data, position } = customEvent.detail;
       
-      addItem({
-        ...data,
-        position
-      });
+      if (containerRef.current) {
+        const gridSize = getGridSizeFromElement(containerRef.current);
+        const [snappedX, snappedY] = snapToGrid(position.x, position.y, gridSize);
+        
+        addItem({
+          ...data,
+          position: { x: snappedX, y: snappedY }
+        });
+      }
     };
 
     const element = containerRef.current;
