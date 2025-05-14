@@ -35,7 +35,6 @@ export function VisionBoardGrid({
         ref={gridRef}
         onDragOver={onDragOver}
         onDrop={onDrop}
-        data-dropzone="true"
       >
         <VisionBoardItems 
           items={items}
@@ -44,17 +43,6 @@ export function VisionBoardGrid({
           onItemRemove={onItemRemove}
           onItemReorder={onItemReorder}
           onItemDragStart={onItemDragStart}
-        />
-        
-        {/* This empty grid area helps ensure drops can happen anywhere in the grid */}
-        <div className="col-span-full h-40"></div>
-        
-        {/* Invisible drop target that spans the entire grid */}
-        <div 
-          className="absolute inset-0 z-0 pointer-events-auto"
-          onDragOver={onDragOver}
-          onDrop={onDrop}
-          data-empty-dropzone="true"
         />
       </div>
       

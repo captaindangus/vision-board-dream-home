@@ -89,48 +89,37 @@ export function useVisionBoardDragDrop() {
     
     if (!containerRef.current) return;
     
-    // Try to get data from dataTransfer
-    const dataTransfer = e.dataTransfer;
-    const jsonData = dataTransfer.getData('application/json');
+    const data = e.dataTransfer.getData('application/json');
+    if (!data) return;
     
-    // If we have JSON data, process it
-    if (jsonData) {
-      try {
-        const parsedData = JSON.parse(jsonData);
-        console.log("Drop event detected with data:", parsedData);
+    try {
+      const parsedData = JSON.parse(data);
+      console.log("Drop event detected with data:", parsedData);
+      
+      // For external items being added to the vision board
+      if (!parsedData.action && parsedData.type) {
+        addItem(parsedData);
+        toast.success('Item added to vision board');
+      }
+      
+      // For reordering - but only if dropped directly on the grid, not on an item
+      if (parsedData.action === 'reorder' && parsedData.id) {
+        // Check if we're dropping directly on the grid, not on an item
+        const dropTarget = e.target as HTMLElement;
+        const closestItem = dropTarget.closest('[data-item-id]');
         
-        // For external items being added to the vision board (from sidebar)
-        if (!parsedData.action) {
-          // Accept items with any type property - this is more inclusive to handle all sidebar items
-          addItem(parsedData);
-          toast.success('Item added to vision board');
-          return;
-        }
-        
-        // For reordering - but only if dropped directly on the grid, not on an item
-        if (parsedData.action === 'reorder' && parsedData.id) {
-          // Check if we're dropping directly on the grid, not on an item
-          const dropTarget = e.target as HTMLElement;
-          const closestItem = dropTarget.closest('[data-item-id]');
-          
-          if (!closestItem) {
-            // If dropped on empty grid space, move to the end
-            const lastItem = [...items].sort((a, b) => (b.order || 0) - (a.order || 0))[0];
-            if (lastItem && lastItem.id !== parsedData.id) {
-              // Move to the end with an order value higher than the current highest
-              reorderItems(parsedData.id, lastItem.id);
-              toast.success('Item moved to the end');
-            }
+        if (!closestItem) {
+          // If dropped on empty grid space, move to the end
+          const lastItem = [...items].sort((a, b) => (b.order || 0) - (a.order || 0))[0];
+          if (lastItem && lastItem.id !== parsedData.id) {
+            // Move to the end with an order value higher than the current highest
+            reorderItems(parsedData.id, lastItem.id);
+            toast.success('Item moved to the end');
           }
         }
-      } catch (err) {
-        console.error('Error parsing dragged data:', err);
       }
-    }
-    // Handle files dropped from the user's operating system
-    else if (dataTransfer.files && dataTransfer.files.length > 0) {
-      // This case will be handled by the UploadButton component
-      console.log("Files were dropped - these will be handled by the upload component");
+    } catch (err) {
+      console.error('Error parsing dragged data:', err);
     }
   };
 
