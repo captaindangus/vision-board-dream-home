@@ -74,7 +74,7 @@ export function VisionBoardItemComponent({
 
   return (
     <div
-      className={`rounded-xl overflow-hidden shadow-md bg-white cursor-move w-full ${
+      className={`rounded-xl overflow-hidden shadow-md bg-white cursor-move w-full h-full ${
         isDragging ? 'z-50 opacity-90' : 'z-10'
       }`}
       onMouseDown={onMouseDown}
@@ -88,7 +88,7 @@ export function VisionBoardItemComponent({
       onDrop={onDrop}
       data-item-id={item.id}
     >
-      <div className="relative">
+      <div className="relative h-full">
         {isHovering && (
           <button 
             onClick={(e) => {
@@ -103,8 +103,8 @@ export function VisionBoardItemComponent({
         )}
         
         {item.type === 'image' || item.type === 'homeFeature' ? (
-          <div className="relative">
-            <AspectRatio ratio={4/3} className="w-full">
+          <div className="relative h-full">
+            {item.type === 'image' ? (
               <img
                 src={item.content.imageUrl}
                 alt={item.content.title || "Vision board image"}
@@ -114,7 +114,19 @@ export function VisionBoardItemComponent({
                   (e.target as HTMLImageElement).src = 'https://placehold.co/600x400/png';
                 }}
               />
-            </AspectRatio>
+            ) : (
+              <AspectRatio ratio={4/3} className="w-full">
+                <img
+                  src={item.content.imageUrl}
+                  alt={item.content.title || "Home feature"}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    // Fallback for broken images
+                    (e.target as HTMLImageElement).src = 'https://placehold.co/600x400/png';
+                  }}
+                />
+              </AspectRatio>
+            )}
             {item.content.title && (
               <div className="absolute bottom-2 left-2 bg-black bg-opacity-60 px-2 py-1 rounded text-white text-xs">
                 {item.content.title}
@@ -122,12 +134,12 @@ export function VisionBoardItemComponent({
             )}
           </div>
         ) : (
-          <div className="bg-[#F3F3F4] p-3 rounded-xl w-full">
+          <div className="bg-[#F3F3F4] p-3 rounded-xl w-full h-full">
             <div className="text-black text-sm font-bold truncate mb-1">
               {item.content.title}
             </div>
             {item.content.description && (
-              <div className="text-black text-xs">
+              <div className="text-black text-xs max-h-[150px] overflow-y-auto">
                 {item.content.description}
               </div>
             )}

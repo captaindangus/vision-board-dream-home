@@ -13,7 +13,7 @@ interface VisionBoardGridProps {
   onItemDragStart: (e: React.DragEvent<HTMLDivElement>, id: string) => void;
   onDragOver: (e: React.DragEvent<HTMLDivElement>) => void;
   onDrop: (e: React.DragEvent<HTMLDivElement>) => void;
-  onDragEnd?: () => void; // Added drag end handler
+  onDragEnd?: () => void;
   gridRef: React.RefObject<HTMLDivElement>;
   isDragging: boolean;
 }
@@ -27,7 +27,7 @@ export function VisionBoardGrid({
   onItemDragStart,
   onDragOver,
   onDrop,
-  onDragEnd, // Handle drag end
+  onDragEnd,
   gridRef,
   isDragging
 }: VisionBoardGridProps) {
@@ -58,7 +58,7 @@ export function VisionBoardGrid({
   return (
     <>
       <div 
-        className="relative p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-min"
+        className="relative p-4 masonry-grid"
         style={{ minHeight }}
         ref={gridRef}
         onDragOver={handleGridDragOver}
@@ -72,7 +72,7 @@ export function VisionBoardGrid({
           onItemRemove={onItemRemove}
           onItemReorder={onItemReorder}
           onItemDragStart={onItemDragStart}
-          onDragEnd={onDragEnd} // Pass drag end handler to items
+          onDragEnd={onDragEnd}
         />
         
         {/* Empty state that shows when no items */}
