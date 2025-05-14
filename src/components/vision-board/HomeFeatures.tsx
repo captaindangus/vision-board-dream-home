@@ -7,7 +7,7 @@ export function HomeFeatures() {
   const features = [
     { 
       id: 1, 
-      imageUrl: "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
+      imageUrl: "/lovable-uploads/3373eae3-ed71-4b48-b291-1980584aa937.png",
       type: "Living Room" 
     },
     { 
