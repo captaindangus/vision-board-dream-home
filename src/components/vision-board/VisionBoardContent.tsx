@@ -1,4 +1,5 @@
-import React, { useRef, useEffect, useState } from 'react';
+
+import React, { useRef, useEffect } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { VisionBoardTitle } from './VisionBoardTitle';
 import { VisionBoardItems } from './VisionBoardItems';
@@ -8,19 +9,8 @@ import { toast } from 'sonner';
 
 export function VisionBoardContent() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const boardRef = useRef<HTMLDivElement>(null);
-  const { items, addItem, removeItem, reorderItems, updateItemPosition } = useVisionBoard();
-  const [draggedItem, setDraggedItem] = useState<{
-    id: string, 
-    initialX: number, 
-    initialY: number,
-    currentX: number,
-    currentY: number,
-    offsetX: number,
-    offsetY: number
-  } | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragMode, setDragMode] = useState<'reorder' | 'reposition'>('reorder');
+  const { items, addItem, removeItem, reorderItems } = useVisionBoard();
+  const [draggedItem, setDraggedItem] = React.useState<{id: string, offsetX: number, offsetY: number} | null>(null);
 
   // Add event listener for custom drop events
   useEffect(() => {
@@ -51,103 +41,23 @@ export function VisionBoardContent() {
     e: React.MouseEvent<HTMLDivElement>,
     id: string
   ) => {
-    if (!boardRef.current) return;
+    if (!containerRef.current) return;
     
-    // Get the item element
-    const itemElement = (e.currentTarget as HTMLElement);
-    const rect = itemElement.getBoundingClientRect();
-    const boardRect = boardRef.current.getBoundingClientRect();
-    
-    // Prevent default to avoid text selection during drag
-    e.preventDefault();
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
     
     // Calculate offset within the item where the mouse was clicked
     const offsetX = e.clientX - rect.left;
     const offsetY = e.clientY - rect.top;
     
-    // Store initial positions
-    const initialX = rect.left - boardRect.left;
-    const initialY = rect.top - boardRect.top;
-    
-    setDraggedItem({
-      id,
-      initialX,
-      initialY,
-      currentX: initialX,
-      currentY: initialY,
-      offsetX,
-      offsetY
-    });
-    
-    // Use Alt key (or Option on Mac) to toggle between reorder and reposition modes
-    if (e.altKey) {
-      setDragMode('reposition');
-      setIsDragging(true);
-      
-      // Apply styles to indicate repositioning mode
-      itemElement.style.zIndex = '50';
-      itemElement.style.opacity = '0.8';
-      itemElement.style.position = 'absolute';
-      itemElement.style.width = `${rect.width}px`;
-      itemElement.style.left = `${initialX}px`;
-      itemElement.style.top = `${initialY}px`;
-    } else {
-      setDragMode('reorder');
-      // No need to set isDragging for reordering as that's handled by the native drag events
-    }
+    setDraggedItem({ id, offsetX, offsetY });
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!draggedItem || !isDragging || dragMode !== 'reposition' || !boardRef.current) return;
-    
-    const boardRect = boardRef.current.getBoundingClientRect();
-    
-    // Calculate the new position relative to the board
-    const newX = e.clientX - boardRect.left - draggedItem.offsetX;
-    const newY = e.clientY - boardRect.top - draggedItem.offsetY;
-    
-    // Update the dragged item's position
-    setDraggedItem({
-      ...draggedItem,
-      currentX: newX,
-      currentY: newY
-    });
-    
-    // Find the dragged element and update its visual position
-    const draggedElement = boardRef.current.querySelector(`[data-item-id="${draggedItem.id}"]`) as HTMLElement;
-    if (draggedElement) {
-      draggedElement.style.left = `${newX}px`;
-      draggedElement.style.top = `${newY}px`;
-    }
+    // Just indicate which item is being dragged
   };
 
   const handleMouseUp = () => {
-    if (!draggedItem || !isDragging) return;
-    
-    // Only process if we were in repositioning mode
-    if (dragMode === 'reposition') {
-      // Save the new position to the context
-      updateItemPosition(draggedItem.id, { 
-        x: draggedItem.currentX, 
-        y: draggedItem.currentY 
-      });
-      
-      // Reset the dragged element's styles
-      const draggedElement = boardRef.current?.querySelector(`[data-item-id="${draggedItem.id}"]`) as HTMLElement;
-      if (draggedElement) {
-        // Reset styles but keep the absolute positioning for precise placement
-        draggedElement.style.zIndex = '';
-        draggedElement.style.opacity = '';
-        // We keep position absolute and left/top to maintain the item's new position
-      }
-      
-      toast.success('Item repositioned');
-    }
-    
-    // Reset drag state
-    setIsDragging(false);
     setDraggedItem(null);
-    setDragMode('reorder');
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -188,21 +98,7 @@ export function VisionBoardContent() {
       // For external items being added to the vision board
       // Directly call addItem instead of dispatching an event
       if (parsedData) {
-        // Get drop position relative to the board
-        if (boardRef.current) {
-          const boardRect = boardRef.current.getBoundingClientRect();
-          const dropX = e.clientX - boardRect.left;
-          const dropY = e.clientY - boardRect.top;
-          
-          // Add the item with the calculated position
-          addItem({
-            ...parsedData,
-            position: { x: dropX, y: dropY }
-          });
-        } else {
-          // Fallback if board ref is not available
-          addItem(parsedData);
-        }
+        addItem(parsedData);
         toast.success('Item added to vision board');
       }
     } catch (err) {
@@ -224,11 +120,7 @@ export function VisionBoardContent() {
         <UploadButton />
       </div>
       <ScrollArea className="flex-1 relative" ref={containerRef}>
-        <div 
-          ref={boardRef}
-          className="min-h-[500px] relative p-4"
-          style={{ position: 'relative' }}
-        >
+        <div className="min-h-[500px] relative p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-min">
           <VisionBoardItems 
             items={items}
             draggedItemId={draggedItem?.id || null}
@@ -238,14 +130,9 @@ export function VisionBoardContent() {
               reorderItems(sourceId, destinationId);
               toast.success('Item reordered');
             }}
-            dragMode={dragMode}
           />
         </div>
       </ScrollArea>
-
-      <div className="mt-4 text-center text-sm text-gray-500">
-        <p>Tip: Hold <kbd className="px-1 py-0.5 bg-gray-100 rounded">Alt</kbd> key while dragging to freely position items</p>
-      </div>
     </main>
   );
 }

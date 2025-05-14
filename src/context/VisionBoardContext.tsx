@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode, useCallback, useEffect } from 'react';
 
 export interface VisionBoardItem {
@@ -18,10 +17,6 @@ export interface VisionBoardItem {
     height: number;
   };
   order?: number; // Added order property for sorting
-  gridPosition?: { // Add grid position for more precise positioning
-    row: number;
-    col: number;
-  };
 }
 
 interface VisionBoardContextType {
@@ -30,7 +25,6 @@ interface VisionBoardContextType {
   updateItemPosition: (id: string, position: { x: number; y: number }) => void;
   reorderItems: (sourceId: string, destinationId: string) => void; // New reorder function
   removeItem: (id: string) => void;
-  updateItemGridPosition: (id: string, gridPosition: { row: number; col: number }) => void; // New function
 }
 
 const VisionBoardContext = createContext<VisionBoardContextType | undefined>(undefined);
@@ -98,15 +92,8 @@ export const VisionBoardProvider = ({ children }: { children: ReactNode }) => {
   }, [items]);
 
   const updateItemPosition = useCallback((id: string, position: { x: number; y: number }) => {
-    setItems((prev) => 
-      prev.map((item) => (item.id === id ? { ...item, position } : item))
-    );
-  }, []);
-  
-  const updateItemGridPosition = useCallback((id: string, gridPosition: { row: number; col: number }) => {
-    setItems((prev) => 
-      prev.map((item) => (item.id === id ? { ...item, gridPosition } : item))
-    );
+    // We still keep this method for compatibility
+    console.log('Position updates via coordinates are ignored in grid layout');
   }, []);
   
   const reorderItems = useCallback((sourceId: string, destinationId: string) => {
@@ -173,15 +160,8 @@ export const VisionBoardProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const contextValue = React.useMemo(
-    () => ({ 
-      items, 
-      addItem, 
-      updateItemPosition, 
-      reorderItems, 
-      removeItem,
-      updateItemGridPosition 
-    }),
-    [items, addItem, updateItemPosition, reorderItems, removeItem, updateItemGridPosition]
+    () => ({ items, addItem, updateItemPosition, reorderItems, removeItem }),
+    [items, addItem, updateItemPosition, reorderItems, removeItem]
   );
 
   return (
