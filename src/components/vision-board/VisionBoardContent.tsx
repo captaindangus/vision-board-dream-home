@@ -5,7 +5,6 @@ import { VisionBoardTitle } from './VisionBoardTitle';
 import { VisionBoardItems } from './VisionBoardItems';
 import { UploadButton } from './UploadButton';
 import { useDragDrop } from './DragDropHandler';
-import { GridSystem } from './GridSystem';
 
 export function VisionBoardContent() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -34,14 +33,14 @@ export function VisionBoardContent() {
         <UploadButton />
       </div>
       <ScrollArea className="flex-1 relative" ref={containerRef}>
-        <GridSystem gridSize={50} gridGap={10}>
+        <div className="min-h-[500px] relative p-4">
           <VisionBoardItems 
             items={items}
             draggedItemId={draggedItem?.id || null}
             onItemMouseDown={handleItemMouseDown}
             onItemRemove={removeItem}
           />
-        </GridSystem>
+        </div>
       </ScrollArea>
     </main>
   );
