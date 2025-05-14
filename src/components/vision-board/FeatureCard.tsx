@@ -22,10 +22,16 @@ export function FeatureCard({
   const handleDragStart = (e: React.DragEvent) => {
     if (!draggable) return;
     
-    // Set dragImage to make drag feedback look better
-    const img = new Image();
-    img.src = imageUrl;
-    e.dataTransfer.setDragImage(img, 0, 0);
+    // Create a clone of the card for the drag image
+    const cardElement = e.currentTarget.cloneNode(true) as HTMLElement;
+    cardElement.style.width = `${e.currentTarget.offsetWidth}px`;
+    cardElement.style.opacity = '0.8';
+    cardElement.style.position = 'absolute';
+    cardElement.style.top = '-1000px'; // Position off-screen
+    document.body.appendChild(cardElement);
+    
+    // Use the card clone as drag image
+    e.dataTransfer.setDragImage(cardElement, e.nativeEvent.offsetX, e.nativeEvent.offsetY);
     
     e.dataTransfer.setData("application/json", JSON.stringify({
       type: 'neighborhoodFeature',
@@ -37,6 +43,11 @@ export function FeatureCard({
       size: { width: 250, height: 'auto' }
     }));
     e.dataTransfer.effectAllowed = "copy";
+    
+    // Remove the clone after a short delay
+    setTimeout(() => {
+      document.body.removeChild(cardElement);
+    }, 0);
   };
   
   return (

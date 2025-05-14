@@ -39,10 +39,16 @@ export function HomeFeatures() {
   const handleDragStart = (e: React.DragEvent, feature: any) => {
     console.log('Drag started for feature:', feature);
     
-    // Set dragImage to make drag feedback look better
-    const img = new Image();
-    img.src = feature.imageUrl;
-    e.dataTransfer.setDragImage(img, 0, 0);
+    // Create a clone of the feature card for the drag image
+    const featureElement = e.currentTarget.cloneNode(true) as HTMLElement;
+    featureElement.style.width = `${e.currentTarget.offsetWidth}px`;
+    featureElement.style.opacity = '0.8';
+    featureElement.style.position = 'absolute';
+    featureElement.style.top = '-1000px'; // Position off-screen
+    document.body.appendChild(featureElement);
+    
+    // Use the feature card as drag image
+    e.dataTransfer.setDragImage(featureElement, e.nativeEvent.offsetX, e.nativeEvent.offsetY);
     
     e.dataTransfer.setData("application/json", JSON.stringify({
       type: 'homeFeature',
@@ -53,6 +59,11 @@ export function HomeFeatures() {
       size: { width: 200, height: 150 }
     }));
     e.dataTransfer.effectAllowed = "copy";
+    
+    // Remove the clone after a short delay
+    setTimeout(() => {
+      document.body.removeChild(featureElement);
+    }, 0);
   };
 
   return (
