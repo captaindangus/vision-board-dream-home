@@ -12,7 +12,7 @@ export function VisionBoardSidebar() {
     <aside className="flex flex-col w-full h-full bg-white p-5 rounded-[20px] max-md:w-full overflow-hidden">
       <SearchBar />
       <ScrollArea className="flex-1 mt-5 pr-2 max-h-[calc(100vh-195px)]">
-        <div className="flex flex-col gap-10 pb-4">
+        <div className="flex flex-col gap-6 pb-4">
           <FeatureSection title="Home Features" defaultOpen={true}>
             <HomeFeatures />
           </FeatureSection>

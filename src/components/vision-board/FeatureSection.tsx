@@ -20,12 +20,12 @@ export function FeatureSection({ title, children, defaultOpen = false }: Feature
   return (
     <Accordion type="single" collapsible defaultValue={value} className="w-full">
       <AccordionItem value={title} className="border-0">
-        <AccordionTrigger className="py-3 px-0">
+        <AccordionTrigger className="py-2 px-0">
           <h2 className="text-[rgba(12,15,36,1)] text-base font-medium">
             {title}
           </h2>
         </AccordionTrigger>
-        <AccordionContent>
+        <AccordionContent className="pt-1 pb-2">
           <div className="w-full">
             {children}
           </div>
