@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useSearch } from './SearchBar';
 import { FeatureCard } from './FeatureCard';
@@ -9,7 +8,7 @@ export function NeighborhoodFeatures() {
   const features = [
     { 
       id: 1, 
-      imageUrl: "https://images.unsplash.com/photo-1517457210348-703079e57d4b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", 
+      imageUrl: "https://images.unsplash.com/photo-1460574283810-2aab119d8511?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", 
       type: "Urban",
       description: "City living with vibrant streets and amenities"
     },
