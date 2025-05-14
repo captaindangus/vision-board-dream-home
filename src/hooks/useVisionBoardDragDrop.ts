@@ -89,6 +89,7 @@ export function useVisionBoardDragDrop() {
     
     if (!containerRef.current) return;
     
+    // Try to get data from dataTransfer
     const data = e.dataTransfer.getData('application/json');
     if (!data) return;
     
@@ -96,8 +97,8 @@ export function useVisionBoardDragDrop() {
       const parsedData = JSON.parse(data);
       console.log("Drop event detected with data:", parsedData);
       
-      // For external items being added to the vision board
-      if (!parsedData.action && parsedData.type) {
+      // For external items being added to the vision board (from sidebar)
+      if (!parsedData.action && (parsedData.type === 'homeFeature' || parsedData.type === 'neighborhoodFeature' || parsedData.type === 'feature')) {
         addItem(parsedData);
         toast.success('Item added to vision board');
       }

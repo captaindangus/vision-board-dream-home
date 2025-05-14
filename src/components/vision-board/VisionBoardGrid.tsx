@@ -44,6 +44,9 @@ export function VisionBoardGrid({
           onItemReorder={onItemReorder}
           onItemDragStart={onItemDragStart}
         />
+        
+        {/* This empty grid area helps ensure drops can happen anywhere in the grid */}
+        <div className="col-span-full h-40"></div>
       </div>
       
       {isDragging && (
