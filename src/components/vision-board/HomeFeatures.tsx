@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useRef } from 'react';
 
 export function HomeFeatures() {
   // More diverse set of home features with different types
@@ -38,6 +38,8 @@ export function HomeFeatures() {
 
   const handleDragStart = (e: React.DragEvent, feature: any) => {
     console.log('Drag started for feature:', feature);
+    
+    // Set the drag data
     e.dataTransfer.setData("application/json", JSON.stringify({
       type: 'homeFeature',
       content: {
@@ -47,6 +49,30 @@ export function HomeFeatures() {
       size: { width: 200, height: 150 }
     }));
     e.dataTransfer.effectAllowed = "copy";
+    
+    // Create a drag image that represents the item
+    const imgElement = e.currentTarget.querySelector('img');
+    if (imgElement) {
+      // Create a clone of the image to use as the drag image
+      const dragImage = imgElement.cloneNode(true) as HTMLElement;
+      
+      // Style the drag image
+      dragImage.style.width = '144px';
+      dragImage.style.height = '109px';
+      dragImage.style.borderRadius = '8px';
+      dragImage.style.opacity = '0.8';
+      dragImage.style.position = 'absolute';
+      dragImage.style.top = '-1000px';
+      document.body.appendChild(dragImage);
+      
+      // Set the drag image
+      e.dataTransfer.setDragImage(dragImage, 72, 55);
+      
+      // Remove the drag image after the drag operation
+      setTimeout(() => {
+        document.body.removeChild(dragImage);
+      }, 0);
+    }
   };
 
   return (
