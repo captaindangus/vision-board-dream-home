@@ -1,21 +1,77 @@
 
 import React, { useState } from 'react';
+import { Slider } from "@/components/ui/slider";
 
 export function PriceRangeSlider() {
+  const [priceRange, setPriceRange] = useState<number[]>([0, 1100000]);
   const [minPrice, setMinPrice] = useState<string>("");
   const [maxPrice, setMaxPrice] = useState<string>("1.1M");
+
+  const handleSliderChange = (value: number[]) => {
+    setPriceRange(value);
+    
+    // Update text inputs based on slider position
+    const minValue = value[0];
+    const maxValue = value[1];
+    
+    // Format the input values
+    setMinPrice(minValue === 0 ? "" : formatPrice(minValue));
+    setMaxPrice(formatPrice(maxValue));
+  };
+
+  const formatPrice = (price: number): string => {
+    if (price >= 1000000) {
+      return `${(price / 1000000).toFixed(1)}M`;
+    } else if (price >= 1000) {
+      return `${(price / 1000).toFixed(0)}K`;
+    }
+    return price.toString();
+  };
+
+  const parsePrice = (price: string): number => {
+    if (!price) return 0;
+    
+    if (price.endsWith('M')) {
+      return parseFloat(price.replace('M', '')) * 1000000;
+    } else if (price.endsWith('K')) {
+      return parseFloat(price.replace('K', '')) * 1000;
+    }
+    return parseFloat(price) || 0;
+  };
+
+  const handleMinPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setMinPrice(value);
+    
+    if (value) {
+      const parsedValue = parsePrice(value);
+      setPriceRange([parsedValue, priceRange[1]]);
+    } else {
+      setPriceRange([0, priceRange[1]]);
+    }
+  };
+
+  const handleMaxPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setMaxPrice(value);
+    
+    const parsedValue = value ? parsePrice(value) : 1100000;
+    setPriceRange([priceRange[0], parsedValue]);
+  };
 
   return (
     <div className="flex w-full flex-col items-start gap-3 bg-[#F3F3F4] px-3.5 py-[18px] rounded-xl">
       <div className="w-full text-black text-sm font-bold">
         💰Price
       </div>
-      <div className="w-full">
-        <div
-          dangerouslySetInnerHTML={{
-            __html:
-              "<svg id=\"43:926\" layer-name=\"slider\" width=\"208\" height=\"24\" viewBox=\"0 0 208 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\" class=\"w-full h-[16px]\"> <line x1=\"5\" y1=\"11\" x2=\"208\" y2=\"11\" stroke=\"#E7E7E9\" stroke-width=\"2\"></line> <line x1=\"5\" y1=\"11\" x2=\"109\" y2=\"11\" stroke=\"#3D3F50\" stroke-width=\"2\"></line> <g filter=\"url(#filter0_d_43_926)\"> <circle cx=\"12\" cy=\"11\" r=\"8\" fill=\"white\"></circle> <circle cx=\"12\" cy=\"11\" r=\"7.5\" stroke=\"#3D3F50\"></circle> </g> <g filter=\"url(#filter1_d_43_926)\"> <circle cx=\"107\" cy=\"11\" r=\"8\" fill=\"white\"></circle> <circle cx=\"107\" cy=\"11\" r=\"7.5\" stroke=\"#3D3F50\"></circle> </g> <defs> <filter id=\"filter0_d_43_926\" x=\"0\" y=\"0\" width=\"24\" height=\"24\" filterUnits=\"userSpaceOnUse\" color-interpolation-filters=\"sRGB\"> <feFlood flood-opacity=\"0\" result=\"BackgroundImageFix\"></feFlood> <feColorMatrix in=\"SourceAlpha\" type=\"matrix\" values=\"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0\" result=\"hardAlpha\"></feColorMatrix> <feOffset dy=\"1\"></feOffset> <feGaussianBlur stdDeviation=\"2\"></feGaussianBlur> <feComposite in2=\"hardAlpha\" operator=\"out\"></feComposite> <feColorMatrix type=\"matrix\" values=\"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0\"></feColorMatrix> <feBlend mode=\"normal\" in2=\"BackgroundImageFix\" result=\"effect1_dropShadow_43_926\"></feBlend> <feBlend mode=\"normal\" in=\"SourceGraphic\" in2=\"effect1_dropShadow_43_926\" result=\"shape\"></feBlend> </filter> <filter id=\"filter1_d_43_926\" x=\"95\" y=\"0\" width=\"24\" height=\"24\" filterUnits=\"userSpaceOnUse\" color-interpolation-filters=\"sRGB\"> <feFlood flood-opacity=\"0\" result=\"BackgroundImageFix\"></feFlood> <feColorMatrix in=\"SourceAlpha\" type=\"matrix\" values=\"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0\" result=\"hardAlpha\"></feColorMatrix> <feOffset dy=\"1\"></feOffset> <feGaussianBlur stdDeviation=\"2\"></feGaussianBlur> <feComposite in2=\"hardAlpha\" operator=\"out\"></feComposite> <feColorMatrix type=\"matrix\" values=\"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0\"></feColorMatrix> <feBlend mode=\"normal\" in2=\"BackgroundImageFix\" result=\"effect1_dropShadow_43_926\"></feBlend> <feBlend mode=\"normal\" in=\"SourceGraphic\" in2=\"effect1_dropShadow_43_926\" result=\"shape\"></feBlend> </filter> </defs> </svg>",
-          }}
+      <div className="w-full px-1 py-2">
+        <Slider 
+          defaultValue={priceRange} 
+          max={2000000} 
+          step={50000}
+          value={priceRange}
+          onValueChange={handleSliderChange}
+          className="w-full"
         />
       </div>
       <div className="flex items-center gap-1 w-full">
@@ -24,7 +80,7 @@ export function PriceRangeSlider() {
           <input
             type="text"
             value={minPrice}
-            onChange={(e) => setMinPrice(e.target.value)}
+            onChange={handleMinPriceChange}
             placeholder="No Min"
             className="text-[rgba(133,135,145,1)] text-xs bg-transparent border-none outline-none w-full"
           />
@@ -35,7 +91,7 @@ export function PriceRangeSlider() {
           <input
             type="text"
             value={maxPrice}
-            onChange={(e) => setMaxPrice(e.target.value)}
+            onChange={handleMaxPriceChange}
             className="text-[rgba(12,15,36,1)] text-xs bg-transparent border-none outline-none w-full"
           />
         </div>
