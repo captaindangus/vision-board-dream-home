@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { VisionBoardItemComponent } from './VisionBoardItemComponent';
-import { EmptyBoardState } from './EmptyBoardState';
 import { VisionBoardItem } from '@/context/VisionBoardContext';
 import { toast } from 'sonner';
 
@@ -24,8 +23,9 @@ export function VisionBoardItems({
   onItemDragStart,
   onDragEnd
 }: VisionBoardItemsProps) {
+  // No need to show empty state here as it's now handled in VisionBoardGrid
   if (items.length === 0) {
-    return <EmptyBoardState />;
+    return null;
   }
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>, itemId: string) => {

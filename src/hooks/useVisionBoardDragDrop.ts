@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { useVisionBoard } from '@/context/VisionBoardContext';
 import { toast } from 'sonner';
@@ -122,8 +121,6 @@ export function useVisionBoardDragDrop() {
     setDraggedItem(null);
     setDragOperation(null);
     
-    if (!containerRef.current) return;
-    
     try {
       const data = e.dataTransfer.getData('application/json');
       if (!data) {
@@ -149,7 +146,7 @@ export function useVisionBoardDragDrop() {
         toast.success('Item added to vision board');
       }
       
-      // For reordering - check if we're moving an existing item to the end
+      // For reordering - handle item moves
       if (parsedData.action === 'reorder' && parsedData.id) {
         // If we have items, move to the end
         if (items.length > 0) {
@@ -167,8 +164,6 @@ export function useVisionBoardDragDrop() {
     } catch (err) {
       console.error('Error parsing dragged data:', err);
     }
-    
-    setDragOperation(null);
   };
 
   return {

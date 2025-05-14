@@ -32,8 +32,8 @@ export function VisionBoardContent() {
         <VisionBoardTitle />
         <UploadButton />
       </div>
-      <ScrollArea className="flex-1 h-full relative" ref={containerRef}>
-        <div className="min-h-[calc(100vh-200px)] flex flex-col">
+      <ScrollArea className="flex-1 h-full relative overflow-visible" ref={containerRef}>
+        <div className="min-h-full flex flex-col">
           <VisionBoardGrid
             items={items}
             draggedItemId={draggedItem}

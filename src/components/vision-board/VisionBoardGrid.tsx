@@ -45,10 +45,14 @@ export function VisionBoardGrid({
     }
   };
   
+  // Calculate a minimum height - either 700px or full viewport height
+  const minHeight = Math.max(700, window.innerHeight - 200) + 'px';
+  
   return (
     <>
       <div 
-        className="min-h-[600px] relative p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-min"
+        className="relative p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-min"
+        style={{ minHeight }}
         ref={gridRef}
         onDragOver={handleGridDragOver}
         onDrop={handleGridDrop}
@@ -63,12 +67,15 @@ export function VisionBoardGrid({
           onItemDragStart={onItemDragStart}
         />
         
-        {/* Add a hidden drop zone that always covers the bottom area */}
+        {/* Empty state that shows when no items */}
+        {items.length === 0 && <EmptyBoardState />}
+        
+        {/* This is a full-size drop area that covers the entire container */}
         <div 
-          className="absolute left-0 right-0 bottom-0 min-h-[300px] pointer-events-auto" 
+          className="absolute inset-0 pointer-events-auto" 
           onDragOver={handleGridDragOver}
           onDrop={handleGridDrop}
-          style={{ zIndex: items.length > 0 ? -1 : 'auto' }}
+          style={{ zIndex: -1 }}
         />
       </div>
       
