@@ -2,11 +2,8 @@
 import React from 'react';
 import { FeatureCard } from './FeatureCard';
 import { Bus, ShoppingCart } from 'lucide-react';
-import { useVisionBoard } from '@/context/VisionBoardContext';
 
 export function NeighborhoodFeatures() {
-  const { addItem } = useVisionBoard();
-  
   // In a real application, these would come from an API or state
   const features = [
     {

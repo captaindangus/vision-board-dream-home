@@ -1,5 +1,5 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Check, Pencil, Image, X } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -8,7 +8,7 @@ import { useVisionBoard, VisionBoardItem } from '@/context/VisionBoardContext';
 export function VisionBoardContent() {
   const [title, setTitle] = useState("MyVisionBoard 1 🌟");
   const [isEditing, setIsEditing] = useState(false);
-  const { items, updateItemPosition, removeItem } = useVisionBoard();
+  const { items, updateItemPosition, removeItem, addItem } = useVisionBoard();
   const containerRef = useRef<HTMLDivElement>(null);
   const [draggedItem, setDraggedItem] = useState<{id: string, offsetX: number, offsetY: number} | null>(null);
 
@@ -63,6 +63,28 @@ export function VisionBoardContent() {
     setDraggedItem(null);
   };
 
+  // Add event listener for custom drop events
+  useEffect(() => {
+    const handleCustomDrop = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      const { data, position } = customEvent.detail;
+      
+      addItem({
+        ...data,
+        position
+      });
+    };
+
+    const element = containerRef.current;
+    if (element) {
+      element.addEventListener('visionboard:drop', handleCustomDrop);
+      
+      return () => {
+        element.removeEventListener('visionboard:drop', handleCustomDrop);
+      };
+    }
+  }, [addItem]);
+
   return (
     <main 
       className="flex flex-col w-full h-full bg-white px-6 py-8 rounded-[20px]"
@@ -104,7 +126,7 @@ export function VisionBoardContent() {
         </button>
       </div>
       <ScrollArea className="flex-1 relative" ref={containerRef}>
-        <div className="grid grid-cols-3 gap-4 p-4 min-h-[500px] relative">
+        <div className="min-h-[500px] relative p-4">
           {items.length > 0 ? (
             items.map((item) => (
               <VisionBoardItemComponent

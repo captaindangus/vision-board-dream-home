@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useCallback } from 'react';
 
 export interface VisionBoardItem {
   id: string;
@@ -21,7 +21,7 @@ export interface VisionBoardItem {
 
 interface VisionBoardContextType {
   items: VisionBoardItem[];
-  addItem: (item: Omit<VisionBoardItem, 'id' | 'position'>) => void;
+  addItem: (item: Omit<VisionBoardItem, 'id'>) => void;
   updateItemPosition: (id: string, position: { x: number; y: number }) => void;
   removeItem: (id: string) => void;
 }
@@ -39,29 +39,39 @@ export const useVisionBoard = () => {
 export const VisionBoardProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<VisionBoardItem[]>([]);
 
-  const addItem = (newItem: Omit<VisionBoardItem, 'id' | 'position'>) => {
+  const addItem = useCallback((newItem: Omit<VisionBoardItem, 'id'>) => {
     const id = `item-${Date.now()}`;
-    // Set initial position with some randomness to avoid perfect stacking
-    const position = {
+    
+    // If position is not provided, set some default with randomness
+    const position = newItem.position || {
       x: Math.floor(Math.random() * 100),
       y: Math.floor(Math.random() * 100),
     };
 
-    setItems((prev) => [...prev, { ...newItem, id, position }]);
-  };
+    const item = { ...newItem, id, position };
+    console.log('Adding new item to vision board:', item);
+    
+    setItems((prev) => [...prev, item]);
+  }, []);
 
-  const updateItemPosition = (id: string, position: { x: number; y: number }) => {
+  const updateItemPosition = useCallback((id: string, position: { x: number; y: number }) => {
     setItems((prev) =>
       prev.map((item) => (item.id === id ? { ...item, position } : item))
     );
-  };
+  }, []);
 
-  const removeItem = (id: string) => {
+  const removeItem = useCallback((id: string) => {
+    console.log('Removing item from vision board:', id);
     setItems((prev) => prev.filter((item) => item.id !== id));
-  };
+  }, []);
+
+  const contextValue = React.useMemo(
+    () => ({ items, addItem, updateItemPosition, removeItem }),
+    [items, addItem, updateItemPosition, removeItem]
+  );
 
   return (
-    <VisionBoardContext.Provider value={{ items, addItem, updateItemPosition, removeItem }}>
+    <VisionBoardContext.Provider value={contextValue}>
       {children}
     </VisionBoardContext.Provider>
   );

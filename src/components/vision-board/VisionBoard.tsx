@@ -4,7 +4,7 @@ import { VisionBoardHeader } from './VisionBoardHeader';
 import { VisionBoardSidebar } from './VisionBoardSidebar';
 import { VisionBoardContent } from './VisionBoardContent';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { VisionBoardProvider, useVisionBoard } from '@/context/VisionBoardContext';
+import { VisionBoardProvider } from '@/context/VisionBoardContext';
 
 export function VisionBoard() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -47,10 +47,10 @@ export function VisionBoard() {
   };
 
   return (
-    <VisionBoardProvider>
-      <div className="flex flex-col w-full h-screen bg-[#F7F7F8]">
-        <VisionBoardHeader />
-        <div className="flex flex-1 gap-5 p-5 pb-5 max-md:flex-col relative overflow-hidden">
+    <div className="flex flex-col w-full h-screen bg-[#F7F7F8]">
+      <VisionBoardHeader />
+      <div className="flex flex-1 gap-5 p-5 pb-5 max-md:flex-col relative overflow-hidden">
+        <VisionBoardProvider>
           <div className={`transition-all duration-300 ${sidebarCollapsed ? 'w-0 overflow-hidden' : 'w-[351px] max-md:w-full'}`}>
             <VisionBoardSidebar />
           </div>
@@ -60,43 +60,11 @@ export function VisionBoard() {
             onDragOver={handleDragOver}
             ref={contentRef}
           >
-            <VisionBoardDropZone />
+            <VisionBoardContent />
           </div>
           <SidebarToggle isCollapsed={sidebarCollapsed} onClick={toggleSidebar} />
-        </div>
+        </VisionBoardProvider>
       </div>
-    </VisionBoardProvider>
-  );
-}
-
-function VisionBoardDropZone() {
-  const { addItem } = useVisionBoard();
-  const contentRef = useRef<HTMLDivElement>(null);
-
-  React.useEffect(() => {
-    const handleCustomDrop = (e: Event) => {
-      const customEvent = e as CustomEvent;
-      const { data, position } = customEvent.detail;
-      
-      addItem({
-        ...data,
-        position
-      });
-    };
-
-    const element = contentRef.current;
-    if (element) {
-      element.addEventListener('visionboard:drop', handleCustomDrop);
-      
-      return () => {
-        element.removeEventListener('visionboard:drop', handleCustomDrop);
-      };
-    }
-  }, [addItem]);
-
-  return (
-    <div ref={contentRef} className="h-full">
-      <VisionBoardContent />
     </div>
   );
 }

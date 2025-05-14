@@ -1,10 +1,7 @@
 
 import React from 'react';
-import { useVisionBoard } from '@/context/VisionBoardContext';
 
 export function HomeFeatures() {
-  const { addItem } = useVisionBoard();
-  
   // More diverse set of home features with different types
   const features = [
     { 
