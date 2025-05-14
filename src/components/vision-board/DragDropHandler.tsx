@@ -12,7 +12,8 @@ interface DragDropHandlerProps {
 export function useDragDrop(containerRef: React.RefObject<HTMLDivElement>, columns: number = 12) {
   const [draggedItem, setDraggedItem] = useState<{id: string, offsetX: number, offsetY: number} | null>(null);
   const { items, updateItemPosition, removeItem, addItem } = useVisionBoard();
-  const dragImageRef = useRef<HTMLDivElement | null>(null);
+  // Change the type here to HTMLElement instead of HTMLDivElement
+  const dragImageRef = useRef<HTMLElement | null>(null);
 
   const handleItemMouseDown = (
     e: React.MouseEvent<HTMLDivElement>,
