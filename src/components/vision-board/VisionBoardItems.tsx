@@ -142,7 +142,7 @@ export function VisionBoardItems({
             onDragOver={(e) => handleDragOver(e, item.id)}
             onDragLeave={handleDragLeave}
             onDrop={(e) => handleDrop(e, item.id)}
-            onDragStart={onDragStart}
+            onDragStart={onItemDragStart}
             onDragEnd={onDragEnd}
           />
         </div>
