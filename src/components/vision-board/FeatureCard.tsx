@@ -35,18 +35,35 @@ export function FeatureCard({
     }));
     e.dataTransfer.effectAllowed = "copy";
     
-    // Create a drag image that represents the card
+    // Create a proper drag image that better represents the card
     if (cardRef.current) {
+      const rect = cardRef.current.getBoundingClientRect();
+      
       // Create a clone of the card to use as the drag image
       const dragImage = cardRef.current.cloneNode(true) as HTMLElement;
-      dragImage.style.width = cardRef.current.offsetWidth + 'px';
-      dragImage.style.opacity = '0.8';
+      
+      // Set the exact same styles to ensure it looks identical
+      dragImage.style.width = `${rect.width}px`;
+      dragImage.style.height = `${rect.height}px`;
+      dragImage.style.borderRadius = '0.75rem'; // rounded-xl
+      dragImage.style.overflow = 'hidden';
+      dragImage.style.background = '#F3F3F4';
+      dragImage.style.padding = '12px';
+      dragImage.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)';
+      dragImage.style.opacity = '0.9';
       dragImage.style.position = 'absolute';
       dragImage.style.top = '-1000px';
+      dragImage.style.left = '0';
+      dragImage.style.pointerEvents = 'none';
+      dragImage.style.zIndex = '9999';
+      
       document.body.appendChild(dragImage);
       
-      // Set the drag image
-      e.dataTransfer.setDragImage(dragImage, 40, 40);
+      // Calculate proper offset to make dragging feel natural
+      const offsetX = e.clientX - rect.left;
+      const offsetY = e.clientY - rect.top;
+      
+      e.dataTransfer.setDragImage(dragImage, offsetX, offsetY);
       
       // Remove the drag image after the drag operation
       setTimeout(() => {

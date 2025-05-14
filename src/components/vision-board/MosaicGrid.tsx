@@ -115,9 +115,45 @@ function MosaicItem({
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
     e.stopPropagation();
+    
+    // Call the parent drag start handler
     if (onDragStart) {
       onDragStart(e, item.id);
     }
+    
+    // Create a perfect clone of the element as the drag image
+    const dragElement = e.currentTarget;
+    const rect = dragElement.getBoundingClientRect();
+    
+    // Create a clone of the element to use as the drag image
+    const dragImage = dragElement.cloneNode(true) as HTMLElement;
+    
+    // Set the exact same styles to ensure it looks identical
+    dragImage.style.width = `${rect.width}px`;
+    dragImage.style.height = `${rect.height}px`;
+    dragImage.style.borderRadius = '0.75rem'; // rounded-xl
+    dragImage.style.overflow = 'hidden';
+    dragImage.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)';
+    dragImage.style.opacity = '0.9';
+    dragImage.style.position = 'absolute';
+    dragImage.style.top = '-1000px';
+    dragImage.style.left = '0';
+    dragImage.style.pointerEvents = 'none';
+    dragImage.style.zIndex = '9999';
+    
+    // Add the clone to the body temporarily
+    document.body.appendChild(dragImage);
+    
+    // Position the drag image exactly where the mouse is within the original element
+    const offsetX = e.clientX - rect.left;
+    const offsetY = e.clientY - rect.top;
+    
+    e.dataTransfer.setDragImage(dragImage, offsetX, offsetY);
+    
+    // Remove the drag image element after the drag operation has started
+    setTimeout(() => {
+      document.body.removeChild(dragImage);
+    }, 0);
   };
 
   return (
