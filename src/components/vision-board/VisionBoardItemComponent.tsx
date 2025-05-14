@@ -28,6 +28,7 @@ export function VisionBoardItemComponent({
         width: item.size?.width || 'auto',
         height: item.size?.height || 'auto',
         gridColumn: `span 1`,
+        margin: '8px', // Add margin around items
       }}
       onMouseDown={onMouseDown}
     >

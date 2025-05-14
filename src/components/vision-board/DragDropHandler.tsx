@@ -12,6 +12,7 @@ interface DragDropHandlerProps {
 export function useDragDrop(containerRef: React.RefObject<HTMLDivElement>, columns: number = 12) {
   const [draggedItem, setDraggedItem] = useState<{id: string, offsetX: number, offsetY: number} | null>(null);
   const { items, updateItemPosition, removeItem, addItem } = useVisionBoard();
+  const dragImageRef = useRef<HTMLDivElement | null>(null);
 
   const handleItemMouseDown = (
     e: React.MouseEvent<HTMLDivElement>,
@@ -26,6 +27,27 @@ export function useDragDrop(containerRef: React.RefObject<HTMLDivElement>, colum
     const offsetY = e.clientY - rect.top;
     
     setDraggedItem({ id, offsetX, offsetY });
+    
+    // Create drag image element
+    const itemElement = e.currentTarget.cloneNode(true) as HTMLElement;
+    itemElement.style.width = `${(e.currentTarget as HTMLElement).offsetWidth}px`;
+    itemElement.style.height = `${(e.currentTarget as HTMLElement).offsetHeight}px`;
+    itemElement.style.opacity = '0.8';
+    itemElement.style.position = 'fixed';
+    itemElement.style.pointerEvents = 'none';
+    itemElement.style.zIndex = '9999';
+    itemElement.style.transform = 'translate(-1000px, -1000px)'; // Hide it initially
+    itemElement.id = 'drag-image';
+    
+    // Remove any existing drag image
+    const existingDragImage = document.getElementById('drag-image');
+    if (existingDragImage) {
+      document.body.removeChild(existingDragImage);
+    }
+    
+    // Add to DOM
+    document.body.appendChild(itemElement);
+    dragImageRef.current = itemElement;
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -46,10 +68,21 @@ export function useDragDrop(containerRef: React.RefObject<HTMLDivElement>, colum
     const boundedY = Math.max(0, snappedY);
     
     updateItemPosition(draggedItem.id, { x: boundedX, y: boundedY });
+    
+    // Update drag image position
+    if (dragImageRef.current) {
+      dragImageRef.current.style.transform = `translate(${e.clientX - draggedItem.offsetX}px, ${e.clientY - draggedItem.offsetY}px)`;
+    }
   };
 
   const handleMouseUp = () => {
     setDraggedItem(null);
+    
+    // Remove drag image
+    if (dragImageRef.current) {
+      document.body.removeChild(dragImageRef.current);
+      dragImageRef.current = null;
+    }
   };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
@@ -70,9 +103,13 @@ export function useDragDrop(containerRef: React.RefObject<HTMLDivElement>, colum
       // Apply snap-to-grid before adding the item
       const { x: snappedX, y: snappedY } = calculateSnapToGrid(x, y, containerRef, columns);
       
+      // Add padding to ensure items don't overlap
+      const paddedX = snappedX + 8;
+      const paddedY = snappedY + 8;
+      
       addItem({
         ...parsedData,
-        position: { x: snappedX, y: snappedY }
+        position: { x: paddedX, y: paddedY }
       });
     } catch (err) {
       console.error('Error parsing dragged data:', err);
@@ -84,6 +121,15 @@ export function useDragDrop(containerRef: React.RefObject<HTMLDivElement>, colum
     e.preventDefault();
     e.dataTransfer.dropEffect = "copy";
   };
+
+  // Clean up drag image on unmount
+  useEffect(() => {
+    return () => {
+      if (dragImageRef.current) {
+        document.body.removeChild(dragImageRef.current);
+      }
+    };
+  }, []);
 
   // Add event listener for custom drop events
   useEffect(() => {
@@ -100,9 +146,13 @@ export function useDragDrop(containerRef: React.RefObject<HTMLDivElement>, colum
           columns
         );
         
+        // Add padding to ensure items don't overlap
+        const paddedX = snappedX + 8;
+        const paddedY = snappedY + 8;
+        
         addItem({
           ...data,
-          position: { x: snappedX, y: snappedY }
+          position: { x: paddedX, y: paddedY }
         });
       }
     };
