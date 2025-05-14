@@ -22,6 +22,11 @@ export function FeatureCard({
   const handleDragStart = (e: React.DragEvent) => {
     if (!draggable) return;
     
+    // Set dragImage to make drag feedback look better
+    const img = new Image();
+    img.src = imageUrl;
+    e.dataTransfer.setDragImage(img, 0, 0);
+    
     e.dataTransfer.setData("application/json", JSON.stringify({
       type: 'neighborhoodFeature',
       content: {
@@ -36,7 +41,7 @@ export function FeatureCard({
   
   return (
     <div 
-      className={`flex w-full h-[80px] items-center gap-2 bg-[#F3F3F4] p-3 rounded-xl hover:bg-gray-100 transition-colors ${draggable ? 'cursor-grab' : 'cursor-pointer'}`}
+      className={`flex w-full h-[80px] items-center gap-2 bg-[#F3F3F4] p-3 rounded-xl hover:bg-gray-100 transition-colors ${draggable ? 'cursor-grab active:cursor-grabbing' : 'cursor-pointer'}`}
       onClick={onClick}
       draggable={draggable}
       onDragStart={handleDragStart}

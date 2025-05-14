@@ -38,6 +38,12 @@ export function HomeFeatures() {
 
   const handleDragStart = (e: React.DragEvent, feature: any) => {
     console.log('Drag started for feature:', feature);
+    
+    // Set dragImage to make drag feedback look better
+    const img = new Image();
+    img.src = feature.imageUrl;
+    e.dataTransfer.setDragImage(img, 0, 0);
+    
     e.dataTransfer.setData("application/json", JSON.stringify({
       type: 'homeFeature',
       content: {
@@ -54,7 +60,7 @@ export function HomeFeatures() {
       {features.map((feature) => (
         <div 
           key={feature.id} 
-          className="relative group cursor-grab"
+          className="relative group cursor-grab active:cursor-grabbing"
           draggable
           onDragStart={(e) => handleDragStart(e, feature)}
         >

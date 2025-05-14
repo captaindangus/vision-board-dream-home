@@ -1,5 +1,5 @@
 
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { VisionBoardTitle } from './VisionBoardTitle';
 import { VisionBoardItems } from './VisionBoardItems';
@@ -39,14 +39,16 @@ export function VisionBoardContent() {
         <UploadButton />
       </div>
       <ScrollArea className="flex-1 relative" ref={containerRef}>
-        <GridSystem columns={columnCount}>
-          <VisionBoardItems 
-            items={items}
-            draggedItemId={draggedItem?.id || null}
-            onItemMouseDown={handleItemMouseDown}
-            onItemRemove={removeItem}
-          />
-        </GridSystem>
+        <div className="min-h-[800px]">
+          <GridSystem columns={columnCount}>
+            <VisionBoardItems 
+              items={items}
+              draggedItemId={draggedItem?.id || null}
+              onItemMouseDown={handleItemMouseDown}
+              onItemRemove={removeItem}
+            />
+          </GridSystem>
+        </div>
       </ScrollArea>
     </main>
   );

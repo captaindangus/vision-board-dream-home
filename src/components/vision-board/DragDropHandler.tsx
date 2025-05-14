@@ -80,6 +80,7 @@ export function useDragDrop(containerRef: React.RefObject<HTMLDivElement>, colum
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    // This is crucial to enable dropping
     e.preventDefault();
     e.dataTransfer.dropEffect = "copy";
   };
