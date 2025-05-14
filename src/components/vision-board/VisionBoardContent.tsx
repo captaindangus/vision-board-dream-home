@@ -6,6 +6,7 @@ import { UploadButton } from './UploadButton';
 import { useVisionBoard } from '@/context/VisionBoardContext';
 import { VisionBoardGrid } from './VisionBoardGrid';
 import { useVisionBoardDragDrop } from '@/hooks/useVisionBoardDragDrop';
+import { Separator } from '@/components/ui/separator';
 
 export function VisionBoardContent() {
   const { removeItem, reorderItems } = useVisionBoard();
@@ -32,6 +33,7 @@ export function VisionBoardContent() {
         <VisionBoardTitle />
         <UploadButton />
       </div>
+      
       <ScrollArea className="flex-1 h-full relative overflow-visible" ref={containerRef}>
         <div className="min-h-full flex flex-col">
           <VisionBoardGrid
