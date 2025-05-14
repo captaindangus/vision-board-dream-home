@@ -27,8 +27,9 @@ export function VisionBoardItemComponent({
 }: VisionBoardItemComponentProps) {
   const [isHovering, setIsHovering] = useState(false);
   
-  // Draggable items for reordering
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    
     // Call external drag start handler if provided
     if (onDragStart) {
       onDragStart(e, item.id);

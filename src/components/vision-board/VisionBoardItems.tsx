@@ -53,11 +53,13 @@ export function VisionBoardItems({
       if (!data) return;
       
       const parsedData = JSON.parse(data);
+      console.log("Item drop detected with data:", parsedData);
       
       // Handle reordering of existing board items
       if (parsedData.action === 'reorder' && parsedData.id) {
         // Don't reorder if dropping onto itself
         if (parsedData.id !== targetItemId) {
+          console.log(`Reordering: Moving ${parsedData.id} to ${targetItemId}`);
           onItemReorder(parsedData.id, targetItemId);
           toast.success('Item reordered');
         }

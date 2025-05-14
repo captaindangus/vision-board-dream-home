@@ -9,6 +9,9 @@ export function useVisionBoardDragDrop() {
   const { items, addItem, removeItem, reorderItems } = useVisionBoard();
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Store the drag type to differentiate between reordering and adding new items
+  const [dragOperation, setDragOperation] = useState<'reorder' | 'add' | null>(null);
+
   // Add event listener for custom drop events
   useEffect(() => {
     if (!containerRef.current) return;
@@ -55,6 +58,7 @@ export function useVisionBoardDragDrop() {
     
     setIsDragging(true);
     setDraggedItem({ id });
+    setDragOperation('reorder');
     
     // Create a clone of the entire dragged element as the drag image
     const element = e.currentTarget;
@@ -81,43 +85,25 @@ export function useVisionBoardDragDrop() {
   const handleMouseUp = () => {
     setDraggedItem(null);
     setIsDragging(false);
+    setDragOperation(null);
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     
-    // Set appropriate drop effect based on the drag operation
-    try {
-      const dataTransfer = e.dataTransfer;
-      
-      // Try to access the data - this might fail due to browser security restrictions
-      // So we use a try-catch block
-      let data = {};
-      try {
-        const jsonData = e.dataTransfer.getData('application/json');
-        if (jsonData) {
-          data = JSON.parse(jsonData);
-        }
-      } catch (err) {
-        // Fallback to type detection based on the available types
-        const hasReorderType = Array.from(dataTransfer.types).includes('application/json');
-        if (hasReorderType) {
-          dataTransfer.dropEffect = "move";
-          return;
-        }
+    // Default drop effect
+    let dropEffect = "copy";
+    
+    // Try to detect if this is a reordering operation
+    const types = Array.from(e.dataTransfer.types);
+    if (types.includes('application/json')) {
+      // This could be a reorder operation, try to confirm
+      if (dragOperation === 'reorder' || draggedItem !== null) {
+        dropEffect = "move";
       }
-      
-      // If we have json data with an action of reorder, set move effect
-      if ('action' in data && data.action === 'reorder') {
-        dataTransfer.dropEffect = "move";
-      } else {
-        // Default for other types of drags (like from sidebar)
-        dataTransfer.dropEffect = "copy";
-      }
-    } catch (err) {
-      // If we can't parse the data or there's no data yet, default to copy
-      e.dataTransfer.dropEffect = "copy";
     }
+    
+    e.dataTransfer.dropEffect = dropEffect as DataTransfer['dropEffect'];
   };
 
   const handleGridDrop = (e: React.DragEvent<HTMLDivElement>) => {
@@ -181,7 +167,7 @@ export function useVisionBoardDragDrop() {
         toast.success('Item added to vision board');
       }
       
-      // For reordering - but only if dropped directly on the grid, not on an item
+      // For reordering - check if we're moving an existing item
       if (parsedData.action === 'reorder' && parsedData.id) {
         // Check if we're dropping directly on the grid, not on an item
         const dropTarget = e.target as HTMLElement;
@@ -200,6 +186,8 @@ export function useVisionBoardDragDrop() {
     } catch (err) {
       console.error('Error parsing dragged data:', err);
     }
+    
+    setDragOperation(null);
   };
 
   return {
