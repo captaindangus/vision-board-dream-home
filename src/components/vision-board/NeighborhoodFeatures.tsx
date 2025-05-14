@@ -27,19 +27,19 @@ export function NeighborhoodFeatures() {
     },
     { 
       id: 4, 
-      imageUrl: "https://images.unsplash.com/photo-1581056771107-24247a210b28?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", 
+      imageUrl: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", 
       type: "School District",
       description: "Neighborhoods with quality educational options" 
     },
     { 
       id: 5, 
-      imageUrl: "https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", 
+      imageUrl: "https://images.unsplash.com/photo-1472396961693-142e6e269027?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", 
       type: "Park Nearby",
       description: "Homes with easy access to green spaces" 
     },
     { 
       id: 6, 
-      imageUrl: "https://images.unsplash.com/photo-1511322586174-c207ab4e2bfe?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", 
+      imageUrl: "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", 
       type: "Shopping",
       description: "Close to retail centers and shopping options" 
     }
