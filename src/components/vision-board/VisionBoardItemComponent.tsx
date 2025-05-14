@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { VisionBoardItem } from '@/context/VisionBoardContext';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
@@ -21,6 +21,8 @@ export function VisionBoardItemComponent({
   onDragOver,
   onDrop
 }: VisionBoardItemComponentProps) {
+  const [isHovering, setIsHovering] = useState(false);
+  
   // Draggable items for reordering
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
     e.dataTransfer.setData('application/json', JSON.stringify({
@@ -36,6 +38,8 @@ export function VisionBoardItemComponent({
         isDragging ? 'z-50 opacity-90' : 'z-10'
       }`}
       onMouseDown={onMouseDown}
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
       draggable="true"
       onDragStart={handleDragStart}
       onDragOver={onDragOver}
@@ -43,16 +47,18 @@ export function VisionBoardItemComponent({
       data-item-id={item.id}
     >
       <div className="relative">
-        <button 
-          onClick={(e) => {
-            e.stopPropagation();
-            onRemove();
-          }}
-          className="absolute top-1 right-1 bg-white rounded-full p-1 z-20 opacity-80 hover:opacity-100 shadow-sm"
-          aria-label="Remove item"
-        >
-          <X className="w-4 h-4" />
-        </button>
+        {isHovering && (
+          <button 
+            onClick={(e) => {
+              e.stopPropagation();
+              onRemove();
+            }}
+            className="absolute top-1 right-1 bg-white rounded-full p-1 z-20 opacity-80 hover:opacity-100 shadow-sm transition-opacity"
+            aria-label="Remove item"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        )}
         
         {item.type === 'image' || item.type === 'homeFeature' ? (
           <div className="relative">
