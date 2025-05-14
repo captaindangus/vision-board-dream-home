@@ -60,21 +60,15 @@ export function useVisionBoardDragDrop() {
     setDraggedItem({ id });
     setDragOperation('reorder');
     
-    // Create a clone of the dragged element as the drag image
+    // Create a clone of the entire dragged element as the drag image
     const element = e.currentTarget;
     const rect = element.getBoundingClientRect();
     const dragImage = element.cloneNode(true) as HTMLElement;
     
     dragImage.style.width = rect.width + 'px';
-    dragImage.style.height = rect.height + 'px';
     dragImage.style.opacity = '0.8';
     dragImage.style.position = 'absolute';
     dragImage.style.top = '-1000px';
-    dragImage.style.left = '0';
-    dragImage.style.margin = '0';
-    dragImage.style.transform = 'none';
-    dragImage.className = 'rounded-xl overflow-hidden shadow-md bg-white';
-    
     document.body.appendChild(dragImage);
     
     e.dataTransfer.setDragImage(

@@ -47,20 +47,12 @@ export function VisionBoardItemComponent({
     e.dataTransfer.setData('application/json', JSON.stringify(dragData));
     e.dataTransfer.effectAllowed = "move";
     
-    // Create a custom drag image that's just the card itself
+    // Create a copy of the element as the drag image
     const dragImage = e.currentTarget.cloneNode(true) as HTMLElement;
-    
-    // Preserve the original dimensions but remove any grid-related classes
     dragImage.style.width = e.currentTarget.offsetWidth + 'px';
-    dragImage.style.height = e.currentTarget.offsetHeight + 'px';
     dragImage.style.opacity = '0.8';
     dragImage.style.position = 'absolute';
     dragImage.style.top = '-1000px';
-    dragImage.style.left = '0';
-    dragImage.style.margin = '0';
-    dragImage.style.transform = 'none';
-    dragImage.className = 'rounded-xl overflow-hidden shadow-md bg-white';
-    
     document.body.appendChild(dragImage);
     
     e.dataTransfer.setDragImage(
@@ -82,7 +74,7 @@ export function VisionBoardItemComponent({
 
   return (
     <div
-      className={`rounded-xl overflow-hidden shadow-md bg-white cursor-move w-full h-full ${
+      className={`rounded-xl overflow-hidden shadow-md bg-white cursor-move w-full ${
         isDragging ? 'z-50 opacity-90' : 'z-10'
       }`}
       onMouseDown={onMouseDown}
@@ -96,7 +88,7 @@ export function VisionBoardItemComponent({
       onDrop={onDrop}
       data-item-id={item.id}
     >
-      <div className="relative h-full">
+      <div className="relative">
         {isHovering && (
           <button 
             onClick={(e) => {
@@ -111,8 +103,8 @@ export function VisionBoardItemComponent({
         )}
         
         {item.type === 'image' || item.type === 'homeFeature' ? (
-          <div className="relative h-full">
-            {item.type === 'image' ? (
+          <div className="relative">
+            <AspectRatio ratio={4/3} className="w-full">
               <img
                 src={item.content.imageUrl}
                 alt={item.content.title || "Vision board image"}
@@ -122,19 +114,7 @@ export function VisionBoardItemComponent({
                   (e.target as HTMLImageElement).src = 'https://placehold.co/600x400/png';
                 }}
               />
-            ) : (
-              <AspectRatio ratio={4/3} className="w-full">
-                <img
-                  src={item.content.imageUrl}
-                  alt={item.content.title || "Home feature"}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    // Fallback for broken images
-                    (e.target as HTMLImageElement).src = 'https://placehold.co/600x400/png';
-                  }}
-                />
-              </AspectRatio>
-            )}
+            </AspectRatio>
             {item.content.title && (
               <div className="absolute bottom-2 left-2 bg-black bg-opacity-60 px-2 py-1 rounded text-white text-xs">
                 {item.content.title}
@@ -142,12 +122,12 @@ export function VisionBoardItemComponent({
             )}
           </div>
         ) : (
-          <div className="bg-[#F3F3F4] p-3 rounded-xl w-full h-full">
+          <div className="bg-[#F3F3F4] p-3 rounded-xl w-full">
             <div className="text-black text-sm font-bold truncate mb-1">
               {item.content.title}
             </div>
             {item.content.description && (
-              <div className="text-black text-xs max-h-[150px] overflow-y-auto">
+              <div className="text-black text-xs">
                 {item.content.description}
               </div>
             )}
