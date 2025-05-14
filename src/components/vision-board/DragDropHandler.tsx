@@ -27,20 +27,8 @@ export function useDragDrop(containerRef: React.RefObject<HTMLDivElement>) {
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!draggedItem || !containerRef.current) return;
-    
-    const containerRect = containerRef.current.getBoundingClientRect();
-    const scrollTop = containerRef.current.scrollTop;
-    
-    // Calculate position relative to the container, accounting for scroll and click offset
-    const x = e.clientX - containerRect.left - draggedItem.offsetX;
-    const y = e.clientY - containerRect.top - draggedItem.offsetY + scrollTop;
-    
-    // Ensure item stays within container bounds
-    const boundedX = Math.max(0, Math.min(x, containerRect.width - 150));
-    const boundedY = Math.max(0, y);
-    
-    updateItemPosition(draggedItem.id, { x: boundedX, y: boundedY });
+    // We no longer need to calculate absolute position since we're using a grid
+    // Just indicate which item is being dragged
   };
 
   const handleMouseUp = () => {
@@ -57,16 +45,11 @@ export function useDragDrop(containerRef: React.RefObject<HTMLDivElement>) {
       const parsedData = JSON.parse(data);
       console.log("Drop event detected with data:", parsedData);
       
-      // Calculate position relative to the container
-      const containerRect = containerRef.current.getBoundingClientRect();
-      const position = { 
-        x: e.clientX - containerRect.left, 
-        y: e.clientY - containerRect.top + (containerRef.current.scrollTop || 0)
-      };
-      
+      // For grid layout, we don't need exact positioning
+      // We're adding the item to the end of the list now
       addItem({
         ...parsedData,
-        position
+        position: { x: 0, y: 0 } // Position doesn't matter for grid layout
       });
     } catch (err) {
       console.error('Error parsing dragged data:', err);
@@ -82,11 +65,11 @@ export function useDragDrop(containerRef: React.RefObject<HTMLDivElement>) {
   useEffect(() => {
     const handleCustomDrop = (e: Event) => {
       const customEvent = e as CustomEvent;
-      const { data, position } = customEvent.detail;
+      const { data } = customEvent.detail;
       
       addItem({
         ...data,
-        position
+        position: { x: 0, y: 0 } // Position doesn't matter for grid layout
       });
     };
 

@@ -19,15 +19,9 @@ export function VisionBoardItemComponent({
 }: VisionBoardItemComponentProps) {
   return (
     <div
-      className={`absolute rounded-xl overflow-hidden shadow-md bg-white cursor-move ${
+      className={`rounded-xl overflow-hidden shadow-md bg-white cursor-move w-full ${
         isDragging ? 'z-50 opacity-90' : 'z-10'
       }`}
-      style={{
-        left: `${item.position.x}px`,
-        top: `${item.position.y}px`,
-        width: item.size?.width || 'auto',
-        height: item.size?.height || 'auto',
-      }}
       onMouseDown={onMouseDown}
     >
       <div className="relative">
@@ -44,7 +38,7 @@ export function VisionBoardItemComponent({
         
         {item.type === 'image' || item.type === 'homeFeature' ? (
           <div className="relative">
-            <AspectRatio ratio={4/3} className="min-w-[200px] max-w-[350px]">
+            <AspectRatio ratio={4/3} className="w-full">
               <img
                 src={item.content.imageUrl}
                 alt={item.content.title || "Vision board image"}
@@ -62,7 +56,7 @@ export function VisionBoardItemComponent({
             )}
           </div>
         ) : (
-          <div className="bg-[#F3F3F4] p-3 rounded-xl min-w-[200px]">
+          <div className="bg-[#F3F3F4] p-3 rounded-xl w-full">
             <div className="text-black text-sm font-bold truncate mb-1">
               {item.content.title}
             </div>

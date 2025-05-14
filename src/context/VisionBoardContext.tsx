@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode, useCallback, useEffect } from 'react';
 
 export interface VisionBoardItem {
@@ -62,11 +61,8 @@ export const VisionBoardProvider = ({ children }: { children: ReactNode }) => {
   const addItem = useCallback((newItem: Omit<VisionBoardItem, 'id'>) => {
     const id = `item-${Date.now()}`;
     
-    // If position is not provided, set some default with randomness
-    const position = newItem.position || {
-      x: Math.floor(Math.random() * 100),
-      y: Math.floor(Math.random() * 100),
-    };
+    // We no longer need random positioning, but keep the position property for compatibility
+    const position = { x: 0, y: 0 };
 
     const item = { ...newItem, id, position };
     console.log('Adding new item to vision board:', item);
@@ -75,10 +71,8 @@ export const VisionBoardProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const updateItemPosition = useCallback((id: string, position: { x: number; y: number }) => {
-    console.log('Updating item position:', id, position);
-    setItems((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, position } : item))
-    );
+    // We no longer need this for grid layout, but keep the method for compatibility
+    console.log('Position updates are ignored in grid layout');
   }, []);
 
   const removeItem = useCallback((id: string) => {

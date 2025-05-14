@@ -24,13 +24,14 @@ export function VisionBoardItems({
   return (
     <>
       {items.map((item) => (
-        <VisionBoardItemComponent
-          key={item.id}
-          item={item}
-          onMouseDown={(e) => onItemMouseDown(e, item.id)}
-          onRemove={() => onItemRemove(item.id)}
-          isDragging={draggedItemId === item.id}
-        />
+        <div key={item.id} className="h-fit w-full">
+          <VisionBoardItemComponent
+            item={item}
+            onMouseDown={(e) => onItemMouseDown(e, item.id)}
+            onRemove={() => onItemRemove(item.id)}
+            isDragging={draggedItemId === item.id}
+          />
+        </div>
       ))}
     </>
   );
