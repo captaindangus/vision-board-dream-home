@@ -1,11 +1,8 @@
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { VisionBoardItems } from './VisionBoardItems';
 import { VisionBoardItem } from '@/context/VisionBoardContext';
 import { EmptyBoardState } from './EmptyBoardState';
-import { MosaicGrid } from './MosaicGrid';
-import { useMosaicLayout } from '@/hooks/useMosaicLayout';
-import { MosaicToggle } from './MosaicToggle';
 
 interface VisionBoardGridProps {
   items: VisionBoardItem[];
@@ -34,8 +31,6 @@ export function VisionBoardGrid({
   gridRef,
   isDragging
 }: VisionBoardGridProps) {
-  const { config, toggleMosaicLayout } = useMosaicLayout();
-  
   const handleGridDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     onDragOver(e);
@@ -62,42 +57,23 @@ export function VisionBoardGrid({
   
   return (
     <>
-      <div className="flex justify-between items-center mb-4 px-4">
-        <MosaicToggle 
-          isMosaicEnabled={config.enableMosaic}
-          onToggle={toggleMosaicLayout}
-        />
-      </div>
-      
       <div 
-        className={`relative p-4 ${!config.enableMosaic ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-min' : ''}`}
+        className="relative p-4 masonry-grid"
         style={{ minHeight }}
         ref={gridRef}
         onDragOver={handleGridDragOver}
         onDrop={handleGridDrop}
         data-vision-board-container="true"
       >
-        {config.enableMosaic ? (
-          <MosaicGrid 
-            items={items}
-            draggedItemId={draggedItemId}
-            onItemMouseDown={onItemMouseDown}
-            onItemRemove={onItemRemove}
-            onItemDragStart={onItemDragStart}
-            onDragEnd={onDragEnd}
-            isDragging={isDragging}
-          />
-        ) : (
-          <VisionBoardItems 
-            items={items}
-            draggedItemId={draggedItemId}
-            onItemMouseDown={onItemMouseDown}
-            onItemRemove={onItemRemove}
-            onItemReorder={onItemReorder}
-            onItemDragStart={onItemDragStart}
-            onDragEnd={onDragEnd}
-          />
-        )}
+        <VisionBoardItems 
+          items={items}
+          draggedItemId={draggedItemId}
+          onItemMouseDown={onItemMouseDown}
+          onItemRemove={onItemRemove}
+          onItemReorder={onItemReorder}
+          onItemDragStart={onItemDragStart}
+          onDragEnd={onDragEnd}
+        />
         
         {/* Empty state that shows when no items */}
         {items.length === 0 && <EmptyBoardState />}

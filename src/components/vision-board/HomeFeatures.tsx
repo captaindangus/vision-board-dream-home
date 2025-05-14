@@ -60,38 +60,32 @@ export function HomeFeatures() {
     }));
     e.dataTransfer.effectAllowed = "copy";
     
-    // Create a better drag image
-    const imgElement = e.currentTarget as HTMLElement;
-    const rect = imgElement.getBoundingClientRect();
-    
-    // Create a clone of the element with proper styling
-    const dragImage = imgElement.cloneNode(true) as HTMLElement;
-    
-    // Style the drag image to match the original
-    dragImage.style.width = `${rect.width}px`;
-    dragImage.style.height = `${rect.height}px`;
-    dragImage.style.borderRadius = '0.5rem';
-    dragImage.style.overflow = 'hidden';
-    dragImage.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)';
-    dragImage.style.opacity = '0.9';
-    dragImage.style.position = 'absolute';
-    dragImage.style.top = '-1000px';
-    dragImage.style.pointerEvents = 'none';
-    dragImage.style.zIndex = '9999';
-    
-    // Add the clone to the body temporarily
-    document.body.appendChild(dragImage);
-    
-    // Calculate proper offset to make dragging feel natural
-    const offsetX = e.clientX - rect.left;
-    const offsetY = e.clientY - rect.top;
-    
-    e.dataTransfer.setDragImage(dragImage, offsetX, offsetY);
-    
-    // Remove the drag image after the drag operation has started
-    setTimeout(() => {
-      document.body.removeChild(dragImage);
-    }, 0);
+    // Create a drag image that represents the item
+    const imgElement = e.currentTarget;
+    if (imgElement) {
+      // Create a clone of the image element to use as the drag image
+      const dragImage = imgElement.cloneNode(true) as HTMLElement;
+      
+      // Style the drag image
+      dragImage.style.width = imgElement.clientWidth + 'px';
+      dragImage.style.height = imgElement.clientHeight + 'px';
+      dragImage.style.opacity = '0.8';
+      dragImage.style.position = 'absolute';
+      dragImage.style.top = '-1000px';
+      document.body.appendChild(dragImage);
+      
+      // Set the drag image
+      e.dataTransfer.setDragImage(
+        dragImage, 
+        e.clientX - imgElement.getBoundingClientRect().left, 
+        e.clientY - imgElement.getBoundingClientRect().top
+      );
+      
+      // Remove the drag image after the drag operation
+      setTimeout(() => {
+        document.body.removeChild(dragImage);
+      }, 0);
+    }
   };
 
   return (

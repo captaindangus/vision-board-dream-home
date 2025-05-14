@@ -47,36 +47,28 @@ export function VisionBoardItemComponent({
     e.dataTransfer.setData('application/json', JSON.stringify(dragData));
     e.dataTransfer.effectAllowed = "move";
     
-    // Create a perfect clone of the element as the drag image
-    const dragElement = e.currentTarget;
-    const rect = dragElement.getBoundingClientRect();
+    // Create a custom drag image that's just the card itself
+    const dragImage = e.currentTarget.cloneNode(true) as HTMLElement;
     
-    // Create a clone of the element to use as the drag image
-    const dragImage = dragElement.cloneNode(true) as HTMLElement;
-    
-    // Set the exact same styles to ensure it looks identical
-    dragImage.style.width = `${rect.width}px`;
-    dragImage.style.height = `${rect.height}px`;
-    dragImage.style.borderRadius = '0.75rem'; // rounded-xl
-    dragImage.style.overflow = 'hidden';
-    dragImage.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)';
-    dragImage.style.opacity = '0.9';
+    // Preserve the original dimensions but remove any grid-related classes
+    dragImage.style.width = e.currentTarget.offsetWidth + 'px';
+    dragImage.style.height = e.currentTarget.offsetHeight + 'px';
+    dragImage.style.opacity = '0.8';
     dragImage.style.position = 'absolute';
     dragImage.style.top = '-1000px';
     dragImage.style.left = '0';
-    dragImage.style.pointerEvents = 'none';
-    dragImage.style.zIndex = '9999';
+    dragImage.style.margin = '0';
+    dragImage.style.transform = 'none';
+    dragImage.className = 'rounded-xl overflow-hidden shadow-md bg-white';
     
-    // Add the clone to the body temporarily
     document.body.appendChild(dragImage);
     
-    // Position the drag image exactly where the mouse is within the original element
-    const offsetX = e.clientX - rect.left;
-    const offsetY = e.clientY - rect.top;
+    e.dataTransfer.setDragImage(
+      dragImage, 
+      e.clientX - e.currentTarget.getBoundingClientRect().left, 
+      e.clientY - e.currentTarget.getBoundingClientRect().top
+    );
     
-    e.dataTransfer.setDragImage(dragImage, offsetX, offsetY);
-    
-    // Remove the drag image element after the drag operation has started
     setTimeout(() => {
       document.body.removeChild(dragImage);
     }, 0);
@@ -90,7 +82,7 @@ export function VisionBoardItemComponent({
 
   return (
     <div
-      className={`rounded-xl overflow-hidden shadow-md bg-white cursor-move w-full ${
+      className={`rounded-xl overflow-hidden shadow-md bg-white cursor-move w-full h-full ${
         isDragging ? 'z-50 opacity-90' : 'z-10'
       }`}
       onMouseDown={onMouseDown}
@@ -104,7 +96,7 @@ export function VisionBoardItemComponent({
       onDrop={onDrop}
       data-item-id={item.id}
     >
-      <div className="relative">
+      <div className="relative h-full">
         {isHovering && (
           <button 
             onClick={(e) => {
@@ -119,8 +111,8 @@ export function VisionBoardItemComponent({
         )}
         
         {item.type === 'image' || item.type === 'homeFeature' ? (
-          <div className="relative">
-            <AspectRatio ratio={4/3} className="w-full">
+          <div className="relative h-full">
+            {item.type === 'image' ? (
               <img
                 src={item.content.imageUrl}
                 alt={item.content.title || "Vision board image"}
@@ -130,7 +122,19 @@ export function VisionBoardItemComponent({
                   (e.target as HTMLImageElement).src = 'https://placehold.co/600x400/png';
                 }}
               />
-            </AspectRatio>
+            ) : (
+              <AspectRatio ratio={4/3} className="w-full">
+                <img
+                  src={item.content.imageUrl}
+                  alt={item.content.title || "Home feature"}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    // Fallback for broken images
+                    (e.target as HTMLImageElement).src = 'https://placehold.co/600x400/png';
+                  }}
+                />
+              </AspectRatio>
+            )}
             {item.content.title && (
               <div className="absolute bottom-2 left-2 bg-black bg-opacity-60 px-2 py-1 rounded text-white text-xs">
                 {item.content.title}
@@ -138,12 +142,12 @@ export function VisionBoardItemComponent({
             )}
           </div>
         ) : (
-          <div className="bg-[#F3F3F4] p-3 rounded-xl w-full">
+          <div className="bg-[#F3F3F4] p-3 rounded-xl w-full h-full">
             <div className="text-black text-sm font-bold truncate mb-1">
               {item.content.title}
             </div>
             {item.content.description && (
-              <div className="text-black text-xs">
+              <div className="text-black text-xs max-h-[150px] overflow-y-auto">
                 {item.content.description}
               </div>
             )}
