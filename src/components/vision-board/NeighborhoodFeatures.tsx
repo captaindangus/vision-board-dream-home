@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { FeatureCard } from './FeatureCard';
+import { Bus, ShoppingCart } from 'lucide-react';
 
 export function NeighborhoodFeatures() {
   // In a real application, these would come from an API or state
@@ -16,6 +17,20 @@ export function NeighborhoodFeatures() {
       imageUrl: "https://cdn.builder.io/api/v1/image/assets/TEMP/2d8ec8d94f43747d00d92dfb9567fd8871f92884",
       title: "🏫 Nearby Schools",
       description: "Top-rated schools within 1 mile"
+    },
+    {
+      id: 3,
+      imageUrl: "https://images.unsplash.com/photo-1518770660439-4636190af475",
+      title: "🚌 Public Transport",
+      description: "Bus & train stations within walking distance",
+      icon: <Bus size={18} className="mr-1" />
+    },
+    {
+      id: 4,
+      imageUrl: "https://images.unsplash.com/photo-1460574283810-2aab119d8511",
+      title: "🛒 Groceries & Shopping",
+      description: "Supermarkets and shopping centers nearby",
+      icon: <ShoppingCart size={18} className="mr-1" />
     }
   ];
 
