@@ -1,13 +1,15 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import { useVisionBoard, VisionBoardItem } from '@/context/VisionBoardContext';
+import { calculateSnapToGrid } from './GridSystem';
 
 interface DragDropHandlerProps {
   containerRef: React.RefObject<HTMLDivElement>;
   children: React.ReactNode;
+  columns?: number;
 }
 
-export function useDragDrop(containerRef: React.RefObject<HTMLDivElement>) {
+export function useDragDrop(containerRef: React.RefObject<HTMLDivElement>, columns: number = 12) {
   const [draggedItem, setDraggedItem] = useState<{id: string, offsetX: number, offsetY: number} | null>(null);
   const { items, updateItemPosition, removeItem, addItem } = useVisionBoard();
 
@@ -36,9 +38,12 @@ export function useDragDrop(containerRef: React.RefObject<HTMLDivElement>) {
     const x = e.clientX - containerRect.left - draggedItem.offsetX;
     const y = e.clientY - containerRect.top - draggedItem.offsetY + scrollTop;
     
+    // Apply snap-to-grid calculation before updating position
+    const { x: snappedX, y: snappedY } = calculateSnapToGrid(x, y, containerRef, columns);
+    
     // Ensure item stays within container bounds
-    const boundedX = Math.max(0, Math.min(x, containerRect.width - 150));
-    const boundedY = Math.max(0, y);
+    const boundedX = Math.max(0, Math.min(snappedX, containerRect.width - 150));
+    const boundedY = Math.max(0, snappedY);
     
     updateItemPosition(draggedItem.id, { x: boundedX, y: boundedY });
   };
@@ -59,14 +64,15 @@ export function useDragDrop(containerRef: React.RefObject<HTMLDivElement>) {
       
       // Calculate position relative to the container
       const containerRect = containerRef.current.getBoundingClientRect();
-      const position = { 
-        x: e.clientX - containerRect.left, 
-        y: e.clientY - containerRect.top + (containerRef.current.scrollTop || 0)
-      };
+      const x = e.clientX - containerRect.left;
+      const y = e.clientY - containerRect.top + (containerRef.current.scrollTop || 0);
+      
+      // Apply snap-to-grid before adding the item
+      const { x: snappedX, y: snappedY } = calculateSnapToGrid(x, y, containerRef, columns);
       
       addItem({
         ...parsedData,
-        position
+        position: { x: snappedX, y: snappedY }
       });
     } catch (err) {
       console.error('Error parsing dragged data:', err);
@@ -84,10 +90,20 @@ export function useDragDrop(containerRef: React.RefObject<HTMLDivElement>) {
       const customEvent = e as CustomEvent;
       const { data, position } = customEvent.detail;
       
-      addItem({
-        ...data,
-        position
-      });
+      if (containerRef.current) {
+        // Apply snap-to-grid to custom drop events
+        const { x: snappedX, y: snappedY } = calculateSnapToGrid(
+          position.x, 
+          position.y, 
+          containerRef, 
+          columns
+        );
+        
+        addItem({
+          ...data,
+          position: { x: snappedX, y: snappedY }
+        });
+      }
     };
 
     const element = containerRef.current;
@@ -98,7 +114,7 @@ export function useDragDrop(containerRef: React.RefObject<HTMLDivElement>) {
         element.removeEventListener('visionboard:drop', handleCustomDrop);
       };
     }
-  }, [addItem]);
+  }, [addItem, containerRef, columns]);
 
   return {
     draggedItem,
@@ -112,13 +128,13 @@ export function useDragDrop(containerRef: React.RefObject<HTMLDivElement>) {
   };
 }
 
-export function DragDropHandler({ containerRef, children }: DragDropHandlerProps) {
+export function DragDropHandler({ containerRef, children, columns = 12 }: DragDropHandlerProps) {
   const {
     handleMouseMove,
     handleMouseUp,
     handleDrop,
     handleDragOver
-  } = useDragDrop(containerRef);
+  } = useDragDrop(containerRef, columns);
 
   return (
     <div

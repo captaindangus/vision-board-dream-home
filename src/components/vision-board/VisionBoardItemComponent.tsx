@@ -19,14 +19,15 @@ export function VisionBoardItemComponent({
 }: VisionBoardItemComponentProps) {
   return (
     <div
-      className={`absolute rounded-xl overflow-hidden shadow-md bg-white cursor-move ${
-        isDragging ? 'z-50 opacity-90' : 'z-10'
+      className={`absolute rounded-xl overflow-hidden shadow-md bg-white cursor-move transition-all ${
+        isDragging ? 'z-50 opacity-90 scale-105' : 'z-10'
       }`}
       style={{
         left: `${item.position.x}px`,
         top: `${item.position.y}px`,
         width: item.size?.width || 'auto',
         height: item.size?.height || 'auto',
+        gridColumn: `span 1`,
       }}
       onMouseDown={onMouseDown}
     >
