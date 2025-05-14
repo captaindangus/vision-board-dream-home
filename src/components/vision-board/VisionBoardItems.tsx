@@ -49,17 +49,43 @@ export function VisionBoardItems({
     target.classList.remove('bg-blue-100', 'border-blue-300', 'border');
     
     try {
-      const data = JSON.parse(e.dataTransfer.getData('application/json'));
+      const data = e.dataTransfer.getData('application/json');
+      if (!data) return;
       
-      if (data.action === 'reorder' && data.id) {
+      const parsedData = JSON.parse(data);
+      
+      // Handle reordering of existing board items
+      if (parsedData.action === 'reorder' && parsedData.id) {
         // Don't reorder if dropping onto itself
-        if (data.id !== targetItemId) {
-          onItemReorder(data.id, targetItemId);
+        if (parsedData.id !== targetItemId) {
+          onItemReorder(parsedData.id, targetItemId);
           toast.success('Item reordered');
+        }
+        return;
+      }
+      
+      // Handle dropping new items from the sidebar between existing items
+      if (parsedData.type && !parsedData.action) {
+        // Create a custom event to handle this special case
+        const dropEvent = new CustomEvent('visionboard:drop', {
+          detail: {
+            data: {
+              ...parsedData,
+              position: { x: 0, y: 0 },
+              // Give it an order that places it before the current target
+              order: items.find(item => item.id === targetItemId)?.order - 0.5
+            }
+          }
+        });
+        
+        // Dispatch the event to be caught by the container
+        const container = document.querySelector('[data-vision-board-container="true"]');
+        if (container) {
+          container.dispatchEvent(dropEvent);
         }
       }
     } catch (error) {
-      console.error('Error handling drop for reordering:', error);
+      console.error('Error handling drop:', error);
     }
   };
 

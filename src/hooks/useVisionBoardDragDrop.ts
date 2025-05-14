@@ -80,7 +80,26 @@ export function useVisionBoardDragDrop() {
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
+    
+    // Check what kind of item is being dragged
+    try {
+      const jsonData = e.dataTransfer.getData('application/json');
+      if (jsonData) {
+        const data = JSON.parse(jsonData);
+        // Set appropriate drop effect based on the drag operation
+        if (data.action === 'reorder') {
+          e.dataTransfer.dropEffect = "move";
+        } else {
+          e.dataTransfer.dropEffect = "copy";
+        }
+      } else {
+        // Default for other types of drags
+        e.dataTransfer.dropEffect = "copy";
+      }
+    } catch (err) {
+      // If we can't parse the data or there's no data yet, default to copy
+      e.dataTransfer.dropEffect = "copy";
+    }
   };
 
   const handleGridDrop = (e: React.DragEvent<HTMLDivElement>) => {
@@ -89,16 +108,63 @@ export function useVisionBoardDragDrop() {
     
     if (!containerRef.current) return;
     
-    const data = e.dataTransfer.getData('application/json');
-    if (!data) return;
-    
     try {
+      const data = e.dataTransfer.getData('application/json');
+      if (!data) return;
+      
       const parsedData = JSON.parse(data);
       console.log("Drop event detected with data:", parsedData);
       
       // For external items being added to the vision board
-      if (!parsedData.action && parsedData.type) {
-        addItem(parsedData);
+      if (parsedData.type && !parsedData.action) {
+        // Determine insertion position
+        const dropTarget = e.target as HTMLElement;
+        const closestItemElement = dropTarget.closest('[data-item-id]');
+        
+        if (closestItemElement) {
+          // Dropped near an existing item - insert before or after it
+          const targetItemId = closestItemElement.getAttribute('data-item-id');
+          if (targetItemId) {
+            const targetItem = items.find(item => item.id === targetItemId);
+            if (targetItem) {
+              // Calculate the max order to correctly position
+              const maxOrder = items.length > 0 
+                ? Math.max(...items.map(item => item.order || 0)) 
+                : -1;
+              
+              // Add item with an order value that puts it right after the target
+              addItem({
+                ...parsedData,
+                position: { x: 0, y: 0 },
+                order: (targetItem.order || 0) + 0.5 // Position between items
+              });
+              
+              // Now normalize all order values
+              setTimeout(() => {
+                const tempItems = [...items].sort((a, b) => (a.order || 0) - (b.order || 0));
+                tempItems.forEach((item, index) => {
+                  if (item.order !== index) {
+                    // Use a direct reorder to normalize
+                    const sourceId = item.id;
+                    const destinationId = tempItems.find(i => (i.order || 0) === index)?.id;
+                    if (destinationId && sourceId !== destinationId) {
+                      reorderItems(sourceId, destinationId);
+                    }
+                  }
+                });
+              }, 10);
+              
+              toast.success('Item added to vision board');
+              return;
+            }
+          }
+        }
+        
+        // If not dropped on an item or we couldn't determine position, add to the end
+        addItem({
+          ...parsedData,
+          position: { x: 0, y: 0 }
+        });
         toast.success('Item added to vision board');
       }
       
