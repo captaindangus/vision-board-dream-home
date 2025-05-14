@@ -11,7 +11,7 @@ interface FeatureCardProps {
 export function FeatureCard({ imageUrl, title, description, onClick }: FeatureCardProps) {
   return (
     <div 
-      className="flex w-full h-[71px] items-center gap-2 bg-[#F3F3F4] p-2 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer"
+      className="flex w-full h-[80px] items-center gap-2 bg-[#F3F3F4] p-3 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer"
       onClick={onClick}
     >
       <img
