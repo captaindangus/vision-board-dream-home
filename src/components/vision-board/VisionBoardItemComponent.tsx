@@ -38,6 +38,20 @@ export function VisionBoardItemComponent({
       action: 'reorder'
     }));
     e.dataTransfer.effectAllowed = "move";
+    
+    // Create a copy of the element as the drag image
+    const dragImage = e.currentTarget.cloneNode(true) as HTMLElement;
+    dragImage.style.width = e.currentTarget.offsetWidth + 'px';
+    dragImage.style.opacity = '0.8';
+    dragImage.style.position = 'absolute';
+    dragImage.style.top = '-1000px';
+    document.body.appendChild(dragImage);
+    
+    e.dataTransfer.setDragImage(dragImage, e.clientX - e.currentTarget.getBoundingClientRect().left, e.clientY - e.currentTarget.getBoundingClientRect().top);
+    
+    setTimeout(() => {
+      document.body.removeChild(dragImage);
+    }, 0);
   };
 
   return (

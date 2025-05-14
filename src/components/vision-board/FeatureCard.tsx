@@ -39,7 +39,7 @@ export function FeatureCard({
     if (cardRef.current) {
       // Create a clone of the card to use as the drag image
       const dragImage = cardRef.current.cloneNode(true) as HTMLElement;
-      dragImage.style.width = '250px';
+      dragImage.style.width = cardRef.current.offsetWidth + 'px';
       dragImage.style.opacity = '0.8';
       dragImage.style.position = 'absolute';
       dragImage.style.top = '-1000px';

@@ -51,22 +51,25 @@ export function HomeFeatures() {
     e.dataTransfer.effectAllowed = "copy";
     
     // Create a drag image that represents the item
-    const imgElement = e.currentTarget.querySelector('img');
+    const imgElement = e.currentTarget;
     if (imgElement) {
-      // Create a clone of the image to use as the drag image
+      // Create a clone of the image element to use as the drag image
       const dragImage = imgElement.cloneNode(true) as HTMLElement;
       
       // Style the drag image
-      dragImage.style.width = '144px';
-      dragImage.style.height = '109px';
-      dragImage.style.borderRadius = '8px';
+      dragImage.style.width = imgElement.clientWidth + 'px';
+      dragImage.style.height = imgElement.clientHeight + 'px';
       dragImage.style.opacity = '0.8';
       dragImage.style.position = 'absolute';
       dragImage.style.top = '-1000px';
       document.body.appendChild(dragImage);
       
       // Set the drag image
-      e.dataTransfer.setDragImage(dragImage, 72, 55);
+      e.dataTransfer.setDragImage(
+        dragImage, 
+        e.clientX - imgElement.getBoundingClientRect().left, 
+        e.clientY - imgElement.getBoundingClientRect().top
+      );
       
       // Remove the drag image after the drag operation
       setTimeout(() => {
