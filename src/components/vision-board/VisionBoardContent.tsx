@@ -75,7 +75,11 @@ function EmptyState() {
           }}
         />
       </div>
+      <p className="text-center text-[#0C0F24] text-base">
+        Upload or paste an image, or drag one in from the gallery to get started!
+      </p>
     </div>
   );
 }
+
 
