@@ -72,6 +72,12 @@ export function VisionBoardItemComponent({
     }
   };
 
+  // Determine if this is a neighborhood feature
+  const isNeighborhoodFeature = item.type === 'neighborhoodFeature';
+  
+  // Set aspect ratio based on item type
+  const aspectRatio = isNeighborhoodFeature ? 16/9 : 4/3;
+
   return (
     <div
       className={`rounded-xl overflow-hidden shadow-md bg-white cursor-move w-full ${
@@ -102,9 +108,9 @@ export function VisionBoardItemComponent({
           </button>
         )}
         
-        {item.type === 'image' || item.type === 'homeFeature' ? (
+        {(item.type === 'image' || item.type === 'homeFeature' || item.type === 'neighborhoodFeature') ? (
           <div className="relative">
-            <AspectRatio ratio={4/3} className="w-full">
+            <AspectRatio ratio={aspectRatio} className="w-full">
               <img
                 src={item.content.imageUrl}
                 alt={item.content.title || "Vision board image"}
@@ -118,6 +124,11 @@ export function VisionBoardItemComponent({
             {item.content.title && (
               <div className="absolute bottom-2 left-2 bg-black bg-opacity-60 px-2 py-1 rounded text-white text-xs">
                 {item.content.title}
+              </div>
+            )}
+            {isNeighborhoodFeature && item.content.description && (
+              <div className="absolute bottom-8 left-2 right-2 bg-black bg-opacity-60 px-2 py-1 rounded text-white text-xs line-clamp-2">
+                {item.content.description}
               </div>
             )}
           </div>
