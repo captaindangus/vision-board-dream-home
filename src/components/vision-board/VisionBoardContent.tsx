@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
-import { Check, Pencil } from 'lucide-react';
+import { Check, Pencil, Image } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 export function VisionBoardContent() {
@@ -66,9 +66,12 @@ export function VisionBoardContent() {
 
 function EmptyState() {
   return (
-    <div className="flex flex-col justify-center items-center gap-9 w-full h-full py-10">
-      <div className="max-w-full flex flex-col items-center">
-        <h1 className="text-center text-[#0C0F24] text-2xl font-bold mt-6">Add Your First Image ✨</h1>
+    <div className="flex flex-col justify-center items-center gap-6 w-full h-full py-10">
+      <div className="flex flex-col items-center">
+        <div className="mb-6 text-gray-300">
+          <Image className="w-24 h-24" strokeWidth={1} />
+        </div>
+        <h1 className="text-center text-[#0C0F24] text-2xl font-bold">Add Your First Image ✨</h1>
         <p className="text-center text-[#0C0F24] text-base mt-3">
           Upload or paste an image, or drag one in from the gallery to get started!
         </p>
