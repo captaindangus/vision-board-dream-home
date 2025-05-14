@@ -85,9 +85,8 @@ export function VisionBoardItems({
             data: {
               ...parsedData,
               position: { x: 0, y: 0 },
-              // Give it an order that places it after the current target
-              // instead of before, to maintain the current layout better
-              order: items.find(item => item.id === targetItemId)?.order + 0.5
+              // Give it an order that places it before the current target
+              order: items.find(item => item.id === targetItemId)?.order - 0.5
             }
           }
         });
@@ -106,32 +105,12 @@ export function VisionBoardItems({
   // Sort items by order before rendering
   const sortedItems = [...items].sort((a, b) => (a.order || 0) - (b.order || 0));
 
-  // Determine classes for different item types to create mosaic layout
-  const getItemClasses = (item: VisionBoardItem) => {
-    // Base classes
-    let classes = "masonry-item";
-    
-    // Apply different sizing based on content type
-    if (item.type === 'image') {
-      // Images can be different sizes based on aspect ratio
-      const hasTitle = item.content.title && item.content.title.length > 0;
-      classes += hasTitle ? " masonry-item-medium" : " masonry-item-large";
-    } else if (item.type === 'homeFeature') {
-      classes += " masonry-item-medium";
-    } else {
-      // Text notes are smaller
-      classes += " masonry-item-small";
-    }
-    
-    return classes;
-  };
-
   return (
     <>
       {sortedItems.map((item) => (
         <div 
           key={`vision-item-${item.id}`} 
-          className={getItemClasses(item)}
+          className="h-fit w-full transition-all duration-200"
           data-item-id={item.id}
         >
           <VisionBoardItemComponent
