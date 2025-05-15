@@ -133,8 +133,7 @@ export function VisionBoardItemComponent({
             </AspectRatio>
             
             {/* Display tags below the image if they exist */}
-            {item.type === 'homeFeature' && item.content?.tags && renderTags(item.content.tags)}
-            {item.type === 'image' && item.content?.tags && renderTags(item.content.tags)}
+            {item.content.tags && renderTags(item.content.tags)}
           </div>
         )}
         

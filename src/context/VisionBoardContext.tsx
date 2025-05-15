@@ -1,21 +1,33 @@
 import React, { createContext, useContext, useState, ReactNode, useCallback, useEffect } from 'react';
 
+export type VisionBoardItemType = 'image' | 'text' | 'feature' | 'priceRange' | 'homeSize' | 'homeFeature' | 'neighborhoodFeature';
+
+export interface VisionBoardItemContent {
+  imageUrl?: string;
+  title?: string;
+  description?: string;
+  tags?: string[];
+  value?: [number, number];
+  minSize?: string | number;
+  maxSize?: string | number;
+}
+
+export interface VisionBoardItemPosition {
+  x: number;
+  y: number;
+}
+
+export interface VisionBoardItemSize {
+  width: number;
+  height: number | string;
+}
+
 export interface VisionBoardItem {
   id: string;
-  type: 'image' | 'feature' | 'homeFeature' | 'neighborhoodFeature';
-  content: {
-    imageUrl?: string;
-    title?: string;
-    description?: string;
-  };
-  position: {
-    x: number;
-    y: number;
-  };
-  size?: {
-    width: number;
-    height: number;
-  };
+  type: VisionBoardItemType;
+  content: VisionBoardItemContent;
+  position: VisionBoardItemPosition;
+  size: VisionBoardItemSize;
   order?: number; // Added order property for sorting
 }
 

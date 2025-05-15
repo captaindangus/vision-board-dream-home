@@ -6,20 +6,20 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 // Mapbox token - in a production app, this should be stored in environment variables
 const MAPBOX_TOKEN = "pk.eyJ1IjoiZGVtby11c2VyIiwiYSI6ImNrZHhjbXk4cTB1c3cycnBmZzFmNnhrNWIifQ.6X8GEhFLcJapugXFPRj37w";
 
-// Define the listing location data
+// Define the listing location data with proper LngLatLike tuples
 const locationMarkers = [
-  { id: 1, lngLat: [-73.985, 40.715] },
-  { id: 2, lngLat: [-74.005, 40.735] },
-  { id: 3, lngLat: [-73.975, 40.755] },
-  { id: 4, lngLat: [-73.965, 40.775] },
-  { id: 5, lngLat: [-73.955, 40.795] },
-  { id: 6, lngLat: [-73.945, 40.815] },
-  { id: 7, lngLat: [-73.935, 40.835] },
-  { id: 8, lngLat: [-73.925, 40.855] },
-  { id: 9, lngLat: [-73.915, 40.875] },
-  { id: 10, lngLat: [-73.905, 40.895] },
-  { id: 11, lngLat: [-73.895, 40.915] },
-  { id: 12, lngLat: [-73.885, 40.935] },
+  { id: 1, lngLat: [-73.985, 40.715] as [number, number] },
+  { id: 2, lngLat: [-74.005, 40.735] as [number, number] },
+  { id: 3, lngLat: [-73.975, 40.755] as [number, number] },
+  { id: 4, lngLat: [-73.965, 40.775] as [number, number] },
+  { id: 5, lngLat: [-73.955, 40.795] as [number, number] },
+  { id: 6, lngLat: [-73.945, 40.815] as [number, number] },
+  { id: 7, lngLat: [-73.935, 40.835] as [number, number] },
+  { id: 8, lngLat: [-73.925, 40.855] as [number, number] },
+  { id: 9, lngLat: [-73.915, 40.875] as [number, number] },
+  { id: 10, lngLat: [-73.905, 40.895] as [number, number] },
+  { id: 11, lngLat: [-73.895, 40.915] as [number, number] },
+  { id: 12, lngLat: [-73.885, 40.935] as [number, number] },
 ];
 
 export function ListingsMap() {
