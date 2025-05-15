@@ -12,14 +12,18 @@ const listingUrls = [
   "https://www.exprealty.com/new-york-ny-real-estate/tudor-city/ph2b-314-e-41st-st"
 ];
 
-// Modern house images
+// Modern house images - updated with user's uploaded images
 const modernHouseImages = [
-  "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-  "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2053&q=80",
-  "https://images.unsplash.com/photo-1602343168117-bb8ffe3e2e9f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2025&q=80",
-  "https://images.unsplash.com/photo-1576941089067-2de3c901e126?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60",
-  "https://images.unsplash.com/photo-1592595896551-12b371d546d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2053&q=80",
-  "https://images.unsplash.com/photo-1494526585095-c41746248156?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
+  "/lovable-uploads/a4cf1096-4ae7-4027-ac2c-5de53e2df454.png", // Interior living room
+  "/lovable-uploads/be882628-dbbb-4ad6-bc23-07d81132903f.png", // Traditional white house with porch
+  "/lovable-uploads/805f4962-6e13-43ab-8fcd-22afd2faf7de.png", // Modern flat-roof house
+  "/lovable-uploads/ec0985ba-50ac-436f-bc6a-ecc987898244.png", // Office interior
+  "/lovable-uploads/274c6613-2f93-466d-8948-264e637525af.png", // Modern concrete house
+  "/lovable-uploads/f7bf4fb4-9c37-4727-9e28-15798ba0fc36.png", // Traditional shingle house
+  "/lovable-uploads/b29e0fe0-7b0f-47d2-91bc-32ceba52b380.png", // White house with balcony
+  "/lovable-uploads/23b54c84-da98-47cf-9323-16f2cee93947.png", // Living room with couch
+  "/lovable-uploads/8e5f042a-5f6b-49ad-8f3c-80eb25f0e152.png", // Modern interior living/dining
+  "/lovable-uploads/6a5b7d5f-2114-44ca-867c-1dafa8b871ea.png"  // White living room
 ];
 
 // Function to get URL and image for listings
@@ -112,7 +116,7 @@ const listingsData = [
     beds: 2,
     baths: 2,
     sqft: "1250-1300",
-    imageUrl: modernHouseImages[0],
+    imageUrl: modernHouseImages[6],
     timeAgo: "4 hrs ago",
     url: listingUrls[1]
   },
@@ -123,7 +127,7 @@ const listingsData = [
     beds: 2,
     baths: 2,
     sqft: "1300-1450",
-    imageUrl: modernHouseImages[1],
+    imageUrl: modernHouseImages[7],
     timeAgo: "8 hrs ago",
     url: listingUrls[2]
   },
@@ -134,7 +138,7 @@ const listingsData = [
     beds: 3,
     baths: 3.5,
     sqft: "2500-2700",
-    imageUrl: modernHouseImages[2],
+    imageUrl: modernHouseImages[8],
     timeAgo: "10 hrs ago",
     url: listingUrls[3]
   },
@@ -145,10 +149,11 @@ const listingsData = [
     beds: 2,
     baths: 2,
     sqft: "1500-1600",
-    imageUrl: modernHouseImages[3],
+    imageUrl: modernHouseImages[9],
     timeAgo: "12 hrs ago",
     url: listingUrls[4]
   },
+  // The remaining listings will use the same set of images (cycling back to the beginning)
   {
     id: 13,
     price: "$5,395,000",
@@ -156,7 +161,7 @@ const listingsData = [
     beds: 4,
     baths: 3.5,
     sqft: "2800-3000",
-    imageUrl: modernHouseImages[4],
+    imageUrl: modernHouseImages[0],
     timeAgo: "1 day ago",
     url: listingUrls[0]
   },
@@ -167,7 +172,7 @@ const listingsData = [
     beds: 3,
     baths: 3,
     sqft: "1900-2050",
-    imageUrl: modernHouseImages[5],
+    imageUrl: modernHouseImages[1],
     timeAgo: "1 day ago",
     url: listingUrls[1]
   },
@@ -178,7 +183,7 @@ const listingsData = [
     beds: 4,
     baths: 4,
     sqft: "3100-3300",
-    imageUrl: modernHouseImages[0],
+    imageUrl: modernHouseImages[2],
     timeAgo: "2 days ago",
     url: listingUrls[2]
   },
@@ -189,7 +194,7 @@ const listingsData = [
     beds: 3,
     baths: 3.5,
     sqft: "2400-2600",
-    imageUrl: modernHouseImages[1],
+    imageUrl: modernHouseImages[3],
     timeAgo: "2 days ago",
     url: listingUrls[3]
   },
@@ -200,7 +205,7 @@ const listingsData = [
     beds: 3,
     baths: 2.5,
     sqft: "1850-2000",
-    imageUrl: modernHouseImages[2],
+    imageUrl: modernHouseImages[4],
     timeAgo: "3 days ago",
     url: listingUrls[4]
   },
@@ -211,7 +216,7 @@ const listingsData = [
     beds: 4,
     baths: 4.5,
     sqft: "3400-3600",
-    imageUrl: modernHouseImages[3],
+    imageUrl: modernHouseImages[5],
     timeAgo: "3 days ago",
     url: listingUrls[0]
   }

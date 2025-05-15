@@ -27,8 +27,8 @@ export function SaveBoardDialog({ open, onOpenChange }: SaveBoardDialogProps) {
     // Simulate saving the board
     toast.success(`Vision board "${boardName}" saved!`);
     onOpenChange(false);
-    // Navigate to the home page to see the board in the list
-    navigate('/');
+    // Remove navigation to home page to stay on current page
+    // navigate('/');
   };
 
   if (!open) return null;
