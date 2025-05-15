@@ -2,7 +2,8 @@
 import React from 'react';
 import { VisionBoardHeader } from '@/components/vision-board/VisionBoardHeader';
 import { ListingsView } from '@/components/listings/ListingsView';
-import { Toaster } from '@/components/ui/sonner';
+import { Toaster as SonnerToaster } from '@/components/ui/sonner';
+import { Toaster } from '@/components/ui/toaster';
 
 export default function Listings() {
   return (
@@ -10,6 +11,7 @@ export default function Listings() {
       <VisionBoardHeader />
       <ListingsView />
       <Toaster />
+      <SonnerToaster />
       
       {/* Add Mapbox CSS */}
       <style>

@@ -1,12 +1,15 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { TabsNavigation } from './TabsNavigation';
 import { Save } from 'lucide-react';
 import { toast } from 'sonner';
+import { SaveBoardDialog } from './SaveBoardDialog';
 
 export function VisionBoardHeader() {
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false);
+
   const handleSave = () => {
-    toast.success("Board saved successfully!");
+    setSaveDialogOpen(true);
   };
 
   return (
@@ -35,6 +38,11 @@ export function VisionBoardHeader() {
           Save Board
         </button>
       </div>
+
+      <SaveBoardDialog 
+        open={saveDialogOpen}
+        onOpenChange={setSaveDialogOpen}
+      />
     </header>
   );
 }
