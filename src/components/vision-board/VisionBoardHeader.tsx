@@ -4,9 +4,11 @@ import { TabsNavigation } from './TabsNavigation';
 import { Save } from 'lucide-react';
 import { toast } from 'sonner';
 import { SaveBoardDialog } from './SaveBoardDialog';
+import { useNavigate } from 'react-router-dom';
 
 export function VisionBoardHeader() {
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleSave = () => {
     setSaveDialogOpen(true);
@@ -15,7 +17,7 @@ export function VisionBoardHeader() {
   return (
     <header className="flex w-full justify-between items-center bg-[#F7F7F8] h-[90px] px-5 py-4">
       <div className="flex items-center gap-8">
-        <BackButton />
+        <BackButton onClick={() => navigate('/')} />
         {/* Auto-save indicator removed */}
       </div>
       <div className="flex-1 flex justify-center">
@@ -47,9 +49,16 @@ export function VisionBoardHeader() {
   );
 }
 
-function BackButton() {
+interface BackButtonProps {
+  onClick: () => void;
+}
+
+function BackButton({ onClick }: BackButtonProps) {
   return (
-    <button className="flex w-10 h-10 justify-center items-center bg-white shadow-[0px_2px_10px_0px_rgba(0,0,0,0.10)] p-2.5 rounded-[100px]">
+    <button 
+      className="flex w-10 h-10 justify-center items-center bg-white shadow-[0px_2px_10px_0px_rgba(0,0,0,0.10)] p-2.5 rounded-[100px]"
+      onClick={onClick}
+    >
       <div
         dangerouslySetInnerHTML={{
           __html:

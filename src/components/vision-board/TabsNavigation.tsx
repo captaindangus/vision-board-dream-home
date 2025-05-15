@@ -11,7 +11,7 @@ export function TabsNavigation() {
     <div className="flex items-center bg-[#F0F0F0] p-2 rounded-2xl">
       <button 
         className={`text-[rgba(12,15,36,1)] text-base font-${isListingsPage ? 'medium' : 'bold'} gap-2.5 ${!isListingsPage ? 'bg-white shadow-[0px_2px_10px_0px_rgba(0,0,0,0.08)]' : ''} px-6 py-2.5 rounded-xl`}
-        onClick={() => navigate('/')}
+        onClick={() => navigate('/board')}
       >
         Vision Board
       </button>
