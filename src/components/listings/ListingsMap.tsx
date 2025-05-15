@@ -1,106 +1,22 @@
 
-import React, { useEffect, useRef, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import React, { useState, useEffect } from 'react';
 
-// Define markers data
+// Define markers data with positions relative to container
 const markers = [
-  { id: 1, lngLat: [-73.985, 40.715] as [number, number] },
-  { id: 3, lngLat: [-73.975, 40.755] as [number, number] },
-  { id: 4, lngLat: [-73.965, 40.775] as [number, number] },
-  { id: 8, lngLat: [-73.925, 40.855] as [number, number] },
+  { id: 1, position: { top: "15%", left: "35%" } },
+  { id: 3, position: { top: "25%", left: "70%" } },
+  { id: 4, position: { top: "40%", left: "55%" } },
+  { id: 8, position: { top: "70%", left: "85%" } },
 ];
 
 export function ListingsMap() {
-  const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
-  const markersRef = useRef<{[key: number]: mapboxgl.Marker}>({});
   const [hoveredId, setHoveredId] = useState<number | null>(null);
 
-  // Initialize map
-  useEffect(() => {
-    if (!mapContainer.current || map.current) return;
-    
-    mapboxgl.accessToken = "pk.eyJ1IjoiZGVtby11c2VyIiwiYSI6ImNrZHhjbXk4cTB1c3cycnBmZzFmNnhrNWIifQ.6X8GEhFLcJapugXFPRj37w";
-    
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/light-v11',
-      center: [-73.98, 40.76], // New York City coordinates
-      zoom: 12,
-      dragRotate: false, // Disable rotation for better UX
-      attributionControl: false // Hide attribution for cleaner look
-    });
-    
-    map.current.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right');
-
-    // Add markers once the map has loaded
-    map.current.on('load', () => {
-      markers.forEach(marker => {
-        // Create a DOM element for the marker
-        const markerEl = document.createElement('div');
-        markerEl.className = 'map-marker';
-        markerEl.style.width = '30px';
-        markerEl.style.height = '30px';
-        markerEl.style.borderRadius = '50%';
-        markerEl.style.backgroundColor = '#1b489b';
-        markerEl.style.cursor = 'pointer';
-        markerEl.style.transition = 'all 0.3s ease';
-        markerEl.style.display = 'flex';
-        markerEl.style.alignItems = 'center';
-        markerEl.style.justifyContent = 'center';
-        markerEl.style.color = 'white';
-        markerEl.style.fontWeight = 'bold';
-        markerEl.style.fontSize = '14px';
-        markerEl.textContent = marker.id.toString();
-        markerEl.dataset.id = marker.id.toString();
-        
-        // Create and add the marker
-        const mapMarker = new mapboxgl.Marker(markerEl)
-          .setLngLat(marker.lngLat)
-          .addTo(map.current!);
-        
-        // Store reference to the marker
-        markersRef.current[marker.id] = mapMarker;
-      });
-    });
-
-    return () => {
-      if (map.current) {
-        map.current.remove();
-        map.current = null;
-      }
-    };
-  }, []);
-  
   // Listen for hover events from the listing cards
   useEffect(() => {
     const handleListingHover = (e: Event) => {
       const id = (e as CustomEvent).detail as number | null;
       setHoveredId(id);
-      
-      // Update marker styles based on hover state
-      Object.entries(markersRef.current).forEach(([markerIdStr, marker]) => {
-        const markerId = parseInt(markerIdStr);
-        const element = marker.getElement();
-        
-        if (id === null) {
-          // Reset all markers
-          element.style.backgroundColor = '#1b489b';
-          element.style.zIndex = '0';
-          element.style.transform = 'scale(1)';
-        } else if (markerId === id) {
-          // Highlight the hovered marker
-          element.style.backgroundColor = '#0c0f24';
-          element.style.zIndex = '1';
-          element.style.transform = 'scale(1.2)';
-        } else {
-          // Dim the non-hovered markers
-          element.style.backgroundColor = '#1b489b';
-          element.style.zIndex = '0';
-          element.style.transform = 'scale(1)';
-        }
-      });
     };
     
     document.addEventListener('listingHover', handleListingHover);
@@ -112,8 +28,14 @@ export function ListingsMap() {
 
   return (
     <div className="relative w-full h-full">
-      {/* Mapbox container */}
-      <div ref={mapContainer} className="absolute inset-0 bg-[#E8ECEF] rounded-[20px]"></div>
+      {/* Map image container */}
+      <div className="absolute inset-0 bg-[#E8ECEF] rounded-[20px] overflow-hidden">
+        <img 
+          src="/lovable-uploads/157448d1-0bc6-45cb-9972-beac1f4d2227.png" 
+          alt="New York Map" 
+          className="w-full h-full object-cover"
+        />
+      </div>
       
       {/* Search input positioned at the top */}
       <div className="absolute top-4 left-4 right-4 z-10">
@@ -132,6 +54,34 @@ export function ListingsMap() {
           </div>
         </div>
       </div>
+
+      {/* Map markers */}
+      {markers.map((marker) => (
+        <div
+          key={marker.id}
+          className="absolute map-marker"
+          style={{
+            top: marker.position.top,
+            left: marker.position.left,
+            width: '30px',
+            height: '30px',
+            borderRadius: '50%',
+            backgroundColor: hoveredId === marker.id ? '#0c0f24' : '#1b489b',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'white',
+            fontWeight: 'bold',
+            fontSize: '14px',
+            transition: 'all 0.3s ease',
+            transform: hoveredId === marker.id ? 'scale(1.2)' : 'scale(1)',
+            zIndex: hoveredId === marker.id ? 1 : 0,
+            boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+          }}
+        >
+          {marker.id}
+        </div>
+      ))}
     </div>
   );
 }

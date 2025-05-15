@@ -26,11 +26,13 @@ export function ListingCard({ listing, onMouseEnter, onMouseLeave, isHighlighted
 
   return (
     <div 
-      className={`flex flex-col bg-white rounded-xl overflow-hidden border border-[#e7e7e9] transition-all ${
-        isHighlighted ? 'shadow-[inset_0_0_0_2px_#0c0f24]' : 'shadow-sm'
-      }`}
+      className={`relative flex flex-col bg-white rounded-xl overflow-hidden border border-[#e7e7e9] transition-all shadow-sm`}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
+      style={{
+        // Apply inset shadow when highlighted instead of border
+        boxShadow: isHighlighted ? 'inset 0 0 0 2px #0c0f24' : ''
+      }}
     >
       <div className="relative">
         <img 
