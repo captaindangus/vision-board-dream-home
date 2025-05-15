@@ -12,7 +12,8 @@ export default function Listings() {
       <Toaster />
       
       {/* Add Mapbox CSS */}
-      <style jsx global>{`
+      <style>
+        {`
         .mapboxgl-ctrl-logo, .mapboxgl-ctrl-attrib {
           display: none !important;
         }
@@ -22,7 +23,8 @@ export default function Listings() {
           border-radius: 8px;
           box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-      `}</style>
+        `}
+      </style>
     </div>
   );
 }

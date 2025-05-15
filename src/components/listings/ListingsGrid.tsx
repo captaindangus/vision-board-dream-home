@@ -139,7 +139,11 @@ const listingsData = [
   }
 ];
 
-export function ListingsGrid() {
+interface ListingsGridProps {
+  isWideScreen?: boolean;
+}
+
+export function ListingsGrid({ isWideScreen = true }: ListingsGridProps) {
   const [hoveredListing, setHoveredListing] = useState<number | null>(null);
   
   // Pass the hovered listing ID to the parent for map interaction
@@ -153,7 +157,7 @@ export function ListingsGrid() {
 
   return (
     <ScrollArea className="h-full pr-2">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-4">
+      <div className={`grid ${isWideScreen ? 'grid-cols-2' : 'grid-cols-1'} gap-4 pb-4`}>
         {listingsData.map((listing) => (
           <ListingCard 
             key={listing.id} 

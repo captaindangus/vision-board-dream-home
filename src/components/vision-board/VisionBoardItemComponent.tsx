@@ -73,6 +73,21 @@ export function VisionBoardItemComponent({
     }
   };
 
+  // Helper function to render tags if they exist
+  const renderTags = (tags?: string[]) => {
+    if (!tags || tags.length === 0) return null;
+    
+    return (
+      <div className="p-2 flex flex-wrap gap-1">
+        {tags.map((tag: string, index: number) => (
+          <Badge key={index} variant="outline" className="bg-gray-100 text-xs">
+            {tag}
+          </Badge>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div
       className={`rounded-xl overflow-hidden shadow-md bg-white cursor-move w-full ${
@@ -117,18 +132,9 @@ export function VisionBoardItemComponent({
               />
             </AspectRatio>
             
-            {/* Removed the title overlay */}
-            
-            {/* Display tags below the image instead of overlaying */}
-            {item.type === 'homeFeature' && item.content.tags && item.content.tags.length > 0 && (
-              <div className="p-2 flex flex-wrap gap-1">
-                {item.content.tags.map((tag: string, index: number) => (
-                  <Badge key={index} variant="outline" className="bg-gray-100 text-xs">
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-            )}
+            {/* Display tags below the image if they exist */}
+            {item.type === 'homeFeature' && item.content?.tags && renderTags(item.content.tags)}
+            {item.type === 'image' && item.content?.tags && renderTags(item.content.tags)}
           </div>
         )}
         
@@ -158,7 +164,8 @@ export function VisionBoardItemComponent({
           </div>
         )}
         
-        {(item.type !== 'image' && item.type !== 'homeFeature' && item.type !== 'priceRange' && item.type !== 'homeSize') && (
+        {(item.type !== 'image' && item.type !== 'homeFeature' && 
+          item.type !== 'priceRange' && item.type !== 'homeSize') && (
           <div className="bg-[#F3F3F4] p-3 rounded-xl w-full">
             <div className="text-black text-sm font-bold truncate mb-1">
               {item.content.title}

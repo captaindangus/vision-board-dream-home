@@ -55,6 +55,12 @@ export function ListingsMap() {
         markerEl.style.backgroundColor = '#1b489b';
         markerEl.style.cursor = 'pointer';
         markerEl.style.transition = 'all 0.3s ease';
+        markerEl.style.display = 'flex';
+        markerEl.style.alignItems = 'center';
+        markerEl.style.justifyContent = 'center';
+        markerEl.style.color = 'white';
+        markerEl.style.fontWeight = 'bold';
+        markerEl.textContent = location.id.toString();
         markerEl.dataset.id = location.id.toString();
         
         // Create and add the marker

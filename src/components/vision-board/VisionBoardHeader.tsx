@@ -2,17 +2,35 @@
 import React from 'react';
 import { TabsNavigation } from './TabsNavigation';
 import { Save } from 'lucide-react';
+import { toast } from 'sonner';
 
 export function VisionBoardHeader() {
+  const handleSave = () => {
+    toast.success("Board saved successfully!");
+  };
+
   return (
     <header className="flex w-full justify-between items-center bg-[#F7F7F8] h-[90px] px-5 py-4">
       <div className="flex items-center gap-8">
         <BackButton />
         {/* Auto-save indicator removed */}
       </div>
-      <TabsNavigation />
-      <div className="flex w-[193px] justify-end items-center gap-2.5">
-        <button className="flex items-center text-[rgba(12,15,36,1)] text-base font-medium gap-2.5 px-6 py-2.5 rounded-[100px] border-[1px_solid_rgba(12,15,36,1)]">
+      <div className="flex-1 flex justify-center">
+        <TabsNavigation />
+      </div>
+      <div className="flex justify-end items-center">
+        <button 
+          onClick={handleSave}
+          className="flex items-center text-[rgba(12,15,36,1)] text-base font-medium gap-2.5 px-6 py-2.5 rounded-[100px] border-[1px] border-solid border-[#0C0F24]"
+          style={{
+            display: "flex",
+            padding: "10px 24px",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "10px",
+            borderRadius: "100px"
+          }}
+        >
           <Save size={18} />
           Save Board
         </button>
