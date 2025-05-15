@@ -103,7 +103,7 @@ export function VisionBoardItemComponent({
           </button>
         )}
         
-        {item.type === 'image' || item.type === 'homeFeature' ? (
+        {(item.type === 'image' || item.type === 'homeFeature') && (
           <div className="relative">
             <AspectRatio ratio={4/3} className="w-full">
               <img
@@ -116,14 +116,11 @@ export function VisionBoardItemComponent({
                 }}
               />
             </AspectRatio>
-            {item.content.title && (
-              <div className="absolute bottom-2 left-2 bg-black bg-opacity-60 px-2 py-1 rounded text-white text-xs">
-                {item.content.title}
-              </div>
-            )}
             
-            {/* Display tags if available */}
-            {item.content.tags && item.content.tags.length > 0 && (
+            {/* Removed the title overlay */}
+            
+            {/* Display tags below the image instead of overlaying */}
+            {item.type === 'homeFeature' && item.content.tags && item.content.tags.length > 0 && (
               <div className="p-2 flex flex-wrap gap-1">
                 {item.content.tags.map((tag: string, index: number) => (
                   <Badge key={index} variant="outline" className="bg-gray-100 text-xs">
@@ -133,7 +130,9 @@ export function VisionBoardItemComponent({
               </div>
             )}
           </div>
-        ) : item.type === 'priceRange' ? (
+        )}
+        
+        {item.type === 'priceRange' && (
           <div className="bg-[#F3F3F4] p-3 rounded-xl w-full">
             <div className="text-black text-sm font-bold truncate mb-1">
               {item.content.title}
@@ -144,18 +143,22 @@ export function VisionBoardItemComponent({
               </div>
             )}
           </div>
-        ) : item.type === 'homeSize' ? (
+        )}
+        
+        {item.type === 'homeSize' && (
           <div className="bg-[#F3F3F4] p-3 rounded-xl w-full">
             <div className="text-black text-sm font-bold truncate mb-1">
               {item.content.title}
             </div>
-            {item.content.value && (
+            {item.content.minSize !== undefined && item.content.maxSize !== undefined && (
               <div className="text-black text-xs">
                 Home Size: {item.content.minSize || 'No Min'} - {item.content.maxSize || 'No Max'} sqft
               </div>
             )}
           </div>
-        ) : (
+        )}
+        
+        {(item.type !== 'image' && item.type !== 'homeFeature' && item.type !== 'priceRange' && item.type !== 'homeSize') && (
           <div className="bg-[#F3F3F4] p-3 rounded-xl w-full">
             <div className="text-black text-sm font-bold truncate mb-1">
               {item.content.title}

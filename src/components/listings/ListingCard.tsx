@@ -11,17 +11,27 @@ interface Listing {
   sqft: string;
   imageUrl: string;
   timeAgo: string;
+  mapCoordinates?: { lat: number; lng: number };
 }
 
 interface ListingCardProps {
   listing: Listing;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
+  isHighlighted?: boolean;
 }
 
-export function ListingCard({ listing }: ListingCardProps) {
+export function ListingCard({ listing, onMouseEnter, onMouseLeave, isHighlighted = false }: ListingCardProps) {
   const [isFavorite, setIsFavorite] = useState(false);
 
   return (
-    <div className="flex flex-col bg-white rounded-xl overflow-hidden shadow-sm mb-5">
+    <div 
+      className={`flex flex-col bg-white rounded-xl overflow-hidden shadow-sm mb-5 border border-[#e7e7e9] transition-all ${
+        isHighlighted ? 'ring-2 ring-[#1b489b]' : ''
+      }`}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
       <div className="relative">
         <img 
           src={listing.imageUrl} 
