@@ -28,6 +28,9 @@ export function ListingCard({ listing, onMouseEnter, onMouseLeave, isHighlighted
   const handleClick = () => {
     if (listing.url) {
       window.open(listing.url, '_blank');
+    } else {
+      // Default URL if none is provided
+      window.open("https://www.exprealty.com/new-york-ny-real-estate", '_blank');
     }
   };
 

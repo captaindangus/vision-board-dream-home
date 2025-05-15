@@ -12,6 +12,27 @@ const listingUrls = [
   "https://www.exprealty.com/new-york-ny-real-estate/tudor-city/ph2b-314-e-41st-st"
 ];
 
+// Modern house images
+const modernHouseImages = [
+  "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+  "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2053&q=80",
+  "https://images.unsplash.com/photo-1602343168117-bb8ffe3e2e9f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2025&q=80",
+  "https://images.unsplash.com/photo-1576941089067-2de3c901e126?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60",
+  "https://images.unsplash.com/photo-1592595896551-12b371d546d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2053&q=80",
+  "https://images.unsplash.com/photo-1494526585095-c41746248156?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
+];
+
+// Function to get URL and image for listings
+const getUrlAndImage = (index: number) => {
+  // URL selection - wrap around to reuse URLs
+  const url = listingUrls[index % listingUrls.length];
+  
+  // Image selection - wrap around to reuse images
+  const imageUrl = modernHouseImages[index % modernHouseImages.length];
+  
+  return { url, imageUrl };
+};
+
 // Extended listings data with more properties
 const listingsData = [
   {
@@ -21,7 +42,7 @@ const listingsData = [
     beds: 3,
     baths: 1,
     sqft: "700-800",
-    imageUrl: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+    imageUrl: modernHouseImages[0],
     timeAgo: "58 mins ago",
     mapCoordinates: { lat: 40.715, lng: -73.985 },
     url: listingUrls[0]
@@ -33,7 +54,7 @@ const listingsData = [
     beds: 3,
     baths: 1,
     sqft: "700-800",
-    imageUrl: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2053&q=80",
+    imageUrl: modernHouseImages[1],
     timeAgo: "1 hr ago",
     mapCoordinates: { lat: 40.755, lng: -73.975 },
     url: listingUrls[1]
@@ -45,7 +66,7 @@ const listingsData = [
     beds: 3,
     baths: 1,
     sqft: "700-800",
-    imageUrl: "https://images.unsplash.com/photo-1602343168117-bb8ffe3e2e9f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2025&q=80",
+    imageUrl: modernHouseImages[2],
     timeAgo: "58 mins ago",
     mapCoordinates: { lat: 40.775, lng: -73.965 },
     url: listingUrls[2]
@@ -57,7 +78,7 @@ const listingsData = [
     beds: 2,
     baths: 2,
     sqft: "1500-1650",
-    imageUrl: "https://images.unsplash.com/photo-1576941089067-2de3c901e126?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fGhvdXNlfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
+    imageUrl: modernHouseImages[3],
     timeAgo: "6 hours ago",
     mapCoordinates: { lat: 40.855, lng: -73.925 },
     url: listingUrls[3]
@@ -69,7 +90,7 @@ const listingsData = [
     beds: 4,
     baths: 3,
     sqft: "2100-2300",
-    imageUrl: "https://images.unsplash.com/photo-1592595896551-12b371d546d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2053&q=80",
+    imageUrl: modernHouseImages[4],
     timeAgo: "2 hrs ago",
     url: listingUrls[4]
   },
@@ -80,8 +101,9 @@ const listingsData = [
     beds: 3,
     baths: 2.5,
     sqft: "1800-1950",
-    imageUrl: "https://images.unsplash.com/photo-1494526585095-c41746248156?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-    timeAgo: "3 hrs ago"
+    imageUrl: modernHouseImages[5],
+    timeAgo: "3 hrs ago",
+    url: listingUrls[0]
   },
   {
     id: 7,
@@ -90,8 +112,9 @@ const listingsData = [
     beds: 2,
     baths: 2,
     sqft: "1250-1300",
-    imageUrl: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-    timeAgo: "4 hrs ago"
+    imageUrl: modernHouseImages[0],
+    timeAgo: "4 hrs ago",
+    url: listingUrls[1]
   },
   {
     id: 10,
@@ -100,8 +123,9 @@ const listingsData = [
     beds: 2,
     baths: 2,
     sqft: "1300-1450",
-    imageUrl: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-    timeAgo: "8 hrs ago"
+    imageUrl: modernHouseImages[1],
+    timeAgo: "8 hrs ago",
+    url: listingUrls[2]
   },
   {
     id: 11,
@@ -110,8 +134,9 @@ const listingsData = [
     beds: 3,
     baths: 3.5,
     sqft: "2500-2700",
-    imageUrl: "https://images.unsplash.com/photo-1513584684374-8bab748fbf90?ixlib=rb-4.0.3&auto=format&fit=crop&w=2065&q=80",
-    timeAgo: "10 hrs ago"
+    imageUrl: modernHouseImages[2],
+    timeAgo: "10 hrs ago",
+    url: listingUrls[3]
   },
   {
     id: 12,
@@ -120,8 +145,9 @@ const listingsData = [
     beds: 2,
     baths: 2,
     sqft: "1500-1600",
-    imageUrl: "https://images.unsplash.com/photo-1448630360428-65456885c650?ixlib=rb-4.0.3&auto=format&fit=crop&w=2067&q=80",
-    timeAgo: "12 hrs ago"
+    imageUrl: modernHouseImages[3],
+    timeAgo: "12 hrs ago",
+    url: listingUrls[4]
   },
   {
     id: 13,
@@ -130,8 +156,9 @@ const listingsData = [
     beds: 4,
     baths: 3.5,
     sqft: "2800-3000",
-    imageUrl: "https://images.unsplash.com/photo-1543071220-6ee5bf71a54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-    timeAgo: "1 day ago"
+    imageUrl: modernHouseImages[4],
+    timeAgo: "1 day ago",
+    url: listingUrls[0]
   },
   {
     id: 14,
@@ -140,8 +167,9 @@ const listingsData = [
     beds: 3,
     baths: 3,
     sqft: "1900-2050",
-    imageUrl: "https://images.unsplash.com/photo-1601564267677-a36d03ec2be5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2788&q=80",
-    timeAgo: "1 day ago"
+    imageUrl: modernHouseImages[5],
+    timeAgo: "1 day ago",
+    url: listingUrls[1]
   },
   {
     id: 15,
@@ -150,8 +178,9 @@ const listingsData = [
     beds: 4,
     baths: 4,
     sqft: "3100-3300",
-    imageUrl: "https://images.unsplash.com/photo-1484154218962-a197022b5858?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80",
-    timeAgo: "2 days ago"
+    imageUrl: modernHouseImages[0],
+    timeAgo: "2 days ago",
+    url: listingUrls[2]
   },
   {
     id: 16,
@@ -160,8 +189,9 @@ const listingsData = [
     beds: 3,
     baths: 3.5,
     sqft: "2400-2600",
-    imageUrl: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-    timeAgo: "2 days ago"
+    imageUrl: modernHouseImages[1],
+    timeAgo: "2 days ago",
+    url: listingUrls[3]
   },
   {
     id: 17,
@@ -170,8 +200,9 @@ const listingsData = [
     beds: 3,
     baths: 2.5,
     sqft: "1850-2000",
-    imageUrl: "https://images.unsplash.com/photo-1629371997433-d11e6161c702?ixlib=rb-4.0.3&auto=format&fit=crop&w=2154&q=80",
-    timeAgo: "3 days ago"
+    imageUrl: modernHouseImages[2],
+    timeAgo: "3 days ago",
+    url: listingUrls[4]
   },
   {
     id: 18,
@@ -180,8 +211,9 @@ const listingsData = [
     beds: 4,
     baths: 4.5,
     sqft: "3400-3600",
-    imageUrl: "https://images.unsplash.com/photo-1558036117-15d82a90b9b1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-    timeAgo: "3 days ago"
+    imageUrl: modernHouseImages[3],
+    timeAgo: "3 days ago",
+    url: listingUrls[0]
   }
 ];
 

@@ -177,8 +177,8 @@ export function VisionBoardItemComponent({
         )}
         
         {item.type === 'homeSize' && (
-          <div className="bg-[#F3F3F4] p-3 rounded-xl w-full">
-            <div className="text-black text-sm font-bold truncate mb-1">
+          <div className="bg-[#F3F3F4] p-5 rounded-xl w-full">
+            <div className="text-black text-sm font-bold truncate mb-2">
               {item.content.title}
             </div>
             {item.content.minSize !== undefined && item.content.maxSize !== undefined && (

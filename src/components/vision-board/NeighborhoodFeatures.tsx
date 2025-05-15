@@ -33,7 +33,7 @@ export function NeighborhoodFeatures() {
     },
     { 
       id: 5, 
-      imageUrl: "/lovable-uploads/95c52f8a-e0af-4684-b567-4224b55fcf8c.png", 
+      imageUrl: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", 
       type: "Park Nearby",
       description: "Parks & green spaces nearby" 
     },
