@@ -57,7 +57,7 @@ export default function LandingPage() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-6 py-12">
+      <main className="px-8 py-12">
         <div className="text-center mb-16">
           <div className="mx-auto" style={{ maxWidth: '608px' }}>
             <h1 className="text-[76px] font-semibold mb-5 leading-[76px]" style={{ fontFamily: 'Manrope, sans-serif' }}>
@@ -93,7 +93,7 @@ export default function LandingPage() {
             </Card>
 
             {visionBoards.map(board => (
-              <Card key={board.id} className="rounded-3xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-all">
+              <Card key={board.id} className="rounded-3xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-all group">
                 <div className="relative">
                   <div 
                     className="grid grid-cols-2 grid-rows-2 gap-0.5 aspect-[4/3] cursor-pointer"
@@ -111,7 +111,7 @@ export default function LandingPage() {
                   </div>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <button className="absolute top-4 right-4 bg-white rounded-full p-1.5">
+                      <button className="absolute top-4 right-4 bg-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                         <MoreHorizontal className="w-5 h-5" />
                       </button>
                     </DropdownMenuTrigger>

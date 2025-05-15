@@ -5,6 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { X } from 'lucide-react';
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface SaveBoardDialogProps {
   open: boolean;
@@ -13,6 +20,7 @@ interface SaveBoardDialogProps {
 
 export function SaveBoardDialog({ open, onOpenChange }: SaveBoardDialogProps) {
   const [boardName, setBoardName] = useState('Untitled Vision Board');
+  const [notificationPreference, setNotificationPreference] = useState('daily');
   const navigate = useNavigate();
 
   const handleSave = () => {
@@ -38,7 +46,7 @@ export function SaveBoardDialog({ open, onOpenChange }: SaveBoardDialogProps) {
           </button>
         </div>
         
-        <div className="space-y-4">
+        <div className="space-y-6">
           <div>
             <label htmlFor="board-name" className="block text-sm font-medium text-gray-700 mb-1">
               Board Name
@@ -47,8 +55,28 @@ export function SaveBoardDialog({ open, onOpenChange }: SaveBoardDialogProps) {
               id="board-name"
               value={boardName}
               onChange={(e) => setBoardName(e.target.value)}
-              className="w-full border-gray-300 rounded-md"
+              className="w-full border-gray-300 rounded-[100px]"
             />
+          </div>
+          
+          <div>
+            <label htmlFor="notification-preference" className="block text-sm font-medium text-gray-700 mb-1">
+              Notify me when new listings are added matching my search criteria
+            </label>
+            <Select 
+              value={notificationPreference} 
+              onValueChange={setNotificationPreference}
+            >
+              <SelectTrigger className="w-full rounded-[100px]" id="notification-preference">
+                <SelectValue placeholder="Select notification frequency" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">No Alert</SelectItem>
+                <SelectItem value="instant">Instant</SelectItem>
+                <SelectItem value="daily">Daily</SelectItem>
+                <SelectItem value="weekly">Weekly</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           
           <div className="flex justify-end space-x-3 mt-6">
