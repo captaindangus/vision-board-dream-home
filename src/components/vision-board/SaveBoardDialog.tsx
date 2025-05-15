@@ -28,7 +28,7 @@ export function SaveBoardDialog({ open, onOpenChange }: SaveBoardDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md rounded-lg p-6 bg-white">
+      <DialogContent className="sm:max-w-md rounded-[20px] p-6 bg-white">
         <button
           onClick={() => onOpenChange(false)}
           className="absolute right-6 top-6 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"

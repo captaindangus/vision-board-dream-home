@@ -164,26 +164,44 @@ export function VisionBoardItemComponent({
         )}
         
         {item.type === 'priceRange' && (
-          <div className="bg-[#F3F3F4] p-3 rounded-xl w-full">
-            <div className="text-black text-sm font-bold truncate mb-1">
+          <div className="bg-[#F3F3F4] p-6 rounded-xl w-full" style={{ minHeight: '250px' }}>
+            <div className="text-black text-lg font-bold truncate mb-4">
               {item.content.title}
             </div>
             {item.content.value && (
-              <div className="text-black text-xs">
-                Price Range: ${item.content.value[0]} - ${item.content.value[1]}
+              <div className="text-black text-sm mt-4">
+                <div className="mb-4">Price Range:</div>
+                <div className="flex justify-between mb-2">
+                  <div className="font-semibold">${new Intl.NumberFormat().format(item.content.value[0])}</div>
+                  <div className="font-semibold">${new Intl.NumberFormat().format(item.content.value[1])}</div>
+                </div>
+                <div className="w-full h-2 bg-gray-300 rounded-full mt-4">
+                  <div 
+                    className="h-2 bg-blue-500 rounded-full" 
+                    style={{ 
+                      width: `${(item.content.value[1] - item.content.value[0]) / 2000000 * 100}%`,
+                      marginLeft: `${item.content.value[0] / 2000000 * 100}%`
+                    }}
+                  ></div>
+                </div>
               </div>
             )}
           </div>
         )}
         
         {item.type === 'homeSize' && (
-          <div className="bg-[#F3F3F4] p-5 rounded-xl w-full">
-            <div className="text-black text-sm font-bold truncate mb-2">
+          <div className="bg-[#F3F3F4] p-6 rounded-xl w-full" style={{ minHeight: '150px' }}>
+            <div className="text-black text-lg font-bold truncate mb-4">
               {item.content.title}
             </div>
             {item.content.minSize !== undefined && item.content.maxSize !== undefined && (
-              <div className="text-black text-xs">
-                Home Size: {item.content.minSize || 'No Min'} - {item.content.maxSize || 'No Max'} sqft
+              <div className="text-black text-sm mt-4">
+                <div className="mb-2">Home Size:</div>
+                <div className="flex justify-between items-center mt-2">
+                  <div className="font-semibold">{item.content.minSize || 'No Min'}</div>
+                  <div className="mx-2">-</div>
+                  <div className="font-semibold">{item.content.maxSize || 'No Max'} sqft</div>
+                </div>
               </div>
             )}
           </div>

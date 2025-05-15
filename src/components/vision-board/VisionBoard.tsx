@@ -15,14 +15,14 @@ export function VisionBoard() {
   };
 
   return (
-    <div className="flex flex-col w-full h-screen bg-[#F7F7F8]">
+    <div className="flex flex-col w-full h-screen bg-[#F7F7F8] overflow-hidden">
       <VisionBoardHeader />
       <div className="flex flex-1 gap-5 p-5 pb-5 max-md:flex-col relative overflow-hidden">
         <VisionBoardProvider>
           <div className={`transition-all duration-300 ${sidebarCollapsed ? 'w-0 overflow-hidden' : 'w-[351px] max-md:w-full'}`}>
             <VisionBoardSidebar />
           </div>
-          <div className="flex-1 overflow-auto">
+          <div className="flex-1 overflow-hidden">
             <VisionBoardContent />
           </div>
           <SidebarToggle isCollapsed={sidebarCollapsed} onClick={toggleSidebar} />
