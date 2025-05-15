@@ -24,7 +24,7 @@ export function VisionBoardContent() {
 
   return (
     <main 
-      className="flex flex-col w-full h-full bg-white px-6 py-8 rounded-[20px] overflow-hidden"
+      className="flex flex-col w-full h-full bg-white px-6 py-8 rounded-[20px]"
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
     >
@@ -32,7 +32,7 @@ export function VisionBoardContent() {
         <VisionBoardTitle />
         <UploadButton />
       </div>
-      <ScrollArea className="flex-1 h-[calc(100%-60px)] relative">
+      <ScrollArea className="flex-1 h-full relative overflow-visible" ref={containerRef}>
         <div className="min-h-full flex flex-col">
           <VisionBoardGrid
             items={items}
