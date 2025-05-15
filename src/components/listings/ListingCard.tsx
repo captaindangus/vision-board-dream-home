@@ -36,20 +36,19 @@ export function ListingCard({ listing, onMouseEnter, onMouseLeave, isHighlighted
 
   return (
     <div 
-      className={`relative flex flex-col bg-white rounded-xl overflow-hidden border border-[#e7e7e9] transition-all shadow-sm cursor-pointer`}
+      className="relative flex flex-col bg-white rounded-xl overflow-hidden border border-[#e7e7e9] transition-all shadow-sm cursor-pointer"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onClick={handleClick}
-      style={{
-        // Apply inset shadow when highlighted instead of border
-        boxShadow: isHighlighted ? 'inset 0 0 0 2px #0c0f24' : ''
-      }}
     >
-      <div className="relative">
+      <div className="relative overflow-hidden">
         <img 
           src={listing.imageUrl} 
           alt={listing.address} 
-          className="w-full h-[220px] object-cover"
+          className="w-full h-[220px] object-cover transition-transform duration-300"
+          style={{
+            transform: isHighlighted ? 'scale(1.05)' : 'scale(1)'
+          }}
         />
         <button 
           className="absolute top-3 right-3 p-2 rounded-full bg-white/80 hover:bg-white transition-colors"

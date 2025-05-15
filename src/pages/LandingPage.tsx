@@ -37,9 +37,11 @@ export default function LandingPage() {
       ]
     }
   ]);
+  const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
 
   const handleDeleteBoard = (id: string) => {
     setVisionBoards(visionBoards.filter(board => board.id !== id));
+    setOpenDropdownId(null);
   };
 
   return (
@@ -109,9 +111,15 @@ export default function LandingPage() {
                       </div>
                     ))}
                   </div>
-                  <DropdownMenu>
+                  <DropdownMenu open={openDropdownId === board.id} onOpenChange={(isOpen) => {
+                    if (isOpen) {
+                      setOpenDropdownId(board.id);
+                    } else if (openDropdownId === board.id) {
+                      setOpenDropdownId(null);
+                    }
+                  }}>
                     <DropdownMenuTrigger asChild>
-                      <button className="absolute top-4 right-4 bg-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button className={`absolute top-4 right-4 bg-white rounded-full p-1.5 ${openDropdownId === board.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity`}>
                         <MoreHorizontal className="w-5 h-5" />
                       </button>
                     </DropdownMenuTrigger>
