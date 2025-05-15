@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { Heart } from 'lucide-react';
+import { toast } from "sonner";
 
 interface Listing {
   id: number;
@@ -34,6 +35,17 @@ export function ListingCard({ listing, onMouseEnter, onMouseLeave, isHighlighted
     }
   };
 
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent the card click event
+    setIsFavorite(!isFavorite);
+    
+    if (!isFavorite) {
+      toast.success("Added to favorites", {
+        description: `${listing.address} has been added to your favorites.`
+      });
+    }
+  };
+
   return (
     <div 
       className="relative flex flex-col bg-white rounded-xl overflow-hidden border border-[#e7e7e9] transition-all shadow-sm cursor-pointer"
@@ -45,22 +57,19 @@ export function ListingCard({ listing, onMouseEnter, onMouseLeave, isHighlighted
         <img 
           src={listing.imageUrl} 
           alt={listing.address} 
-          className="w-full h-[260px] object-cover transition-transform duration-300"
+          className="w-full h-[300px] object-cover transition-transform duration-300"
           style={{
             transform: isHighlighted ? 'scale(1.05)' : 'scale(1)'
           }}
         />
         <button 
           className="absolute top-3 right-3 p-2 rounded-full bg-white/80 hover:bg-white transition-colors"
-          onClick={(e) => {
-            e.stopPropagation(); // Prevent the card click event
-            setIsFavorite(!isFavorite);
-          }}
+          onClick={handleFavoriteClick}
           aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
         >
           <Heart 
             size={20} 
-            className={isFavorite ? "fill-black text-black" : "text-black"} 
+            className={isFavorite ? `fill-[#ED6D65] text-[#ED6D65]` : "text-black"} 
           />
         </button>
       </div>

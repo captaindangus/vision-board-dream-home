@@ -17,7 +17,7 @@ export function ListingsView() {
           <ListingsMap />
         </div>
         {/* Listings always on the right */}
-        <div className="w-[60%] overflow-hidden">
+        <div className="w-[60%] overflow-hidden bg-white rounded-[20px]">
           <ListingsGrid isWideScreen={isWideScreen} />
         </div>
       </div>

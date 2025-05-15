@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { ListingCard } from './ListingCard';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useMediaQuery } from '@/hooks/use-media-query';
 
 // URLs for listings
 const listingUrls = [
@@ -228,6 +229,7 @@ interface ListingsGridProps {
 
 export function ListingsGrid({ isWideScreen = true }: ListingsGridProps) {
   const [hoveredListing, setHoveredListing] = useState<number | null>(null);
+  const isUltraWideScreen = useMediaQuery("(min-width: 1920px)");
   
   // Pass the hovered listing ID to the parent for map interaction
   const handleListingHover = (id: number | null) => {
@@ -252,9 +254,16 @@ export function ListingsGrid({ isWideScreen = true }: ListingsGridProps) {
     };
   }, []);
 
+  // Determine number of columns based on screen width
+  const getGridColumns = () => {
+    if (isUltraWideScreen) return 'grid-cols-3';
+    if (isWideScreen) return 'grid-cols-2';
+    return 'grid-cols-1';
+  };
+
   return (
     <ScrollArea className="h-full pr-2">
-      <div className={`grid ${isWideScreen ? 'grid-cols-2' : 'grid-cols-1'} gap-4 pb-24`}>
+      <div className={`grid ${getGridColumns()} gap-4 pb-24`}>
         {listingsData.map((listing) => (
           <ListingCard 
             key={listing.id} 
