@@ -164,8 +164,8 @@ export function VisionBoardItemComponent({
         )}
         
         {item.type === 'priceRange' && (
-          <div className="bg-[#F3F3F4] p-3 rounded-xl w-full">
-            <div className="text-black text-sm font-bold truncate mb-1">
+          <div className="bg-[#F3F3F4] p-5 rounded-xl w-full h-full min-h-[109px] flex flex-col justify-center">
+            <div className="text-black text-sm font-bold truncate mb-2">
               {item.content.title}
             </div>
             {item.content.value && (
@@ -177,7 +177,7 @@ export function VisionBoardItemComponent({
         )}
         
         {item.type === 'homeSize' && (
-          <div className="bg-[#F3F3F4] p-5 rounded-xl w-full">
+          <div className="bg-[#F3F3F4] p-5 rounded-xl w-full h-full min-h-[109px] flex flex-col justify-center">
             <div className="text-black text-sm font-bold truncate mb-2">
               {item.content.title}
             </div>

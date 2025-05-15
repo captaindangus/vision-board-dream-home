@@ -16,7 +16,7 @@ export function HomeSizeInput() {
         minSize: minSize || 'No Min',
         maxSize: maxSize || 'No Max'
       },
-      size: { width: 250, height: 'auto' }
+      size: { width: 250, height: 109 }
     }));
     e.dataTransfer.effectAllowed = "copy";
     
