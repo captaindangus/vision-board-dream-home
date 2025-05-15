@@ -12,12 +12,12 @@ export function ListingsView() {
     <div className="flex flex-col h-full">
       <ListingsHeader />
       <div className="flex flex-1 gap-5 p-5 pb-5 overflow-hidden">
-        {/* Map always on the left */}
-        <div className="w-[40%] rounded-[20px] overflow-hidden shadow-sm min-h-[500px]">
+        {/* Map directly on the background */}
+        <div className="w-[40%] overflow-hidden rounded-[20px]">
           <ListingsMap />
         </div>
-        {/* Listings always on the right */}
-        <div className="w-[60%] overflow-hidden">
+        {/* Listings in a white container */}
+        <div className="w-[60%] bg-white rounded-[20px] overflow-hidden shadow-sm">
           <ListingsGrid isWideScreen={isWideScreen} />
         </div>
       </div>

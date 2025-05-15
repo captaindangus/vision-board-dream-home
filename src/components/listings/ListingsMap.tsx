@@ -41,7 +41,7 @@ export function ListingsMap() {
   return (
     <div className="relative w-full h-full">
       {/* Map image container */}
-      <div className="absolute inset-0 bg-[#E8ECEF] rounded-[20px] overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden h-full w-full">
         <img 
           src="/lovable-uploads/157448d1-0bc6-45cb-9972-beac1f4d2227.png" 
           alt="New York Map" 
