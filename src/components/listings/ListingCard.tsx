@@ -27,7 +27,7 @@ export function ListingCard({ listing, onMouseEnter, onMouseLeave, isHighlighted
   return (
     <div 
       className={`flex flex-col bg-white rounded-xl overflow-hidden border border-[#e7e7e9] transition-all ${
-        isHighlighted ? 'ring-2 ring-[#0c0f24]' : 'shadow-sm'
+        isHighlighted ? 'shadow-[inset_0_0_0_2px_#0c0f24]' : 'shadow-sm'
       }`}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}

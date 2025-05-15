@@ -23,6 +23,21 @@ export default function Listings() {
           border-radius: 8px;
           box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
+        
+        .mapboxgl-ctrl-group {
+          border-radius: 8px !important;
+          overflow: hidden;
+          box-shadow: 0 1px 4px rgba(0,0,0,0.1) !important;
+        }
+        
+        .mapboxgl-ctrl button {
+          width: 32px !important;
+          height: 32px !important;
+        }
+        
+        .map-marker {
+          box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
         `}
       </style>
     </div>

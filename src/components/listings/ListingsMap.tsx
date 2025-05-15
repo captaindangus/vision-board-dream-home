@@ -3,23 +3,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-// Mapbox token - in a production app, this should be stored in environment variables
-const MAPBOX_TOKEN = "pk.eyJ1IjoiZGVtby11c2VyIiwiYSI6ImNrZHhjbXk4cTB1c3cycnBmZzFmNnhrNWIifQ.6X8GEhFLcJapugXFPRj37w";
-
-// Define the listing location data with proper LngLatLike tuples
-const locationMarkers = [
+// Define markers data
+const markers = [
   { id: 1, lngLat: [-73.985, 40.715] as [number, number] },
-  { id: 2, lngLat: [-74.005, 40.735] as [number, number] },
   { id: 3, lngLat: [-73.975, 40.755] as [number, number] },
   { id: 4, lngLat: [-73.965, 40.775] as [number, number] },
-  { id: 5, lngLat: [-73.955, 40.795] as [number, number] },
-  { id: 6, lngLat: [-73.945, 40.815] as [number, number] },
-  { id: 7, lngLat: [-73.935, 40.835] as [number, number] },
   { id: 8, lngLat: [-73.925, 40.855] as [number, number] },
-  { id: 9, lngLat: [-73.915, 40.875] as [number, number] },
-  { id: 10, lngLat: [-73.905, 40.895] as [number, number] },
-  { id: 11, lngLat: [-73.895, 40.915] as [number, number] },
-  { id: 12, lngLat: [-73.885, 40.935] as [number, number] },
 ];
 
 export function ListingsMap() {
@@ -32,25 +21,27 @@ export function ListingsMap() {
   useEffect(() => {
     if (!mapContainer.current || map.current) return;
     
-    mapboxgl.accessToken = MAPBOX_TOKEN;
+    mapboxgl.accessToken = "pk.eyJ1IjoiZGVtby11c2VyIiwiYSI6ImNrZHhjbXk4cTB1c3cycnBmZzFmNnhrNWIifQ.6X8GEhFLcJapugXFPRj37w";
     
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/light-v11',
       center: [-73.98, 40.76], // New York City coordinates
-      zoom: 12
+      zoom: 12,
+      dragRotate: false, // Disable rotation for better UX
+      attributionControl: false // Hide attribution for cleaner look
     });
     
-    map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    map.current.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right');
 
     // Add markers once the map has loaded
     map.current.on('load', () => {
-      locationMarkers.forEach(location => {
+      markers.forEach(marker => {
         // Create a DOM element for the marker
         const markerEl = document.createElement('div');
         markerEl.className = 'map-marker';
-        markerEl.style.width = '24px';
-        markerEl.style.height = '24px';
+        markerEl.style.width = '30px';
+        markerEl.style.height = '30px';
         markerEl.style.borderRadius = '50%';
         markerEl.style.backgroundColor = '#1b489b';
         markerEl.style.cursor = 'pointer';
@@ -60,16 +51,17 @@ export function ListingsMap() {
         markerEl.style.justifyContent = 'center';
         markerEl.style.color = 'white';
         markerEl.style.fontWeight = 'bold';
-        markerEl.textContent = location.id.toString();
-        markerEl.dataset.id = location.id.toString();
+        markerEl.style.fontSize = '14px';
+        markerEl.textContent = marker.id.toString();
+        markerEl.dataset.id = marker.id.toString();
         
         // Create and add the marker
-        const marker = new mapboxgl.Marker(markerEl)
-          .setLngLat(location.lngLat)
+        const mapMarker = new mapboxgl.Marker(markerEl)
+          .setLngLat(marker.lngLat)
           .addTo(map.current!);
         
         // Store reference to the marker
-        markersRef.current[location.id] = marker;
+        markersRef.current[marker.id] = mapMarker;
       });
     });
 
