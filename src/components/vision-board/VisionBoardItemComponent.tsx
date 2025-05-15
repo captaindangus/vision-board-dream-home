@@ -118,6 +118,7 @@ export function VisionBoardItemComponent({
           </button>
         )}
         
+        {/* Image-based items: homeFeature or regular image */}
         {(item.type === 'image' || item.type === 'homeFeature') && (
           <div className="relative">
             <AspectRatio ratio={4/3} className="w-full">
@@ -134,6 +135,35 @@ export function VisionBoardItemComponent({
             
             {/* Display tags below the image if they exist */}
             {item.content.tags && renderTags(item.content.tags)}
+          </div>
+        )}
+        
+        {/* Neighborhood feature - same image size as homeFeature but content below image */}
+        {item.type === 'neighborhoodFeature' && (
+          <div className="relative">
+            <AspectRatio ratio={4/3} className="w-full">
+              <img
+                src={item.content.imageUrl}
+                alt={item.content.title || "Neighborhood feature"}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = 'https://placehold.co/600x400/png';
+                }}
+              />
+            </AspectRatio>
+            
+            <div className="p-3">
+              {item.content.title && (
+                <div className="text-black text-sm font-bold truncate mb-1">
+                  {item.content.title}
+                </div>
+              )}
+              {item.content.description && (
+                <div className="text-black text-xs">
+                  {item.content.description}
+                </div>
+              )}
+            </div>
           </div>
         )}
         
@@ -163,8 +193,9 @@ export function VisionBoardItemComponent({
           </div>
         )}
         
+        {/* Generic text-based item with no image */}
         {(item.type !== 'image' && item.type !== 'homeFeature' && 
-          item.type !== 'priceRange' && item.type !== 'homeSize') && (
+          item.type !== 'neighborhoodFeature' && item.type !== 'priceRange' && item.type !== 'homeSize') && (
           <div className="bg-[#F3F3F4] p-3 rounded-xl w-full">
             <div className="text-black text-sm font-bold truncate mb-1">
               {item.content.title}

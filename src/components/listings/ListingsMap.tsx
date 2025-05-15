@@ -6,11 +6,12 @@ const markers = [
   { id: 1, position: { top: "15%", left: "35%" } },
   { id: 3, position: { top: "25%", left: "70%" } },
   { id: 4, position: { top: "40%", left: "55%" } },
-  { id: 8, position: { top: "70%", left: "85%" } },
+  { id: 8, position: { top: "70%", left: "85%" } }
 ];
 
 export function ListingsMap() {
   const [hoveredId, setHoveredId] = useState<number | null>(null);
+  const [hoveredMapDotId, setHoveredMapDotId] = useState<number | null>(null);
 
   // Listen for hover events from the listing cards
   useEffect(() => {
@@ -25,6 +26,19 @@ export function ListingsMap() {
       document.removeEventListener('listingHover', handleListingHover);
     };
   }, []);
+
+  // When a map dot is hovered, dispatch an event to highlight the corresponding listing
+  const handleMapDotHover = (id: number | null) => {
+    setHoveredMapDotId(id);
+    
+    // If null (mouseout) or already highlighted, do nothing special
+    if (id === null || id === hoveredId) return;
+    
+    // Dispatch custom event to highlight the corresponding listing
+    document.dispatchEvent(
+      new CustomEvent("listingHover", { detail: id })
+    );
+  };
 
   return (
     <div className="relative w-full h-full">
@@ -59,14 +73,14 @@ export function ListingsMap() {
       {markers.map((marker) => (
         <div
           key={marker.id}
-          className="absolute map-marker"
+          className="absolute map-marker cursor-pointer"
           style={{
             top: marker.position.top,
             left: marker.position.left,
             width: '30px',
             height: '30px',
             borderRadius: '50%',
-            backgroundColor: hoveredId === marker.id ? '#0c0f24' : '#1b489b',
+            backgroundColor: hoveredId === marker.id || hoveredMapDotId === marker.id ? '#0c0f24' : '#1b489b',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -74,10 +88,12 @@ export function ListingsMap() {
             fontWeight: 'bold',
             fontSize: '14px',
             transition: 'all 0.3s ease',
-            transform: hoveredId === marker.id ? 'scale(1.2)' : 'scale(1)',
-            zIndex: hoveredId === marker.id ? 1 : 0,
+            transform: hoveredId === marker.id || hoveredMapDotId === marker.id ? 'scale(1.2)' : 'scale(1)',
+            zIndex: hoveredId === marker.id || hoveredMapDotId === marker.id ? 1 : 0,
             boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
           }}
+          onMouseEnter={() => handleMapDotHover(marker.id)}
+          onMouseLeave={() => handleMapDotHover(null)}
         >
           {marker.id}
         </div>
