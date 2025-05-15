@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { ListingCard } from './ListingCard';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -252,7 +253,7 @@ export function ListingsGrid({ isWideScreen = true }: ListingsGridProps) {
   }, []);
 
   return (
-    <ScrollArea className="h-full">
+    <ScrollArea className="h-full pr-2">
       <div className={`grid ${isWideScreen ? 'grid-cols-2' : 'grid-cols-1'} gap-4 pb-24`}>
         {listingsData.map((listing) => (
           <ListingCard 
