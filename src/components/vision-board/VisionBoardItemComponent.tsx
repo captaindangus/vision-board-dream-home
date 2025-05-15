@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { VisionBoardItem } from '@/context/VisionBoardContext';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { Badge } from '@/components/ui/badge';
 
 interface VisionBoardItemComponentProps {
   item: VisionBoardItem;
@@ -118,6 +119,39 @@ export function VisionBoardItemComponent({
             {item.content.title && (
               <div className="absolute bottom-2 left-2 bg-black bg-opacity-60 px-2 py-1 rounded text-white text-xs">
                 {item.content.title}
+              </div>
+            )}
+            
+            {/* Display tags if available */}
+            {item.content.tags && item.content.tags.length > 0 && (
+              <div className="p-2 flex flex-wrap gap-1">
+                {item.content.tags.map((tag: string, index: number) => (
+                  <Badge key={index} variant="outline" className="bg-gray-100 text-xs">
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : item.type === 'priceRange' ? (
+          <div className="bg-[#F3F3F4] p-3 rounded-xl w-full">
+            <div className="text-black text-sm font-bold truncate mb-1">
+              {item.content.title}
+            </div>
+            {item.content.value && (
+              <div className="text-black text-xs">
+                Price Range: ${item.content.value[0]} - ${item.content.value[1]}
+              </div>
+            )}
+          </div>
+        ) : item.type === 'homeSize' ? (
+          <div className="bg-[#F3F3F4] p-3 rounded-xl w-full">
+            <div className="text-black text-sm font-bold truncate mb-1">
+              {item.content.title}
+            </div>
+            {item.content.value && (
+              <div className="text-black text-xs">
+                Home Size: {item.content.minSize || 'No Min'} - {item.content.maxSize || 'No Max'} sqft
               </div>
             )}
           </div>

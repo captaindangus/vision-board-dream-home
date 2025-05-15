@@ -59,8 +59,44 @@ export function PriceRangeSlider() {
     setPriceRange([priceRange[0], parsedValue]);
   };
 
+  const handleDragStart = (e: React.DragEvent) => {
+    console.log('Dragging price range widget');
+    
+    // Set the drag data
+    e.dataTransfer.setData("application/json", JSON.stringify({
+      type: 'priceRange',
+      content: {
+        title: '💰 Price Range',
+        value: priceRange
+      },
+      size: { width: 250, height: 'auto' }
+    }));
+    e.dataTransfer.effectAllowed = "copy";
+    
+    // Create a drag image
+    const element = e.currentTarget;
+    const dragImage = element.cloneNode(true) as HTMLElement;
+    dragImage.style.width = element.clientWidth + 'px';
+    dragImage.style.opacity = '0.8';
+    dragImage.style.position = 'absolute';
+    dragImage.style.top = '-1000px';
+    document.body.appendChild(dragImage);
+    
+    // Set the drag image
+    e.dataTransfer.setDragImage(dragImage, 40, 40);
+    
+    // Remove the drag image after
+    setTimeout(() => {
+      document.body.removeChild(dragImage);
+    }, 0);
+  };
+
   return (
-    <div className="flex w-full flex-col items-start gap-3 bg-[#F3F3F4] px-3.5 py-[18px] rounded-xl">
+    <div 
+      className="flex w-full flex-col items-start gap-3 bg-[#F3F3F4] px-3.5 py-[18px] rounded-xl cursor-grab"
+      draggable="true"
+      onDragStart={handleDragStart}
+    >
       <div className="w-full text-black text-sm font-bold">
         💰Price
       </div>
