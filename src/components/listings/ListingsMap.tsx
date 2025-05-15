@@ -4,9 +4,21 @@ import React, { useState, useEffect } from 'react';
 // Define markers data with positions relative to container
 const markers = [
   { id: 1, position: { top: "15%", left: "35%" } },
+  { id: 2, position: { top: "20%", left: "25%" } },
   { id: 3, position: { top: "25%", left: "70%" } },
   { id: 4, position: { top: "40%", left: "55%" } },
+  { id: 5, position: { top: "30%", left: "45%" } },
+  { id: 6, position: { top: "55%", left: "30%" } },
+  { id: 7, position: { top: "50%", left: "65%" } },
   { id: 8, position: { top: "70%", left: "85%" } },
+  { id: 9, position: { top: "60%", left: "20%" } },
+  { id: 10, position: { top: "75%", left: "40%" } },
+  { id: 11, position: { top: "35%", left: "75%" } },
+  { id: 12, position: { top: "65%", left: "50%" } },
+  { id: 13, position: { top: "45%", left: "15%" } },
+  { id: 14, position: { top: "80%", left: "70%" } },
+  { id: 15, position: { top: "85%", left: "25%" } },
+  { id: 16, position: { top: "10%", left: "60%" } }
 ];
 
 export function ListingsMap() {
