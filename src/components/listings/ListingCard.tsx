@@ -45,7 +45,7 @@ export function ListingCard({ listing, onMouseEnter, onMouseLeave, isHighlighted
         <img 
           src={listing.imageUrl} 
           alt={listing.address} 
-          className="w-full h-[220px] object-cover transition-transform duration-300"
+          className="w-full h-[260px] object-cover transition-transform duration-300"
           style={{
             transform: isHighlighted ? 'scale(1.05)' : 'scale(1)'
           }}
