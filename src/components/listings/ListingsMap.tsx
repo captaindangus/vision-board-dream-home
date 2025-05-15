@@ -26,6 +26,18 @@ export function ListingsMap() {
     };
   }, []);
 
+  // Handle marker hover effect
+  const handleMarkerHover = (id: number | null) => {
+    setHoveredId(id);
+    
+    // Dispatch event to highlight the corresponding listing card
+    if (id !== null) {
+      document.dispatchEvent(
+        new CustomEvent("markerHover", { detail: id })
+      );
+    }
+  };
+
   return (
     <div className="relative w-full h-full">
       {/* Map image container */}
@@ -77,7 +89,10 @@ export function ListingsMap() {
             transform: hoveredId === marker.id ? 'scale(1.2)' : 'scale(1)',
             zIndex: hoveredId === marker.id ? 1 : 0,
             boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+            cursor: 'pointer'
           }}
+          onMouseEnter={() => handleMarkerHover(marker.id)}
+          onMouseLeave={() => handleMarkerHover(null)}
         >
           {marker.id}
         </div>

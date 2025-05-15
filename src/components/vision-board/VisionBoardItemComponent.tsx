@@ -137,6 +137,32 @@ export function VisionBoardItemComponent({
           </div>
         )}
         
+        {item.type === 'neighborhoodFeature' && (
+          <div className="relative flex flex-col">
+            <AspectRatio ratio={4/3} className="w-full">
+              <img
+                src={item.content.imageUrl}
+                alt={item.content.title || "Neighborhood feature"}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = 'https://placehold.co/600x400/png';
+                }}
+              />
+            </AspectRatio>
+            <div className="p-3">
+              <div className="text-black text-sm font-bold">
+                {item.content.title}
+              </div>
+              {item.content.description && (
+                <div className="text-black text-xs mt-1">
+                  {item.content.description}
+                </div>
+              )}
+              {item.content.tags && renderTags(item.content.tags)}
+            </div>
+          </div>
+        )}
+        
         {item.type === 'priceRange' && (
           <div className="bg-[#F3F3F4] p-3 rounded-xl w-full">
             <div className="text-black text-sm font-bold truncate mb-1">
@@ -164,7 +190,8 @@ export function VisionBoardItemComponent({
         )}
         
         {(item.type !== 'image' && item.type !== 'homeFeature' && 
-          item.type !== 'priceRange' && item.type !== 'homeSize') && (
+          item.type !== 'neighborhoodFeature' && item.type !== 'priceRange' && 
+          item.type !== 'homeSize') && (
           <div className="bg-[#F3F3F4] p-3 rounded-xl w-full">
             <div className="text-black text-sm font-bold truncate mb-1">
               {item.content.title}

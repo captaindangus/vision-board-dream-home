@@ -12,6 +12,7 @@ interface Listing {
   imageUrl: string;
   timeAgo: string;
   mapCoordinates?: { lat: number; lng: number };
+  url?: string;
 }
 
 interface ListingCardProps {
@@ -24,11 +25,18 @@ interface ListingCardProps {
 export function ListingCard({ listing, onMouseEnter, onMouseLeave, isHighlighted = false }: ListingCardProps) {
   const [isFavorite, setIsFavorite] = useState(false);
 
+  const handleClick = () => {
+    if (listing.url) {
+      window.open(listing.url, '_blank');
+    }
+  };
+
   return (
     <div 
-      className={`relative flex flex-col bg-white rounded-xl overflow-hidden border border-[#e7e7e9] transition-all shadow-sm`}
+      className={`relative flex flex-col bg-white rounded-xl overflow-hidden border border-[#e7e7e9] transition-all shadow-sm cursor-pointer`}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
+      onClick={handleClick}
       style={{
         // Apply inset shadow when highlighted instead of border
         boxShadow: isHighlighted ? 'inset 0 0 0 2px #0c0f24' : ''
@@ -42,7 +50,10 @@ export function ListingCard({ listing, onMouseEnter, onMouseLeave, isHighlighted
         />
         <button 
           className="absolute top-3 right-3 p-2 rounded-full bg-white/80 hover:bg-white transition-colors"
-          onClick={() => setIsFavorite(!isFavorite)}
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent the card click event
+            setIsFavorite(!isFavorite);
+          }}
           aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
         >
           <Heart 

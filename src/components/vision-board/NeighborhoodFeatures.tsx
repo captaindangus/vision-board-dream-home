@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useSearch } from './SearchBar';
 import { FeatureCard } from './FeatureCard';
@@ -32,9 +33,9 @@ export function NeighborhoodFeatures() {
     },
     { 
       id: 5, 
-      imageUrl: "https://images.unsplash.com/photo-1472396961693-142e6e269027?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", 
+      imageUrl: "/lovable-uploads/95c52f8a-e0af-4684-b567-4224b55fcf8c.png", 
       type: "Park Nearby",
-      description: "Homes with easy access to green spaces" 
+      description: "Parks & green spaces nearby" 
     },
     { 
       id: 6, 
