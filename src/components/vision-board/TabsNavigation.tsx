@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 export function TabsNavigation() {
@@ -7,6 +7,14 @@ export function TabsNavigation() {
   const location = useLocation();
   const isListingsPage = location.pathname === '/listings';
   
+  // Save the current tab to localStorage whenever it changes
+  useEffect(() => {
+    const currentPath = location.pathname;
+    if (currentPath === '/board' || currentPath === '/listings') {
+      localStorage.setItem('lastActiveTab', currentPath);
+    }
+  }, [location.pathname]);
+
   return (
     <div className="flex items-center bg-[#F0F0F0] p-2 rounded-2xl">
       <button 
