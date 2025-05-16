@@ -13,6 +13,14 @@ export default function Index() {
         duration: 5000,
       }
     );
+    
+    // Check if we're in a "new board" state by checking localStorage
+    // If there's no data in the localStorage, we'll consider this a new board
+    const visionBoardItems = localStorage.getItem('visionBoardItems');
+    if (!visionBoardItems || visionBoardItems === '[]') {
+      // This is a new board, the empty state will be handled by VisionBoardGrid component
+      console.log('New board - empty state should display');
+    }
   }, []);
 
   return (

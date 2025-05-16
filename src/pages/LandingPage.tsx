@@ -50,6 +50,7 @@ const defaultBoards: VisionBoard[] = [
 ];
 
 const STORAGE_KEY = 'visionBoards';
+const VISION_BOARD_ITEMS_KEY = 'visionBoardItems';
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -89,6 +90,13 @@ export default function LandingPage() {
     }
     setOpenDropdownId(null);
   };
+  
+  const handleCreateNewBoard = () => {
+    // Clear existing vision board items in localStorage
+    localStorage.removeItem(VISION_BOARD_ITEMS_KEY);
+    // Navigate to the board creation page
+    navigate('/board');
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -116,11 +124,12 @@ export default function LandingPage() {
             </p>
           </div>
           <div className="mt-8">
-            <Link to="/board">
-              <Button className="rounded-full px-6 py-6 text-lg bg-black hover:bg-gray-800">
-                Create a New Board
-              </Button>
-            </Link>
+            <Button 
+              className="rounded-full px-6 py-6 text-lg bg-black hover:bg-gray-800"
+              onClick={handleCreateNewBoard}
+            >
+              Create a New Board
+            </Button>
           </div>
         </div>
 
@@ -129,7 +138,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <Card 
               className="rounded-3xl border-dashed border-2 border-gray-300 flex flex-col items-center justify-center p-12 hover:border-gray-400 transition-all cursor-pointer"
-              onClick={() => navigate('/board')}
+              onClick={handleCreateNewBoard}
             >
               <div className="flex flex-col items-center">
                 <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-6">
