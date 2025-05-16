@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -85,9 +84,6 @@ function SaveBoardDialogContent({ open, onOpenChange }: SaveBoardDialogProps) {
     }
     
     onOpenChange(false);
-    
-    // Navigate to home page to see the updated board
-    navigate('/');
   };
 
   if (!open) return null;
