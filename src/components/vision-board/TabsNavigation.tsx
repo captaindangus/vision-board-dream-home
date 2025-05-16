@@ -7,25 +7,24 @@ export function TabsNavigation() {
   const location = useLocation();
   const isListingsPage = location.pathname === '/listings';
   
-  // Save the current tab to localStorage whenever it changes
-  React.useEffect(() => {
-    const currentPath = location.pathname;
-    if (currentPath === '/board' || currentPath === '/listings') {
-      localStorage.setItem('lastActiveTab', currentPath);
-    }
-  }, [location.pathname]);
+  // Handle tab navigation with state preservation
+  const handleTabChange = (path: string) => {
+    // Save to localStorage before navigation
+    localStorage.setItem('lastActiveTab', path);
+    navigate(path);
+  };
 
   return (
     <div className="flex items-center bg-[#F0F0F0] p-2 rounded-2xl">
       <button 
         className={`text-[rgba(12,15,36,1)] text-base font-${isListingsPage ? 'medium' : 'bold'} gap-2.5 ${!isListingsPage ? 'bg-white shadow-[0px_2px_10px_0px_rgba(0,0,0,0.08)]' : ''} px-6 py-2.5 rounded-xl`}
-        onClick={() => navigate('/board')}
+        onClick={() => handleTabChange('/board')}
       >
         Vision Board
       </button>
       <button 
         className={`text-[rgba(12,15,36,1)] text-base font-${isListingsPage ? 'bold' : 'medium'} gap-2.5 ${isListingsPage ? 'bg-white shadow-[0px_2px_10px_0px_rgba(0,0,0,0.08)]' : ''} px-6 py-2.5 rounded-xl`}
-        onClick={() => navigate('/listings')}
+        onClick={() => handleTabChange('/listings')}
       >
         Listings
       </button>

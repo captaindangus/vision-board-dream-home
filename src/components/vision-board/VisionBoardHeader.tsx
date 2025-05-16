@@ -4,11 +4,12 @@ import { TabsNavigation } from './TabsNavigation';
 import { Save } from 'lucide-react';
 import { toast } from 'sonner';
 import { SaveBoardDialog } from './SaveBoardDialog';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export function VisionBoardHeader() {
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSave = () => {
     setSaveDialogOpen(true);
@@ -16,7 +17,7 @@ export function VisionBoardHeader() {
 
   const handleBackToHome = () => {
     // Before navigating away, ensure the last tab is saved
-    const currentPath = window.location.pathname;
+    const currentPath = location.pathname;
     if (currentPath === '/board' || currentPath === '/listings') {
       localStorage.setItem('lastActiveTab', currentPath);
     }
