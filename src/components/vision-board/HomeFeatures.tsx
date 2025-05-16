@@ -23,25 +23,25 @@ export function HomeFeatures() {
       id: 3, 
       imageUrl: "https://images.unsplash.com/photo-1575429198097-0414ec08e8cd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", 
       type: "Swimming",
-      tags: ["Pool", "Outdoor"]
+      tags: ["Pool", "Rooftop", "Skyline View"]
     },
     { 
       id: 4, 
       imageUrl: "/lovable-uploads/3cc34a99-58d4-4b5e-8e69-d6a2e85aa6c9.png", 
       type: "Bathroom",
-      tags: ["Modern", "Spacious"]
+      tags: ["Concrete Finishes", "Minimalism", "Tall Vertical Window"]
     },
     { 
       id: 5, 
       imageUrl: "/lovable-uploads/edc4f5ac-e0ea-4e33-8927-76659277b28e.png", 
       type: "Kitchen",
-      tags: ["Modern", "Spacious"]
+      tags: ["U-Shaped Layout", "Open Shelving"]
     },
     { 
       id: 6, 
       imageUrl: "/lovable-uploads/f9797142-2f9e-442c-ba71-a1f02e9ecfd2.png",
       type: "Office",
-      tags: ["Workspace", "Bright"]
+      tags: ["Hardwood Flooring", "Large Window", "Workspace"]
     }
   ];
 
