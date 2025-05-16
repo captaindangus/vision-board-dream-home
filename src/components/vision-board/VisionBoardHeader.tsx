@@ -14,10 +14,19 @@ export function VisionBoardHeader() {
     setSaveDialogOpen(true);
   };
 
+  const handleBackToHome = () => {
+    // Before navigating away, ensure the last tab is saved
+    const currentPath = window.location.pathname;
+    if (currentPath === '/board' || currentPath === '/listings') {
+      localStorage.setItem('lastActiveTab', currentPath);
+    }
+    navigate('/');
+  };
+
   return (
     <header className="flex w-full justify-between items-center bg-[#F7F7F8] h-[90px] px-5 py-4">
       <div className="flex items-center gap-8">
-        <BackButton onClick={() => navigate('/')} />
+        <BackButton onClick={handleBackToHome} />
         {/* Auto-save indicator removed */}
       </div>
       <div className="flex-1 flex justify-center">
