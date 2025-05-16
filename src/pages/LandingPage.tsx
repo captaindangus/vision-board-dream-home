@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { PlusIcon, MoreHorizontal, Menu, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,36 +12,81 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+// Define an interface for our board data
+interface VisionBoard {
+  id: string;
+  name: string;
+  days: number;
+  images: string[];
+  createdAt: number; // timestamp
+}
+
+// Default boards for new users
+const defaultBoards: VisionBoard[] = [
+  {
+    id: '1',
+    name: 'My Vision Board 1',
+    days: 2,
+    createdAt: Date.now() - 2 * 24 * 60 * 60 * 1000, // 2 days ago
+    images: [
+      '/lovable-uploads/d6cec2fd-12d6-4b45-ae92-5f10fec33156.png',
+      '/lovable-uploads/63b9a3a1-d1bc-4bcf-a807-a2aec8728e6f.png',
+      '/lovable-uploads/853d956f-993b-4666-bbd3-20838e6e1588.png',
+      '/lovable-uploads/ab124023-9d45-4962-8b9a-f9ed70f10fcf.png',
+    ]
+  },
+  {
+    id: '2',
+    name: 'My Vision Board 2',
+    days: 2,
+    createdAt: Date.now() - 2 * 24 * 60 * 60 * 1000, // 2 days ago
+    images: [
+      '/lovable-uploads/322397c6-7177-4095-bf9e-7d62eca30dbc.png',
+      '/lovable-uploads/fc39b9f3-6a99-4d62-869d-a1a7498dc9f5.png',
+      '/lovable-uploads/b1d62892-cf6f-41ad-b366-89cb39168cd9.png',
+      '/lovable-uploads/d9c579f3-a709-4010-b98a-1eb2b3b21174.png',
+    ]
+  }
+];
+
+const STORAGE_KEY = 'visionBoards';
+
 export default function LandingPage() {
   const navigate = useNavigate();
-  const [visionBoards, setVisionBoards] = useState([
-    {
-      id: '1',
-      name: 'My Vision Board 1',
-      days: 2,
-      images: [
-        '/lovable-uploads/d6cec2fd-12d6-4b45-ae92-5f10fec33156.png',
-        '/lovable-uploads/63b9a3a1-d1bc-4bcf-a807-a2aec8728e6f.png',
-        '/lovable-uploads/853d956f-993b-4666-bbd3-20838e6e1588.png',
-        '/lovable-uploads/ab124023-9d45-4962-8b9a-f9ed70f10fcf.png',
-      ]
-    },
-    {
-      id: '2',
-      name: 'My Vision Board 2',
-      days: 2,
-      images: [
-        '/lovable-uploads/322397c6-7177-4095-bf9e-7d62eca30dbc.png',
-        '/lovable-uploads/fc39b9f3-6a99-4d62-869d-a1a7498dc9f5.png',
-        '/lovable-uploads/b1d62892-cf6f-41ad-b366-89cb39168cd9.png',
-        '/lovable-uploads/d9c579f3-a709-4010-b98a-1eb2b3b21174.png',
-      ]
-    }
-  ]);
+  const [visionBoards, setVisionBoards] = useState<VisionBoard[]>([]);
   const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load boards from localStorage on component mount
+  useEffect(() => {
+    try {
+      const storedBoards = localStorage.getItem(STORAGE_KEY);
+      if (storedBoards) {
+        setVisionBoards(JSON.parse(storedBoards));
+      } else {
+        // First time user - set default boards
+        setVisionBoards(defaultBoards);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultBoards));
+      }
+    } catch (error) {
+      console.error('Error loading vision boards:', error);
+      // Fallback to default boards if there's an error
+      setVisionBoards(defaultBoards);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   const handleDeleteBoard = (id: string) => {
-    setVisionBoards(visionBoards.filter(board => board.id !== id));
+    try {
+      const updatedBoards = visionBoards.filter(board => board.id !== id);
+      setVisionBoards(updatedBoards);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedBoards));
+      toast.success('Vision board deleted successfully');
+    } catch (error) {
+      console.error('Error deleting vision board:', error);
+      toast.error('Failed to delete vision board');
+    }
     setOpenDropdownId(null);
   };
 
@@ -92,59 +139,73 @@ export default function LandingPage() {
               </div>
             </Card>
 
-            {visionBoards.map(board => (
-              <Card key={board.id} className="rounded-3xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-all group">
-                <div className="relative">
-                  <div 
-                    className="grid grid-cols-2 grid-rows-2 gap-0.5 aspect-[4/3] cursor-pointer"
-                    onClick={() => navigate('/listings')}
-                  >
-                    {board.images.map((image, idx) => (
-                      <div key={idx} className="overflow-hidden">
-                        <img 
-                          src={image} 
-                          alt="Modern house" 
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    ))}
+            {isLoading ? (
+              // Show loading placeholders if loading
+              Array.from({ length: 2 }).map((_, index) => (
+                <Card key={`loading-${index}`} className="rounded-3xl overflow-hidden border border-gray-200 shadow-sm">
+                  <div className="aspect-[4/3] bg-gray-100 animate-pulse"></div>
+                  <div className="p-4">
+                    <div className="h-5 w-2/3 bg-gray-200 rounded animate-pulse mb-2"></div>
+                    <div className="h-4 w-1/3 bg-gray-100 rounded animate-pulse"></div>
                   </div>
-                  <DropdownMenu open={openDropdownId === board.id} onOpenChange={(isOpen) => {
-                    if (isOpen) {
-                      setOpenDropdownId(board.id);
-                    } else if (openDropdownId === board.id) {
-                      setOpenDropdownId(null);
-                    }
-                  }}>
-                    <DropdownMenuTrigger asChild>
-                      <button className={`absolute top-4 right-4 bg-white rounded-full p-1.5 ${openDropdownId === board.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity`}>
-                        <MoreHorizontal className="w-5 h-5" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-36">
-                      <DropdownMenuItem onClick={() => handleDeleteBoard(board.id)} className="text-red-500">
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        <span>Delete</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-                <div className="p-4 flex justify-between items-center">
-                  <div>
-                    <h3 className="font-medium">{board.name}</h3>
-                    <p className="text-sm text-gray-500">{board.days} Days Ago</p>
+                </Card>
+              ))
+            ) : (
+              // Show actual boards
+              visionBoards.map(board => (
+                <Card key={board.id} className="rounded-3xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-all group">
+                  <div className="relative">
+                    <div 
+                      className="grid grid-cols-2 grid-rows-2 gap-0.5 aspect-[4/3] cursor-pointer"
+                      onClick={() => navigate('/listings')}
+                    >
+                      {board.images.map((image, idx) => (
+                        <div key={idx} className="overflow-hidden">
+                          <img 
+                            src={image} 
+                            alt="Modern house" 
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                    <DropdownMenu open={openDropdownId === board.id} onOpenChange={(isOpen) => {
+                      if (isOpen) {
+                        setOpenDropdownId(board.id);
+                      } else if (openDropdownId === board.id) {
+                        setOpenDropdownId(null);
+                      }
+                    }}>
+                      <DropdownMenuTrigger asChild>
+                        <button className={`absolute top-4 right-4 bg-white rounded-full p-1.5 ${openDropdownId === board.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity`}>
+                          <MoreHorizontal className="w-5 h-5" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-36">
+                        <DropdownMenuItem onClick={() => handleDeleteBoard(board.id)} className="text-red-500">
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          <span>Delete</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="rounded-full"
-                    onClick={() => navigate('/listings')}
-                  >
-                    View Listings
-                  </Button>
-                </div>
-              </Card>
-            ))}
+                  <div className="p-4 flex justify-between items-center">
+                    <div>
+                      <h3 className="font-medium">{board.name}</h3>
+                      <p className="text-sm text-gray-500">{board.days} Days Ago</p>
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="rounded-full"
+                      onClick={() => navigate('/listings')}
+                    >
+                      View Listings
+                    </Button>
+                  </div>
+                </Card>
+              ))
+            )}
           </div>
         </div>
       </main>
