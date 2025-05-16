@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -66,8 +65,7 @@ export default function LandingPage() {
               Vision Board To Dream Home
             </h1>
             <p className="text-xl text-gray-600">
-              Create a vision board of your dream home—style, layout, vibes—
-              and we'll find real listings that match your vision
+              Create a vision board of your dream home—style, layout, vibes— and our AI finds real listings that match your vision!
             </p>
           </div>
           <div className="mt-8">

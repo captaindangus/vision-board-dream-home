@@ -12,7 +12,7 @@ export function EmptyBoardState() {
         </div>
         <h1 className="text-center text-[#0C0F24] text-2xl font-bold">Welcome to Your Vision Board ✨</h1>
         <p className="text-center text-[#0C0F24] text-base mt-3">
-          Upload or paste an image, or drag one in from the sidebar to get started!
+          Upload, paste, or drag in an image from the sidebar - our AI analyzes your style and finds real listings that match your dream!
         </p>
         <div className="mt-6 flex flex-col items-center">
           <p className="text-gray-500 text-sm mb-2">Tip: Try adding home features you love</p>
