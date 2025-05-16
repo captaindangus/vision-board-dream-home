@@ -14,7 +14,7 @@ const queryClient = new QueryClient();
 // Function to get the last active tab or default to '/board'
 const getLastActiveTab = () => {
   const lastTab = localStorage.getItem('lastActiveTab');
-  return lastTab === '/listings' || lastTab === '/board' ? lastTab : '/board';
+  return lastTab === '/listings' ? '/listings' : '/board';
 };
 
 const App = () => (
