@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useVisionBoard } from '@/context/VisionBoardContext';
+import { VisionBoardProvider, useVisionBoard } from '@/context/VisionBoardContext';
 import { saveNewVisionBoard, STORAGE_KEY, defaultBoards } from '@/utils/visionBoardUtils';
 
 interface SaveBoardDialogProps {
@@ -20,7 +20,8 @@ interface SaveBoardDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function SaveBoardDialog({ open, onOpenChange }: SaveBoardDialogProps) {
+// Create a wrapped component that uses the context
+function SaveBoardDialogContent({ open, onOpenChange }: SaveBoardDialogProps) {
   const [boardName, setBoardName] = useState('Untitled Vision Board');
   const [notificationPreference, setNotificationPreference] = useState('daily');
   const navigate = useNavigate();
@@ -125,5 +126,18 @@ export function SaveBoardDialog({ open, onOpenChange }: SaveBoardDialogProps) {
         </div>
       </div>
     </div>
+  );
+}
+
+// Create the main component that wraps the content with the VisionBoardProvider
+export function SaveBoardDialog(props: SaveBoardDialogProps) {
+  // If the dialog is not open, don't render anything
+  if (!props.open) return null;
+  
+  // Wrap the content with VisionBoardProvider when the dialog is open
+  return (
+    <VisionBoardProvider>
+      <SaveBoardDialogContent {...props} />
+    </VisionBoardProvider>
   );
 }
