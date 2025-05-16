@@ -9,8 +9,18 @@ export function TabsNavigation() {
   
   // Handle tab navigation with state preservation
   const handleTabChange = (path: string) => {
-    // Save to localStorage before navigation
-    localStorage.setItem('lastActiveTab', path);
+    // Get current board ID to save tab preference per board
+    const currentBoardId = localStorage.getItem('currentBoardId');
+    
+    if (currentBoardId) {
+      // Save tab preference for this specific board
+      localStorage.setItem(`lastActiveTab_${currentBoardId}`, path);
+    } else {
+      // Fallback if no board ID is available
+      localStorage.setItem('lastActiveTab', path);
+    }
+    
+    // Navigate to the selected tab
     navigate(path);
   };
 

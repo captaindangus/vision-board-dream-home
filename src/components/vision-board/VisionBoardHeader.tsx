@@ -16,10 +16,17 @@ export function VisionBoardHeader() {
   };
 
   const handleBackToHome = () => {
-    // Before navigating away, ensure the last tab is saved
+    // Get current board ID
+    const currentBoardId = localStorage.getItem('currentBoardId');
+    
+    // Before navigating away, ensure the last tab is saved for this board
     const currentPath = location.pathname;
     if (currentPath === '/board' || currentPath === '/listings') {
-      localStorage.setItem('lastActiveTab', currentPath);
+      if (currentBoardId) {
+        localStorage.setItem(`lastActiveTab_${currentBoardId}`, currentPath);
+      } else {
+        localStorage.setItem('lastActiveTab', currentPath);
+      }
     }
     navigate('/');
   };

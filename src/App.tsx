@@ -13,9 +13,19 @@ const queryClient = new QueryClient();
 
 // Function to get the last active tab or default to '/board'
 const getLastActiveTab = () => {
-  const lastTab = localStorage.getItem('lastActiveTab');
-  // Ensure we only return valid paths: '/board' or '/listings'
-  return lastTab === '/listings' ? '/listings' : '/board';
+  // Get the current board ID to maintain tab state per board
+  const currentBoardId = localStorage.getItem('currentBoardId');
+  
+  // If we have a board ID, check if this specific board has a saved tab preference
+  if (currentBoardId) {
+    const boardTabPreference = localStorage.getItem(`lastActiveTab_${currentBoardId}`);
+    if (boardTabPreference === '/listings') {
+      return '/listings';
+    }
+  }
+  
+  // Default to the board tab if no preference was saved for this board
+  return '/board';
 };
 
 const App = () => (
