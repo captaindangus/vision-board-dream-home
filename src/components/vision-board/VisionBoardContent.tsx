@@ -6,6 +6,7 @@ import { UploadButton } from './UploadButton';
 import { useVisionBoard } from '@/context/VisionBoardContext';
 import { VisionBoardGrid } from './VisionBoardGrid';
 import { useVisionBoardDragDrop } from '@/hooks/useVisionBoardDragDrop';
+import { SummarizeButton } from './SummarizeButton';
 
 export function VisionBoardContent() {
   const { removeItem, reorderItems } = useVisionBoard();
@@ -24,7 +25,7 @@ export function VisionBoardContent() {
 
   return (
     <main 
-      className="flex flex-col w-full h-full bg-white px-6 py-8 rounded-[20px] overflow-hidden"
+      className="flex flex-col w-full h-full bg-white px-6 py-8 rounded-[20px] overflow-hidden relative"
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
     >
@@ -49,6 +50,9 @@ export function VisionBoardContent() {
           />
         </div>
       </ScrollArea>
+      
+      {/* Add the Summarize Button */}
+      <SummarizeButton />
     </main>
   );
 }
