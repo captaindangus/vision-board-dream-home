@@ -13,13 +13,13 @@ export function SummarizeButton() {
       <PopoverTrigger asChild>
         <Button 
           variant="outline"
-          className="text-base font-medium flex items-center gap-2 px-4 py-2.5 h-10 rounded-[100px] border border-[#0C0F24]"
+          className="text-base font-medium flex items-center gap-2 px-4 py-2.5 rounded-[100px] border border-[#0C0F24]"
         >
           Summarize✨
         </Button>
       </PopoverTrigger>
       <PopoverContent 
-        className="w-80 p-6 rounded-[24px]" 
+        className="w-80 p-4 rounded-[24px]" 
         align="end" 
         sideOffset={16}
       >

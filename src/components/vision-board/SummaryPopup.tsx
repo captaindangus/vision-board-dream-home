@@ -119,8 +119,8 @@ export function SummaryPopup({ items }: SummaryPopupProps) {
   return (
     <div className="flex flex-col gap-4">
       <h3 className="font-medium text-sm">Vision Board Summary</h3>
-      <ScrollArea className="max-h-[300px] pr-2">
-        <div className="flex flex-col gap-4 pb-2">
+      <ScrollArea className="max-h-[300px]">
+        <div className="flex flex-col gap-4">
           {detailTags.length > 0 && (
             <div className="flex flex-col gap-2">
               <h4 className="text-xs text-gray-500 font-medium">Home Details</h4>
