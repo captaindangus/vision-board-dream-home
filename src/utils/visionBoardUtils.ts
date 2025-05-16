@@ -63,7 +63,34 @@ export const saveNewVisionBoard = (newBoard: NewVisionBoard): string => {
     // Load existing boards
     const boards = loadVisionBoards();
     
-    // Generate a unique ID
+    // Check if there's a current board ID (in case we're updating)
+    const currentBoardId = localStorage.getItem('currentBoardId');
+    
+    // If we have a current board ID, check if it exists in the boards array
+    if (currentBoardId) {
+      const existingBoardIndex = boards.findIndex(board => board.id === currentBoardId);
+      if (existingBoardIndex !== -1) {
+        // Update the existing board
+        const updatedBoards = [...boards];
+        updatedBoards[existingBoardIndex] = {
+          ...updatedBoards[existingBoardIndex],
+          name: newBoard.name,
+          images: newBoard.images
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedBoards));
+        
+        // Save the current items for this board
+        const currentItems = localStorage.getItem(VISION_BOARD_ITEMS_KEY);
+        if (currentItems) {
+          localStorage.setItem(`${VISION_BOARD_ITEMS_KEY}_${currentBoardId}`, currentItems);
+        }
+        
+        return currentBoardId;
+      }
+    }
+    
+    // If we don't have a current board ID or it doesn't exist in the boards array,
+    // create a new board
     const boardId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     
     // Create the new board with current timestamp
@@ -91,12 +118,9 @@ export const saveNewVisionBoard = (newBoard: NewVisionBoard): string => {
       localStorage.setItem(`notification_${boardId}`, newBoard.notificationPreference);
     }
     
-    // Clear the current board title after saving
-    localStorage.removeItem(BOARD_TITLE_KEY);
-    
     return boardId;
   } catch (error) {
-    console.error('Error saving new vision board:', error);
+    console.error('Error saving vision board:', error);
     toast.error('Failed to save vision board');
     return '';
   }

@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { VisionBoardProvider, useVisionBoard } from '@/context/VisionBoardContext';
-import { saveNewVisionBoard, STORAGE_KEY, defaultBoards, getBoardTitle } from '@/utils/visionBoardUtils';
+import { saveNewVisionBoard, STORAGE_KEY, defaultBoards, getBoardTitle, setBoardTitle } from '@/utils/visionBoardUtils';
 
 interface SaveBoardDialogProps {
   open: boolean;
@@ -35,9 +35,8 @@ function SaveBoardDialogContent({ open, onOpenChange }: SaveBoardDialogProps) {
   }, [open]);
 
   const handleSave = () => {
-    // Get the current boards from localStorage or use defaults
-    const existingBoards = localStorage.getItem(STORAGE_KEY);
-    const boards = existingBoards ? JSON.parse(existingBoards) : defaultBoards;
+    // Check if we're updating an existing board
+    const currentBoardId = localStorage.getItem('currentBoardId');
     
     // Extract up to 4 image URLs from the vision board items
     const boardImages = items
@@ -50,20 +49,44 @@ function SaveBoardDialogContent({ open, onOpenChange }: SaveBoardDialogProps) {
       boardImages.push('/lovable-uploads/d6cec2fd-12d6-4b45-ae92-5f10fec33156.png');
     }
     
-    // Save the board with its items
-    const newBoardId = saveNewVisionBoard({
-      name: boardName,
-      images: boardImages,
-      notificationPreference
-    });
+    // Save the updated board title
+    setBoardTitle(boardName);
     
-    // Save the current board ID to localStorage for tab state persistence
-    localStorage.setItem('currentBoardId', newBoardId);
+    // If we have a current board ID, update it instead of creating a new one
+    let newBoardId = currentBoardId;
     
-    toast.success(`Vision board "${boardName}" saved!`);
+    if (currentBoardId) {
+      // Update existing board
+      const boards = localStorage.getItem(STORAGE_KEY);
+      const parsedBoards = boards ? JSON.parse(boards) : defaultBoards;
+      const updatedBoards = parsedBoards.map(board => {
+        if (board.id === currentBoardId) {
+          return {
+            ...board,
+            name: boardName,
+            images: boardImages
+          };
+        }
+        return board;
+      });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedBoards));
+      toast.success(`Vision board "${boardName}" updated!`);
+    } else {
+      // Save as a new board
+      newBoardId = saveNewVisionBoard({
+        name: boardName,
+        images: boardImages,
+        notificationPreference
+      });
+      
+      // Set this as the current board
+      localStorage.setItem('currentBoardId', newBoardId);
+      toast.success(`Vision board "${boardName}" saved!`);
+    }
+    
     onOpenChange(false);
     
-    // Navigate to home page to see the new board
+    // Navigate to home page to see the updated board
     navigate('/');
   };
 
@@ -73,7 +96,9 @@ function SaveBoardDialogContent({ open, onOpenChange }: SaveBoardDialogProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="bg-white w-full max-w-md p-6 rounded-[24px] relative">
         <div className="flex justify-between items-center mb-6">
-          <h3 className="text-xl font-semibold">Save Vision Board</h3>
+          <h3 className="text-xl font-semibold">
+            {localStorage.getItem('currentBoardId') ? 'Update Vision Board' : 'Save Vision Board'}
+          </h3>
           <button 
             onClick={() => onOpenChange(false)}
             className="text-gray-500 hover:text-gray-700"
@@ -127,7 +152,7 @@ function SaveBoardDialogContent({ open, onOpenChange }: SaveBoardDialogProps) {
               onClick={handleSave}
               className="rounded-full px-5 bg-black hover:bg-gray-800"
             >
-              Save
+              {localStorage.getItem('currentBoardId') ? 'Update' : 'Save'}
             </Button>
           </div>
         </div>
