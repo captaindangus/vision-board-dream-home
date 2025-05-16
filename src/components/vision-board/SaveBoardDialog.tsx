@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { VisionBoardProvider, useVisionBoard } from '@/context/VisionBoardContext';
-import { saveNewVisionBoard, STORAGE_KEY, defaultBoards } from '@/utils/visionBoardUtils';
+import { saveNewVisionBoard, STORAGE_KEY, defaultBoards, getBoardTitle } from '@/utils/visionBoardUtils';
 
 interface SaveBoardDialogProps {
   open: boolean;
@@ -22,10 +22,17 @@ interface SaveBoardDialogProps {
 
 // Create a wrapped component that uses the context
 function SaveBoardDialogContent({ open, onOpenChange }: SaveBoardDialogProps) {
-  const [boardName, setBoardName] = useState('Untitled Vision Board');
+  const [boardName, setBoardName] = useState(getBoardTitle());
   const [notificationPreference, setNotificationPreference] = useState('daily');
   const navigate = useNavigate();
   const { items } = useVisionBoard();
+
+  // Update the board name whenever the dialog opens to get the latest title
+  useEffect(() => {
+    if (open) {
+      setBoardName(getBoardTitle());
+    }
+  }, [open]);
 
   const handleSave = () => {
     // Get the current boards from localStorage or use defaults

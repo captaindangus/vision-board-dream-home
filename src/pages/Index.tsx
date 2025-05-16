@@ -1,8 +1,9 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { VisionBoard } from '@/components/vision-board/VisionBoard';
 import { Toaster } from '@/components/ui/sonner';
 import { toast } from 'sonner';
+import { loadBoardTitle } from '@/utils/visionBoardUtils';
 
 export default function Index() {
   React.useEffect(() => {
@@ -13,6 +14,12 @@ export default function Index() {
         duration: 5000,
       }
     );
+    
+    // Load board title if we're viewing a specific board
+    const currentBoardId = localStorage.getItem('currentBoardId');
+    if (currentBoardId) {
+      loadBoardTitle(currentBoardId);
+    }
     
     // Check if we're in a "new board" state by checking localStorage
     // If there's no data in the localStorage, we'll consider this a new board

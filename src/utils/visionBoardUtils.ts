@@ -1,9 +1,9 @@
-
 import { toast } from 'sonner';
 import { VisionBoard } from '@/components/landing/VisionBoardGrid';
 
 export const STORAGE_KEY = 'visionBoards';
 export const VISION_BOARD_ITEMS_KEY = 'visionBoardItems';
+export const BOARD_TITLE_KEY = 'currentBoardTitle';
 
 // Default boards for new users
 export const defaultBoards: VisionBoard[] = [
@@ -91,6 +91,9 @@ export const saveNewVisionBoard = (newBoard: NewVisionBoard): string => {
       localStorage.setItem(`notification_${boardId}`, newBoard.notificationPreference);
     }
     
+    // Clear the current board title after saving
+    localStorage.removeItem(BOARD_TITLE_KEY);
+    
     return boardId;
   } catch (error) {
     console.error('Error saving new vision board:', error);
@@ -124,6 +127,9 @@ export const prepareNewBoard = () => {
   localStorage.removeItem(VISION_BOARD_ITEMS_KEY);
   // Remove currentBoardId to ensure we start fresh
   localStorage.removeItem('currentBoardId');
+  
+  // Set default board title for a new board
+  setBoardTitle("Untitled Vision Board 🌟");
 };
 
 // Load vision board items for a specific board
@@ -136,5 +142,34 @@ export const loadVisionBoardItems = (boardId: string) => {
   } catch (error) {
     console.error('Error loading vision board items:', error);
     return null;
+  }
+};
+
+// Board title management functions
+export const getBoardTitle = (): string => {
+  const savedTitle = localStorage.getItem(BOARD_TITLE_KEY);
+  return savedTitle || "Untitled Vision Board 🌟";
+};
+
+export const setBoardTitle = (title: string): void => {
+  localStorage.setItem(BOARD_TITLE_KEY, title);
+};
+
+// Load a board's title when switching boards
+export const loadBoardTitle = (boardId: string): string => {
+  if (!boardId) return "Untitled Vision Board 🌟";
+  
+  try {
+    const boards = loadVisionBoards();
+    const board = boards.find(b => b.id === boardId);
+    if (board) {
+      // Set the current board title in localStorage
+      localStorage.setItem(BOARD_TITLE_KEY, board.name);
+      return board.name;
+    }
+    return "Untitled Vision Board 🌟";
+  } catch (error) {
+    console.error('Error loading board title:', error);
+    return "Untitled Vision Board 🌟";
   }
 };
