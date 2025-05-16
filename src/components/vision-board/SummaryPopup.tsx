@@ -33,46 +33,63 @@ export function SummaryPopup({ items }: SummaryPopupProps) {
   // Extract all tags from the items on the board
   const extractedTags = useMemo(() => {
     const tags: SummaryTag[] = [];
+    const uniqueTagTexts = new Set<string>();
     
     items.forEach(item => {
       // Extract home feature tags
       if (item.type === 'homeFeature' && item.content.tags) {
         item.content.tags.forEach((tag, index) => {
-          tags.push({
-            id: `${item.id}-tag-${index}`,
-            text: tag,
-            category: 'feature'
-          });
+          // Only add the tag if we haven't seen this text before
+          if (!uniqueTagTexts.has(tag)) {
+            uniqueTagTexts.add(tag);
+            tags.push({
+              id: `${item.id}-tag-${index}`,
+              text: tag,
+              category: 'feature'
+            });
+          }
         });
       }
       
       // Extract neighborhood features
       if (item.type === 'neighborhoodFeature' && item.content.title) {
-        tags.push({
-          id: `${item.id}-neighborhood`,
-          text: item.content.title,
-          category: 'neighborhood'
-        });
+        const title = item.content.title;
+        if (!uniqueTagTexts.has(title)) {
+          uniqueTagTexts.add(title);
+          tags.push({
+            id: `${item.id}-neighborhood`,
+            text: title,
+            category: 'neighborhood'
+          });
+        }
       }
       
       // Extract home details like price range and size
       if (item.type === 'priceRange' && item.content.value) {
         const [min, max] = item.content.value;
-        tags.push({
-          id: `${item.id}-price`,
-          text: `Price: $${min.toLocaleString()} - $${max.toLocaleString()}`,
-          category: 'detail'
-        });
+        const priceText = `Price: $${min.toLocaleString()} - $${max.toLocaleString()}`;
+        if (!uniqueTagTexts.has(priceText)) {
+          uniqueTagTexts.add(priceText);
+          tags.push({
+            id: `${item.id}-price`,
+            text: priceText,
+            category: 'detail'
+          });
+        }
       }
       
       if (item.type === 'homeSize') {
         const minSize = item.content.minSize || 'No Min';
         const maxSize = item.content.maxSize || 'No Max';
-        tags.push({
-          id: `${item.id}-size`,
-          text: `Size: ${minSize} - ${maxSize} sqft`,
-          category: 'detail'
-        });
+        const sizeText = `Size: ${minSize} - ${maxSize} sqft`;
+        if (!uniqueTagTexts.has(sizeText)) {
+          uniqueTagTexts.add(sizeText);
+          tags.push({
+            id: `${item.id}-size`,
+            text: sizeText,
+            category: 'detail'
+          });
+        }
       }
     });
     
