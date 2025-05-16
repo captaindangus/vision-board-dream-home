@@ -33,6 +33,13 @@ export const defaultBoards: VisionBoard[] = [
   }
 ];
 
+// Interface for board creation
+interface NewVisionBoard {
+  name: string;
+  images: string[];
+  notificationPreference?: string;
+}
+
 // Load vision boards from localStorage
 export const loadVisionBoards = (): VisionBoard[] => {
   try {
@@ -50,11 +57,59 @@ export const loadVisionBoards = (): VisionBoard[] => {
   }
 };
 
+// Save a new vision board and return its ID
+export const saveNewVisionBoard = (newBoard: NewVisionBoard): string => {
+  try {
+    // Load existing boards
+    const boards = loadVisionBoards();
+    
+    // Generate a unique ID
+    const boardId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    
+    // Create the new board with current timestamp
+    const now = Date.now();
+    const createdBoard: VisionBoard = {
+      id: boardId,
+      name: newBoard.name,
+      days: 0, // Just created
+      createdAt: now,
+      images: newBoard.images
+    };
+    
+    // Save all items for this board
+    const currentItems = localStorage.getItem(VISION_BOARD_ITEMS_KEY);
+    if (currentItems) {
+      localStorage.setItem(`${VISION_BOARD_ITEMS_KEY}_${boardId}`, currentItems);
+    }
+    
+    // Add the new board to the list and save
+    const updatedBoards = [createdBoard, ...boards];
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedBoards));
+    
+    // Save notification preference if provided
+    if (newBoard.notificationPreference) {
+      localStorage.setItem(`notification_${boardId}`, newBoard.notificationPreference);
+    }
+    
+    return boardId;
+  } catch (error) {
+    console.error('Error saving new vision board:', error);
+    toast.error('Failed to save vision board');
+    return '';
+  }
+};
+
 // Delete a vision board
 export const deleteVisionBoard = (boards: VisionBoard[], boardId: string): VisionBoard[] => {
   try {
     const updatedBoards = boards.filter(board => board.id !== boardId);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedBoards));
+    
+    // Clean up associated data
+    localStorage.removeItem(`${VISION_BOARD_ITEMS_KEY}_${boardId}`);
+    localStorage.removeItem(`notification_${boardId}`);
+    localStorage.removeItem(`lastActiveTab_${boardId}`);
+    
     toast.success('Vision board deleted successfully');
     return updatedBoards;
   } catch (error) {
@@ -67,4 +122,19 @@ export const deleteVisionBoard = (boards: VisionBoard[], boardId: string): Visio
 // Create a new board (clear existing vision board items)
 export const prepareNewBoard = () => {
   localStorage.removeItem(VISION_BOARD_ITEMS_KEY);
+  // Remove currentBoardId to ensure we start fresh
+  localStorage.removeItem('currentBoardId');
+};
+
+// Load vision board items for a specific board
+export const loadVisionBoardItems = (boardId: string) => {
+  if (!boardId) return null;
+  
+  try {
+    const items = localStorage.getItem(`${VISION_BOARD_ITEMS_KEY}_${boardId}`);
+    return items ? JSON.parse(items) : null;
+  } catch (error) {
+    console.error('Error loading vision board items:', error);
+    return null;
+  }
 };

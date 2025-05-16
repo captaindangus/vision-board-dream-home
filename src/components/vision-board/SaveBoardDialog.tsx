@@ -12,6 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useVisionBoard } from '@/context/VisionBoardContext';
+import { saveNewVisionBoard, STORAGE_KEY, defaultBoards } from '@/utils/visionBoardUtils';
 
 interface SaveBoardDialogProps {
   open: boolean;
@@ -22,13 +24,39 @@ export function SaveBoardDialog({ open, onOpenChange }: SaveBoardDialogProps) {
   const [boardName, setBoardName] = useState('Untitled Vision Board');
   const [notificationPreference, setNotificationPreference] = useState('daily');
   const navigate = useNavigate();
+  const { items } = useVisionBoard();
 
   const handleSave = () => {
-    // Simulate saving the board
+    // Get the current boards from localStorage or use defaults
+    const existingBoards = localStorage.getItem(STORAGE_KEY);
+    const boards = existingBoards ? JSON.parse(existingBoards) : defaultBoards;
+    
+    // Extract up to 4 image URLs from the vision board items
+    const boardImages = items
+      .filter(item => item.content.imageUrl)
+      .map(item => item.content.imageUrl)
+      .slice(0, 4);
+
+    // If we don't have 4 images, fill with defaults
+    while (boardImages.length < 4) {
+      boardImages.push('/lovable-uploads/d6cec2fd-12d6-4b45-ae92-5f10fec33156.png');
+    }
+    
+    // Save the board with its items
+    const newBoardId = saveNewVisionBoard({
+      name: boardName,
+      images: boardImages,
+      notificationPreference
+    });
+    
+    // Save the current board ID to localStorage for tab state persistence
+    localStorage.setItem('currentBoardId', newBoardId);
+    
     toast.success(`Vision board "${boardName}" saved!`);
     onOpenChange(false);
-    // Remove navigation to home page to stay on current page
-    // navigate('/');
+    
+    // Navigate to home page to see the new board
+    navigate('/');
   };
 
   if (!open) return null;

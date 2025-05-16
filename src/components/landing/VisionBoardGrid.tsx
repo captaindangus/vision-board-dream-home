@@ -37,6 +37,24 @@ const VisionBoardGrid = ({
   const navigate = useNavigate();
   const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
 
+  const handleBoardClick = (boardId: string) => {
+    // Set the current board ID in localStorage
+    localStorage.setItem('currentBoardId', boardId);
+    
+    // Navigate to the board view
+    navigate('/vision'); // This will redirect to the last active tab
+  };
+
+  const formatDaysAgo = (timestamp: number): string => {
+    const now = Date.now();
+    const diffMs = now - timestamp;
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 0) return 'Today';
+    if (diffDays === 1) return 'Yesterday';
+    return `${diffDays} Days Ago`;
+  };
+
   return (
     <div className="mt-24">
       <h2 className="text-2xl font-bold mb-8">My Vision Boards</h2>
@@ -71,13 +89,13 @@ const VisionBoardGrid = ({
               <div className="relative">
                 <div 
                   className="grid grid-cols-2 grid-rows-2 gap-0.5 aspect-[4/3] cursor-pointer"
-                  onClick={() => navigate('/listings')}
+                  onClick={() => handleBoardClick(board.id)}
                 >
                   {board.images.map((image, idx) => (
                     <div key={idx} className="overflow-hidden">
                       <img 
                         src={image} 
-                        alt="Modern house" 
+                        alt="Home inspiration" 
                         className="w-full h-full object-cover"
                       />
                     </div>
@@ -106,13 +124,13 @@ const VisionBoardGrid = ({
               <div className="p-4 flex justify-between items-center">
                 <div>
                   <h3 className="font-medium">{board.name}</h3>
-                  <p className="text-sm text-gray-500">{board.days} Days Ago</p>
+                  <p className="text-sm text-gray-500">{formatDaysAgo(board.createdAt)}</p>
                 </div>
                 <Button 
                   variant="outline" 
                   size="sm" 
                   className="rounded-full"
-                  onClick={() => navigate('/listings')}
+                  onClick={() => handleBoardClick(board.id)}
                 >
                   View Listings
                 </Button>
