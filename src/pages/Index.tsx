@@ -17,7 +17,7 @@ export default function Index() {
     // Add a slight delay before showing the second toast
     const timer = setTimeout(() => {
       toast.info(
-        "Click the 'Summarize' button to see a summary of your vision board!",
+        "Click the 'Summarize✨' button to see a summary of your vision board!",
         {
           duration: 5000,
         }

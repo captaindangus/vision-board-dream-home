@@ -1,5 +1,5 @@
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { VisionBoardItem } from '@/context/VisionBoardContext';
 import { Badge } from '@/components/ui/badge';
 import { X } from 'lucide-react';
@@ -15,8 +15,20 @@ interface SummaryTag {
   category: 'feature' | 'neighborhood' | 'detail';
 }
 
+// Create a key for localStorage to persist removed tags
+const REMOVED_TAGS_STORAGE_KEY = 'visionboard-removed-summary-tags';
+
 export function SummaryPopup({ items }: SummaryPopupProps) {
-  const [removedTags, setRemovedTags] = useState<string[]>([]);
+  // Initialize state from localStorage if available
+  const [removedTags, setRemovedTags] = useState<string[]>(() => {
+    const savedRemovedTags = localStorage.getItem(REMOVED_TAGS_STORAGE_KEY);
+    return savedRemovedTags ? JSON.parse(savedRemovedTags) : [];
+  });
+
+  // Save to localStorage whenever removedTags changes
+  useEffect(() => {
+    localStorage.setItem(REMOVED_TAGS_STORAGE_KEY, JSON.stringify(removedTags));
+  }, [removedTags]);
 
   // Extract all tags from the items on the board
   const extractedTags = useMemo(() => {

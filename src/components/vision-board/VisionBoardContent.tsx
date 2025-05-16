@@ -31,7 +31,10 @@ export function VisionBoardContent() {
     >
       <div className="flex justify-between items-center w-full mb-4">
         <VisionBoardTitle />
-        <UploadButton />
+        <div className="flex items-center gap-3">
+          <SummarizeButton />
+          <UploadButton />
+        </div>
       </div>
       <ScrollArea className="flex-1 h-full relative" ref={containerRef}>
         <div className="min-h-full flex flex-col">
@@ -50,9 +53,6 @@ export function VisionBoardContent() {
           />
         </div>
       </ScrollArea>
-      
-      {/* Add the Summarize Button */}
-      <SummarizeButton />
     </main>
   );
 }
